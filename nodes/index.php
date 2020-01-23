@@ -7,7 +7,7 @@ $locations = $locations->all();
 <section class="jumbotron text-center">
 	<div class="container">
 		<h1>SEH Meter Readings</h1>
-		<p class="lead text-muted">A simple utility to record, review and report on the utility meter readings.</p>
+		<p class="lead text-muted">A simple system to record, review and report on utility meter readings.</p>
 		<p><a href="index.php?n=site" class="btn btn-primary my-2">Whole Site Usage</a> <a href="index.php?n=locations" class="btn btn-secondary my-2">Locations</a></p>
 	</div>
 </section>
