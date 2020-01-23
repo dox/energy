@@ -171,7 +171,7 @@ window.onload = function() {
 					display: true,
 					scaleLabel: {
 						display: true,
-						labelString: '<?php echo $meterClass->thisMeterUnits(); ?>'
+						labelString: '<?php echo str_replace("<sup>3</sup>", "3", $meterClass->thisMeterUnits()); ?>'
 					}
 				}]
 			}
