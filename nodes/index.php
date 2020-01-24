@@ -11,8 +11,10 @@ $locations = $locations->all();
 		<p><a href="index.php?n=site" class="btn btn-primary my-2">Whole Site Usage</a> <a href="index.php?n=locations" class="btn btn-secondary my-2">Locations</a></p>
 	</div>
 </section>
-	
+
+
 <div class="container">
+	<a href="index.php?n=meter_add" class="btn btn-sm btn-outline-secondary float-right">Add New Meter</a>
 	<?php
 	$output = "";
 	foreach ($locations AS $location) {

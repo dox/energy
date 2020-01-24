@@ -33,6 +33,7 @@ $electricConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($
 	<canvas id="canvas" width="400" height="200"></canvas>
 	<div class="btn-group float-right" role="group" aria-label="Basic example">
 		<a href="index.php?n=location_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
+		<a href="index.php?n=meter_add&location=<?php echo $location['uid'];?>" class="btn btn-sm btn-outline-secondary">Add Meter</a>
 		<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 	</div>
 	<h3>Gas Consumption <?php echo $thisYear . ": " . array_sum($gasConsumptionThisYear) . $meterClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionThisYear) * 0.14)) . ")</i>";?><br />
