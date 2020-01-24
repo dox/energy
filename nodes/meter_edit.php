@@ -90,6 +90,7 @@ $(".deleteBookingButton").click(function() {
 		    uid: uid
 		}, function(data){
 			//$(thisObject).parent().parent().parent().parent().parent().fadeOut();
+			location.href = 'index.php';
 		},'html');
 	} else {
 	}
@@ -109,7 +110,12 @@ $(".meterEdit").click(function() {
 		var type = $("select#type").val();
 		var photograph = $("input#photograph").val();
 		var serial = $("input#serial").val();
-		var billed = $("input#billed").val();
+		
+		if ($("input#billed").is(':checked')) {
+			var billed = "Yes";
+		} else {
+			var billed = "No";
+		}
 		
 		var url = 'actions/meter_edit.php';
 		
