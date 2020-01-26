@@ -94,7 +94,12 @@ public function consumptionByLocationByYear($year = null, $type = null) {
 			
 		} else {
 			$thisMonthReading = $readingsArray[$arrayMonth];
-			$previousMonthReading = $readingsArray[$arrayMonth - 1];
+			
+			if (isset($readingsArray[$arrayMonth - 1])) {
+				$previousMonthReading = $readingsArray[$arrayMonth - 1];
+			} else {
+				$previousMonthReading = 0;
+			}
 			if ($previousMonthReading > 0) {
 				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;[$monthNum] = $thisMonthReading - $previousMonthReading;
 			}
@@ -144,6 +149,26 @@ public function consumptionBySiteByYear($year = null, $type = null) {
 	// sort array to month order (JAN first)
 	ksort($consumtpionArray );
 	
+	return $consumtpionArray;
+}
+
+public function consumptionByMeterAllYears() {
+	global $db;
+	
+	$readings = $db->rawQuery("SELECT year, meter, MAX(reading1) AS reading1 FROM readings_by_month WHERE meter = '" . $this->meterUID . "' GROUP BY year ORDER BY year DESC;");
+	
+	foreach ($readings AS $reading) {
+		$readingsArray[$reading['year']] = $reading['reading1'];
+	}
+	
+	foreach ($readingsArray AS $year => $reading) {
+		if (array_key_exists($year-1, $readingsArray)) {
+			$consumtpionArray[$year] = $reading - $readingsArray[$year-1];
+		}
+	}
+	
+	// sort array to year order (oldest first)
+	ksort($consumtpionArray);
 	return $consumtpionArray;
 }
 
