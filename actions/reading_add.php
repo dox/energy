@@ -4,9 +4,9 @@ require_once('../database/MysqliDb.php');
 
 $db = new MysqliDb ($db_host, $db_username, $db_password, $db_name);
 
-
-
 if (isset($_POST['meter']) && isset($_POST['reading'])) {
+	$lastReading = $db->rawQueryOne("SELECT * FROM readings WHERE meter = '" . $_POST['meter'] . "' ORDER BY date DESC LIMIT 1");
+	
 	if (strtotime($_POST['date'])) {
 		$readingDate = date('Y-m-d H:i', strtotime($_POST['date']));
 	} else {
@@ -17,6 +17,10 @@ if (isset($_POST['meter']) && isset($_POST['reading'])) {
 		$readingValue = $_POST['reading'];
 	} else {
 		$errorMsg = "Error: Incorrect reading parameter: " . $_POST['reading'];
+	}
+	
+	if ($_POST['reading'] < $lastReading['reading1']) {
+		$errorMsg = "Error: Reading can't be lower than the previous reading!";
 	}
 	
 	if (isset($errorMsg)) {
