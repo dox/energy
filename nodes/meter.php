@@ -69,34 +69,34 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 		}
 		?>
 		
-		<form role="form" id="contactForm" class="form-inline" data-toggle="validator" class="shake">
+		<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
 		<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
 		<div class="alert alert-danger display-error" style="display: none"></div>
 		<table id="readingsTable" class="table table-bordered table-striped" >
-		<tbody>
+		<thead>
 			<tr>
-				<td width="50%">Date</td>
-				<td width="50%">Reading</td>
+				<th width="50%">Date</td>
+				<th width="50%">Reading</td>
 			</tr>
+		</thead>
+		<tbody>
 			<tr>
 				<td><input type="text" id="date" class="form-control" value="<?php echo date('Y-m-d H:i', time()); ?>" placeholder="Date"></td>
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control" id="reading" placeholder="Reading">
 						<div class="input-group-append">
-							<button type="submit" id="submit" class="btn btn-success"><span>&#10003;</span>
+							<button type="submit" id="submit" class="btn btn-success"><span>&#10003;</span></button>
 						</div>
 					</div>
-					
-					
-					
-</button></td>
+				</td>
 			</tr>
+
 			<?php
 			foreach ($readingsAll AS $reading) {
 				$output  = "<tr>";
 				$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-				$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right readingDelete\">x</span>" . "</td>";
+				$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>" . "</td>";
 				$output .= "</tr>";
 				echo $output;
 			}

@@ -49,12 +49,6 @@ $waterConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($las
 				Consumption <?php echo $lastYear . ": " . array_sum($electricConsumptionLastYear) . $metersClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastYear) * 0.14)) . ")</i>";?><br />
 				Consumption <?php echo $lastLastYear . ": " . array_sum($electricConsumptionLastLastYear) . $metersClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
 			</div>
-			<div class="carousel-item">
-				<canvas id="canvasWater" width="400" height="200"></canvas>
-				<h3>Consumption <?php echo $thisYear . ": " . array_sum($waterConsumptionThisYear) . $metersClass->thisMeterUnits("Water") . " <i>(~£" . round((array_sum($waterConsumptionThisYear) * 0.14)) . ")</i>";?><br />
-				Consumption <?php echo $lastYear . ": " . array_sum($waterConsumptionLastYear) . $metersClass->thisMeterUnits("Water") . " <i>(~£" . round((array_sum($waterConsumptionLastYear) * 0.14)) . ")</i>";?><br />
-				Consumption <?php echo $lastLastYear . ": " . array_sum($waterConsumptionLastLastYear) . $metersClass->thisMeterUnits("Water") . " <i>(~£" . round((array_sum($waterConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
-			</div>
 		</div>
 		<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
 			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -172,7 +166,6 @@ var waterBarChartData = {
 window.onload = function() {
 	var ctx = document.getElementById('canvasGas').getContext('2d');
 	var ctx2 = document.getElementById('canvasElectric').getContext('2d');
-	var ctx3 = document.getElementById('canvasWater').getContext('2d');
 	
 	window.myBar = new Chart(ctx, {
 		type: 'bar',
@@ -205,20 +198,7 @@ window.onload = function() {
 		},
 	});
 	
-	window.myBar = new Chart(ctx3, {
-		type: 'bar',
-		data: watercBarChartData,
-		options: {
-			responsive: true,
-			legend: {
-				position: 'top',
-			},
-			animation: {
-				duration: 1000,
-				onComplete: done
-			}
-		},
-	});
+
 };
 
 
