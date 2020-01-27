@@ -19,26 +19,48 @@ $consumptionThisYear = $readingsClass->consumptionByMeterByYear($thisYear);
 $consumptionLastYear = $readingsClass->consumptionByMeterByYear($lastYear);
 $consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYear);
 
+$consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 ?>
 
 <div class="container">
 	<div class="row">
 		<div class="col-sm">
-			<h3><?php echo $meter['name']; ?> <small class="text-muted">(<?php echo $location['name'];?>)</small></h3>
+			<h3><?php echo $meter['name']; ?> <small class="text-muted">(<?php echo "<a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a>";?>)</small></h3>
 			<p class="lead">Billed to tenant: <?php echo $meter['billed'];?></p>
 		</div>
 		<div class="col-sm">
 			<p class="text-right"><?php echo $meter['type'] . " meter serial: " . $meter['serial']; ?></p>
 		</div>
 	</div>
-	<canvas id="canvas" width="400" height="200"></canvas>
+	
+	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<canvas id="canvas" width="400" height="200"></canvas>
+			</div>
+			<div class="carousel-item">
+				<canvas id="canvasYearly" width="400" height="200"></canvas>
+			</div>
+		</div>
+		<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		</a>
+		<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
+	
+	
+	
+	
+	
 	<div class="btn-group float-right" role="group" aria-label="Basic example">
 		<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
 		<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 	</div>
-	<h3>Consumption <?php echo $thisYear . ": " . array_sum($consumptionThisYear) . $meterClass->thisMeterUnits() . " <i>(~£" . round((array_sum($consumptionThisYear) * 0.14)) . ")</i>";?><br />
-	Consumption <?php echo $lastYear . ": " . array_sum($consumptionLastYear) . $meterClass->thisMeterUnits() . " <i>(~£" . round((array_sum($consumptionLastYear) * 0.14)) . ")</i>";?><br />
-	Consumption <?php echo $lastLastYear . ": " . array_sum($consumptionLastLastYear) . $meterClass->thisMeterUnits() . " <i>(~£" . round((array_sum($consumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
+	
 	<div class="row">
 		<?php
 		foreach ($readingsAll AS $reading) {
@@ -47,34 +69,34 @@ $consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYea
 		}
 		?>
 		
-		<form role="form" id="contactForm" class="form-inline" data-toggle="validator" class="shake">
+		<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
 		<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
 		<div class="alert alert-danger display-error" style="display: none"></div>
 		<table id="readingsTable" class="table table-bordered table-striped" >
-		<tbody>
+		<thead>
 			<tr>
-				<td width="50%">Date</td>
-				<td width="50%">Reading</td>
+				<th width="50%">Date</td>
+				<th width="50%">Reading</td>
 			</tr>
+		</thead>
+		<tbody>
 			<tr>
 				<td><input type="text" id="date" class="form-control" value="<?php echo date('Y-m-d H:i', time()); ?>" placeholder="Date"></td>
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control" id="reading" placeholder="Reading">
 						<div class="input-group-append">
-							<button type="submit" id="submit" class="btn btn-success"><span>&#10003;</span>
+							<button type="submit" id="submit" class="btn btn-success"><span>&#10003;</span></button>
 						</div>
 					</div>
-					
-					
-					
-</button></td>
+				</td>
 			</tr>
+
 			<?php
 			foreach ($readingsAll AS $reading) {
 				$output  = "<tr>";
 				$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-				$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right readingDelete\">x</span>" . "</td>";
+				$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>" . "</td>";
 				$output .= "</tr>";
 				echo $output;
 			}
@@ -102,8 +124,8 @@ $consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYea
             data: {date:date, reading:reading, meter:meter},
             success : function(data){
                 if (data.code == "200"){
-                    //alert("Success: " +data.msg);
-                   $('#readingsTable > tbody > tr:eq(1)').after('<tr><td>' + date + '</td><td>' + reading + '</td></tr>');
+                    location.href = 'index.php?n=meter&meterUID=' + meter;
+                   //$('#readingsTable > tbody > tr:eq(1)').after('<tr><td>' + date + '</td><td>' + reading + '</td></tr>');
                 } else {
                     $(".display-error").html("<ul>"+data.msg+"</ul>");
                     $(".display-error").css("display","block");
@@ -152,8 +174,20 @@ var barChartData = {
 	}]
 };
 
+var yearlyBarChartData = {
+	labels: [<?php echo implode(", ",array_keys($consumptionByYear));?>],
+	datasets: [{
+		label: 'Total consumption by year',
+		backgroundColor: color(window.chartColors.<?php echo $colourLastLast; ?>).alpha(0.5).rgbString(),
+		borderColor: window.chartColors.<?php echo $colourLastLast; ?>,
+		borderWidth: 1,
+		data: [<?php echo implode($consumptionByYear, ", ");?>]
+	}]
+};
+
 window.onload = function() {
 	var ctx = document.getElementById('canvas').getContext('2d');
+	var ctxYearly = document.getElementById('canvasYearly').getContext('2d');
 	window.myBar = new Chart(ctx, {
 		type: 'bar',
 		data: barChartData,
@@ -177,15 +211,38 @@ window.onload = function() {
 			}
 		},
 	});
+	
+	window.myBar = new Chart(ctxYearly, {
+		type: 'bar',
+		data: yearlyBarChartData,
+		options: {
+			responsive: true,
+			legend: {
+				position: 'top',
+			},
+			animation: {
+				duration: 1000,
+				onComplete: done
+			},
+			scales: {
+				yAxes: [{
+					display: true,
+					ticks: {
+						beginAtZero: true
+					},
+					scaleLabel: {
+						display: true,
+						labelString: '<?php echo str_replace("<sup>3</sup>", "3", $meterClass->thisMeterUnits()); ?>'
+					}
+				}]
+			}
+		},
+	});
 };
 
 function done(){
 	var url=myBar.toBase64Image();
 	document.getElementById("link2").href=url;
-
-	//var url_base64jp = document.getElementById("canvas").toDataURL("image/jpg");
-	//link2.href = url_base64;
-	//document.getElementById("link2").href=url;
 }
 </script>
 

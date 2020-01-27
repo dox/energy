@@ -49,12 +49,20 @@ public function consumptionByMeterByYear($year = null) {
 			$thisMonthReading = $readingsArray[$arrayMonth];
 			$previousMonthReading = $previousYearReadings['reading1'];
 			
-			$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;
+			if ($previousMonthReading == 0) {
+				$consumtpionArray[$arrayMonth] = 0;
+			} else {
+				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;
+			}
 		} else {
 			$thisMonthReading = $readingsArray[$arrayMonth];
 			$previousMonthReading = $readingsArray[$arrayMonth - 1];
 			
-			$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;[$monthNum] = $thisMonthReading - $previousMonthReading;
+			if ($previousMonthReading == 0) {
+				$consumtpionArray[$arrayMonth] = 0;
+			} else {
+				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;[$monthNum] = $thisMonthReading - $previousMonthReading;
+			}
 		}
 	}
 	
@@ -84,18 +92,24 @@ public function consumptionByLocationByYear($year = null, $type = null) {
 	
 	foreach ($readingsArray AS $arrayMonth => $reading) {
 		if ($arrayMonth == 1) {
-			$previousYearReadings = $db->rawQueryOne("SELECT month, type, sum(reading1) AS reading1 FROM readings_by_month WHERE location = '" . $this->locationUID . "' AND year = '" . ($year - 1) . "' AND month = '12' AND type = '" . $type . "' GROUP BY month");
-			
 			$thisMonthReading = $readingsArray[$arrayMonth];
+			
+			$previousYearReadings = $db->rawQueryOne("SELECT month, type, sum(reading1) AS reading1 FROM readings_by_month WHERE location = '" . $this->locationUID . "' AND year = '" . ($year - 1) . "' AND month = '12' AND type = '" . $type . "' GROUP BY month");
 			$previousMonthReading = $previousYearReadings['reading1'];
-			if ($previousMonthReading) {
+			
+			if ($thisMonthReading > $previousMonthReading) {
 				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;
 			}
 			
 		} else {
 			$thisMonthReading = $readingsArray[$arrayMonth];
-			$previousMonthReading = $readingsArray[$arrayMonth - 1];
-			if ($previousMonthReading > 0) {
+			
+			if (isset($readingsArray[$arrayMonth - 1])) {
+				$previousMonthReading = $readingsArray[$arrayMonth - 1];
+			} else {
+				$previousMonthReading = 0;
+			}
+			if ($thisMonthReading > $previousMonthReading) {
 				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;[$monthNum] = $thisMonthReading - $previousMonthReading;
 			}
 		}
@@ -132,18 +146,42 @@ public function consumptionBySiteByYear($year = null, $type = null) {
 			$thisMonthReading = $readingsArray[$arrayMonth];
 			$previousMonthReading = $previousYearReadings['reading1'];
 			
-			$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;
+			if ($thisMonthReading > $previousMonthReading) {
+				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;
+			}
 		} else {
 			$thisMonthReading = $readingsArray[$arrayMonth];
 			$previousMonthReading = $readingsArray[$arrayMonth - 1];
 			
-			$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;[$monthNum] = $thisMonthReading - $previousMonthReading;
+			if ($thisMonthReading > $previousMonthReading) {
+				$consumtpionArray[$arrayMonth] = $thisMonthReading - $previousMonthReading;[$monthNum] = $thisMonthReading - $previousMonthReading;
+			}
 		}
 	}
 	
 	// sort array to month order (JAN first)
 	ksort($consumtpionArray );
 	
+	return $consumtpionArray;
+}
+
+public function consumptionByMeterAllYears() {
+	global $db;
+	
+	$readings = $db->rawQuery("SELECT year, meter, MAX(reading1) AS reading1 FROM readings_by_month WHERE meter = '" . $this->meterUID . "' GROUP BY year ORDER BY year DESC;");
+	
+	foreach ($readings AS $reading) {
+		$readingsArray[$reading['year']] = $reading['reading1'];
+	}
+	
+	foreach ($readingsArray AS $year => $reading) {
+		if (array_key_exists($year-1, $readingsArray)) {
+			$consumtpionArray[$year] = $reading - $readingsArray[$year-1];
+		}
+	}
+	
+	// sort array to year order (oldest first)
+	ksort($consumtpionArray);
 	return $consumtpionArray;
 }
 

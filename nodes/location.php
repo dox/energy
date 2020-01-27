@@ -7,8 +7,8 @@ $locations = new locations;
 $locations->locationUID = $_GET['locationUID'];
 $location = $locations->location();
 
-$meterClass = new meters;
-$metersAll = $meterClass->allByLocation($location['uid']);
+$metersClass = new meters;
+$metersAll = $metersClass->allByLocation($location['uid']);
 
 
 $readingsClass = new Readings;
@@ -24,44 +24,60 @@ $electricConsumptionThisYear = $readingsClass->consumptionByLocationByYear($this
 $electricConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, "Electric");
 $electricConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, "Electric");
 
+$waterConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, "Water");
+$waterConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, "Water");
+$waterConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, "Water");
+
 ?>
 
 <div class="container">
 	<div class="row">
 		<h3><?php echo $location['name'];?> <small class="text-muted"><?php echo $location['description']; ?></small></h3>
 	</div>
-	<canvas id="canvas" width="400" height="200"></canvas>
+	
+	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<canvas id="canvasGas" width="400" height="200"></canvas>
+				<h3>Consumption <?php echo $thisYear . ": " . array_sum($gasConsumptionThisYear) . $metersClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionThisYear) * 0.14)) . ")</i>";?><br />
+				Consumption <?php echo $lastYear . ": " . array_sum($gasConsumptionLastYear) . $metersClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionLastYear) * 0.14)) . ")</i>";?><br />
+				Consumption <?php echo $lastLastYear . ": " . array_sum($gasConsumptionLastLastYear) . $metersClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
+			</div>
+			<div class="carousel-item">
+				<canvas id="canvasElectric" width="400" height="200"></canvas>
+				<h3>Consumption <?php echo $thisYear . ": " . array_sum($electricConsumptionThisYear) . $metersClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionThisYear) * 0.14)) . ")</i>";?><br />
+				Consumption <?php echo $lastYear . ": " . array_sum($electricConsumptionLastYear) . $metersClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastYear) * 0.14)) . ")</i>";?><br />
+				Consumption <?php echo $lastLastYear . ": " . array_sum($electricConsumptionLastLastYear) . $metersClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
+			</div>
+		</div>
+		<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		</a>
+		<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
+
+
+
+
+	
 	<div class="btn-group float-right" role="group" aria-label="Basic example">
 		<a href="index.php?n=location_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
 		<a href="index.php?n=meter_add&location=<?php echo $location['uid'];?>" class="btn btn-sm btn-outline-secondary">Add Meter</a>
 		<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 	</div>
-	<h3>Gas Consumption <?php echo $thisYear . ": " . array_sum($gasConsumptionThisYear) . $meterClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionThisYear) * 0.14)) . ")</i>";?><br />
-	Gas Consumption <?php echo $lastYear . ": " . array_sum($gasConsumptionLastYear) . $meterClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionLastYear) * 0.14)) . ")</i>";?><br />
-	Gas Consumption <?php echo $lastLastYear . ": " . array_sum($gasConsumptionLastLastYear) . $meterClass->thisMeterUnits("Gas") . " <i>(~£" . round((array_sum($gasConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
-	<h3>Electric Consumption <?php echo $thisYear . ": " . array_sum($electricConsumptionThisYear) . $meterClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionThisYear) * 0.14)) . ")</i>";?><br />
-	Electric Consumption <?php echo $lastYear . ": " . array_sum($electricConsumptionLastYear) . $meterClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastYear) * 0.14)) . ")</i>";?><br />
-	Electric Consumption <?php echo $lastLastYear . ": " . array_sum($electricConsumptionLastLastYear) . $meterClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
+	
+	
 	<div class="row">
 		<?php
+		
 		$output = "";
 		
 		foreach ($metersAll AS $meter) {
-			$output .= "<div class=\"col-md-4\">";
-			$output .= "<div class=\"card mb-4 shadow-sm\">";
-			$output .= "<svg class=\"bd-placeholder-img card-img-top\" width=\"100%\" height=\"225\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid slice\" focusable=\"false\" role=\"img\" aria-label=\"Placeholder: Thumbnail\"><title>Placeholder</title><rect width=\"100%\" height=\"100%\" fill=\"#55595c\"/><text x=\"50%\" y=\"50%\" fill=\"#eceeef\" dy=\".3em\">Thumbnail</text></svg>";
-			$output .= "<div class=\"card-body\">";
-			$output .= "<p class=\"card-text\">" . $meter['name'] . "</p>";
-			$output .= "<div class=\"d-flex justify-content-between align-items-center\">";
-			$output .= "<div class=\"btn-group\">";
-			$output .= "<a href=\"index.php?n=meter&meterUID=" . $meter['uid'] . "\" class=\"btn btn-sm btn-outline-secondary\">View</a>";
-			$output .= "<a href=\"index.php?n=meter_edit&meterUID=" . $meter['uid'] . "\" class=\"btn btn-sm btn-outline-secondary\">Edit</a>";
-			$output .= "</div>";
-			$output .= "<small class=\"text-muted\">" . $meter['type'] . "</small>";
-			$output .= "</div>";
-			$output .= "</div>";
-			$output .= "</div>";
-			$output .= "</div>";
+			$output .= $metersClass->displayMeterCard($meter['uid']);
 		}
 		
 		echo $output;
@@ -72,60 +88,88 @@ $electricConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($
 <script>
 var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 var color = Chart.helpers.color;
-var barChartData = {
+var gasBarChartData = {
 	labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 	datasets: [{
 		label: 'Gas: <?php echo $lastLastYear;?>',
-		stack: 'Stack 0',
 		backgroundColor: color(window.chartColors.<?php echo $colour_gas_year3; ?>).alpha(0.5).rgbString(),
 		borderColor: window.chartColors.<?php echo $colour_gas_year3; ?>,
 		borderWidth: 1,
 		data: [<?php echo implode($gasConsumptionLastLastYear, ", ");?>]
 	}, {
 		label: 'Gas: <?php echo $lastYear;?>',
-		stack: 'Stack 1',
 		backgroundColor: color(window.chartColors.<?php echo $colour_gas_year2; ?>).alpha(0.5).rgbString(),
 		borderColor: window.chartColors.<?php echo $colour_gas_year2; ?>,
 		borderWidth: 1,
 		data: [<?php echo implode($gasConsumptionLastYear, ", ");?>]
 	}, {
 		label: 'Gas: <?php echo $thisYear;?>',
-		stack: 'Stack 2',
 		backgroundColor: color(window.chartColors.<?php echo $colour_gas_year1; ?>).alpha(0.5).rgbString(),
 		borderColor: window.chartColors.<?php echo $colour_gas_year1; ?>,
 		borderWidth: 1,
 		data: [<?php echo implode($gasConsumptionThisYear, ", ");?>]
-	}, {
+	}]
+};
+
+var electricBarChartData = {
+	labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+	datasets: [{
 		label: 'Electric: <?php echo $lastLastYear;?>',
-		stack: 'Stack 0',
-		backgroundColor: color(window.chartColors.<?php echo $colour_electric_year3; ?>).alpha(1).rgbString(),
+		backgroundColor: color(window.chartColors.<?php echo $colour_electric_year3; ?>).alpha(0.5).rgbString(),
 		borderColor: window.chartColors.<?php echo $colour_electric_year3; ?>,
 		borderWidth: 1,
 		data: [<?php echo implode($electricConsumptionLastLastYear, ", ");?>]
 	}, {
 		label: 'Electric: <?php echo $lastYear;?>',
-		stack: 'Stack 1',
-		backgroundColor: color(window.chartColors.<?php echo $colour_electric_year2; ?>).alpha(1).rgbString(),
+		backgroundColor: color(window.chartColors.<?php echo $colour_electric_year2; ?>).alpha(0.5).rgbString(),
 		borderColor: window.chartColors.<?php echo $colour_electric_year2; ?>,
 		borderWidth: 1,
 		data: [<?php echo implode($electricConsumptionLastYear, ", ");?>]
 	}, {
 		label: 'Electric: <?php echo $thisYear;?>',
-		stack: 'Stack 2',
-		backgroundColor: color(window.chartColors.<?php echo $colour_electric_year1; ?>).alpha(1).rgbString(),
-		borderColor: window.chartColors.<?php echo $colour_electric_year1; ?>,
+		backgroundColor: color(window.chartColors.<?php echo $colour_electric_year1; ?>).alpha(0.5).rgbString(),
+		borderColor: window.chartColors.<?php echo $colour_gas_year1; ?>,
 		borderWidth: 1,
 		data: [<?php echo implode($electricConsumptionThisYear, ", ");?>]
 	}]
 };
 
 
+var waterBarChartData = {
+	labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+	datasets: [{
+		label: 'Water: <?php echo $lastLastYear;?>',
+		stack: 'Stack 0',
+		backgroundColor: color(window.chartColors.<?php echo $colour_water_year3; ?>).alpha(0.5).rgbString(),
+		borderColor: window.chartColors.<?php echo $colour_water_year3; ?>,
+		borderWidth: 1,
+		data: [<?php echo implode($waterConsumptionLastLastYear, ", ");?>]
+	}, {
+		label: 'Water: <?php echo $lastYear;?>',
+		stack: 'Stack 1',
+		backgroundColor: color(window.chartColors.<?php echo $colour_water_year2; ?>).alpha(0.5).rgbString(),
+		borderColor: window.chartColors.<?php echo $colour_water_year2; ?>,
+		borderWidth: 1,
+		data: [<?php echo implode($waterConsumptionLastYear, ", ");?>]
+	}, {
+		label: 'Water: <?php echo $thisYear;?>',
+		stack: 'Stack 2',
+		backgroundColor: color(window.chartColors.<?php echo $colour_water_year1; ?>).alpha(0.5).rgbString(),
+		borderColor: window.chartColors.<?php echo $colour_water_year1; ?>,
+		borderWidth: 1,
+		data: [<?php echo implode($waterConsumptionThisYear, ", ");?>]
+	}]
+};
+
+
 
 window.onload = function() {
-	var ctx = document.getElementById('canvas').getContext('2d');
+	var ctx = document.getElementById('canvasGas').getContext('2d');
+	var ctx2 = document.getElementById('canvasElectric').getContext('2d');
+	
 	window.myBar = new Chart(ctx, {
 		type: 'bar',
-		data: barChartData,
+		data: gasBarChartData,
 		options: {
 			responsive: true,
 			legend: {
@@ -137,6 +181,24 @@ window.onload = function() {
 			}
 		},
 	});
+	
+	
+	window.myBar = new Chart(ctx2, {
+		type: 'bar',
+		data: electricBarChartData,
+		options: {
+			responsive: true,
+			legend: {
+				position: 'top',
+			},
+			animation: {
+				duration: 1000,
+				onComplete: done
+			}
+		},
+	});
+	
+
 };
 
 
