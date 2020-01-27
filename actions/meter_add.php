@@ -5,6 +5,12 @@ require_once('../database/MysqliDb.php');
 $db = new MysqliDb ($db_host, $db_username, $db_password, $db_name);
 
 if (isset($_POST['name'])) {
+	foreach ($_POST AS $key => $value) {
+		if ($value == "") {
+			$_POST[$key] = null;
+		}
+	}
+	
 	$data =	Array (
 		'name' => $_POST['name'],
 		'location' => $_POST['location'],
