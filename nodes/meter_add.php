@@ -52,11 +52,6 @@ $locationsAll = $locations->all();
 			<input type="checkbox" class="form-check-input" id="billed" value="Yes">
 			<label for="billed" class="form-check-label">Billed to tenant</label>
 		</div>
-		<div class="form-group">
-			<label for="formGroupExampleInput2">Photograph</label>
-			<input type="text" class="form-control" id="photograph" placeholder="Photograph (not in use yet)">
-		</div>
-		
 		</form>
 	</div>
 	<div class="row">
@@ -75,7 +70,6 @@ $(".meterAdd").click(function() {
 		var name = $("input#name").val();
 		var location = $("select#location").val();
 		var type = $("select#type").val();
-		var photograph = $("input#photograph").val();
 		var serial = $("input#serial").val();
 		
 		if ($("input#billed").is(':checked')) {
@@ -91,7 +85,6 @@ $(".meterAdd").click(function() {
 		    name: name,
 		    location: location,
 		    type: type,
-		    photograph: photograph,
 		    serial: serial,
 		    billed: billed
 		}, function(data){

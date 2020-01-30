@@ -15,7 +15,6 @@ if (isset($_POST['uid'])) {
 		'name' => $_POST['name'],
 		'location' => $_POST['location'],
 		'type' => $_POST['type'],
-		'photograph' => $_POST['photograph'],
 		'serial' => $_POST['serial'],
 		'billed' => $_POST['billed']
 	);
