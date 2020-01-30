@@ -19,7 +19,80 @@ public function readingsByMeter($limit = null) {
 }
 
 
+public function readingsByMeterByYear2($year = null) {
+	global $db;
+	
+	if ($year == null) {
+		$year = date('Y');
+	}
+	
+	$monthNum = 1;
+	
+	do {
+		$readings = $db->where("meter", $this->meterUID);
+		$readings = $db->where("year", $year);
+		$readings = $db->where("month", $monthNum);
+		$readings = $db->getOne("readings_by_month");
+		
+		//echo "<pre>"; print_r($readings); echo "</pre>";
+		
+		$readingsArray[$monthNum] = $readings['reading1'];
+		$monthNum++;
+	} while ($monthNum <= 12);
+	
+	return $readingsArray;
+}
 
+public function consumptionByMeterByYear2($year = null) {
+	global $db;
+	
+	if ($year == null) {
+		$year = date('Y');
+	}
+	
+	$readingsByMeterByYear = $this->readingsByMeterByYear2($year);
+	$readingsByMeterByPreviousYear = $this->readingsByMeterByYear2($year - 1);
+	
+	$monthNum = 1;
+	
+	do {
+		if ($monthNum == 1) {
+			$thisMonthReading = $readingsByMeterByYear[$monthNum];
+			$lastMonthReading = $readingsByMeterByPreviousYear[12];
+			
+			if ($lastMonthReading <= 0 || $thisMonthReading == 0) {
+				$difference = 0;	
+			} else {
+				$difference = $thisMonthReading - $lastMonthReading;
+			}
+			
+			
+		} else {
+			$thisMonthReading = $readingsByMeterByYear[$monthNum];
+			$lastMonthReading = $readingsByMeterByYear[$monthNum - 1];
+			
+			if ($lastMonthReading <= 0 || $thisMonthReading == 0) {
+				$difference = 0;	
+			} else {
+				$difference = $thisMonthReading - $lastMonthReading;
+			}
+		}
+		$consumptionArray[$monthNum] = $difference;
+		
+		$monthNum++;
+	} while ($monthNum <= 12);
+	
+	return $consumptionArray;
+}
+
+
+
+
+
+
+
+
+// THIS IS ALL GOOD>>>>>>>
 public function consumptionByMeterByYear($year = null) {
 	global $db;
 	
@@ -38,6 +111,8 @@ public function consumptionByMeterByYear($year = null) {
 	}
 	
 	$consumtpionArray = array();
+	
+	
 	
 	foreach ($readingsArray AS $arrayMonth => $reading) {
 		if ($arrayMonth == 1) {

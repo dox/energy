@@ -15,9 +15,9 @@ $readingsClass->meterUID = $meter['uid'];
 
 $readingsAll = $readingsClass->readingsByMeter(20);
 
-$consumptionThisYear = $readingsClass->consumptionByMeterByYear($thisYear);
-$consumptionLastYear = $readingsClass->consumptionByMeterByYear($lastYear);
-$consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYear);
+$consumptionThisYear = $readingsClass->consumptionByMeterByYear2($thisYear);
+$consumptionLastYear = $readingsClass->consumptionByMeterByYear2($lastYear);
+$consumptionLastLastYear = $readingsClass->consumptionByMeterByYear2($lastLastYear);
 
 $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 ?>
