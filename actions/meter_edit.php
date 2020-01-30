@@ -16,7 +16,8 @@ if (isset($_POST['uid'])) {
 		'location' => $_POST['location'],
 		'type' => $_POST['type'],
 		'serial' => $_POST['serial'],
-		'billed' => $_POST['billed']
+		'billed' => $_POST['billed'],
+		'enabled' => $_POST['enabled']
 	);
 	
 	$db->where('uid', $_POST['uid']);

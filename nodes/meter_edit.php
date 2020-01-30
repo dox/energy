@@ -98,6 +98,10 @@ $locationsAll = $locations->all();
 			<input type="checkbox" class="form-check-input" id="billed" <?php if ($meter['billed'] == "Yes") { echo " checked";} ?> value="<?php echo $meter['billed'];?>">
 			<label for="billed" class="form-check-label">Billed to tenant</label>
 		</div>
+		<div class="form-check">
+			<input type="checkbox" class="form-check-input" id="enabled" <?php if ($meter['enabled'] == true) { echo " checked";} ?> value="<?php echo $meter['enabled'];?>">
+			<label for="enabled" class="form-check-label">Enabled</label>
+		</div>
 		</form>
 		<div id="returnMessage"></div>
 		<a href="#" class="btn btn-success meterEdit" id="<?php echo $meter['uid'];?>">Update</a> 
@@ -164,6 +168,12 @@ $(".meterEdit").click(function() {
 			var billed = "No";
 		}
 		
+		if ($("input#enabled").is(':checked')) {
+			var enabled = 1;
+		} else {
+			var enabled = 0;
+		}
+		
 		var url = 'actions/meter_edit.php';
 		
 		// perform the post to the action (take the info and submit to database)
@@ -173,7 +183,8 @@ $(".meterEdit").click(function() {
 		    location: location,
 		    type: type,
 		    serial: serial,
-		    billed: billed
+		    billed: billed,
+		    enabled: enabled
 		}, function(data){
 			$("#returnMessage").append(data);
 		},'html');

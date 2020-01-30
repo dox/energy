@@ -21,11 +21,14 @@ $locations = $locations->all();
 		$metersClass = new meters;
 		$meters = $metersClass->allByLocation($location['uid']);
 		
-		$output .= "<h2><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h2>";
+		$output .= "<a href=\"index.php?n=location_disabled&locationUID=" . $location['uid'] . "\" class=\"btn btn-secondary btn-sm float-right\" role=\"button\">View Disabled Meters here</a>";
+		$output .= "<h3><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h3>";
 		$output .= "<div class=\"row\">";
 		
 		foreach ($meters AS $meter) {
-			$output .= $metersClass->displayMeterCard($meter['uid']);
+			if ($meter['enabled'] == 1) {
+				$output .= $metersClass->displayMeterCard($meter['uid']);
+			}
 		}
 		
 		$output .= "</div>";
