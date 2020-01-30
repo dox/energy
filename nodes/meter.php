@@ -62,6 +62,7 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 	</div>
 	
 	<div class="row">
+		<div class="col-sm">
 		<?php
 		foreach ($readingsAll AS $reading) {
 			$readingLabelsArray[] = "'" . $reading['date'] . "'";
@@ -104,7 +105,18 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 		</tbody>
 		</table>
 		</form>
+		</div>
+		<div class="col-sm">
+			<?php
+			if (isset($meter['photograph'])) {
+				$output  = "<img src=\"uploads/" . $meter['photograph'] . "\" class=\"img-fluid\" />";
+				
+				echo $output;
+			}
+			?>
+		</div>
 	</div>
+	
 </div>
 
 <script type="text/javascript">
