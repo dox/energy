@@ -14,7 +14,6 @@ $locations = $locations->all();
 
 
 <div class="container">
-	<a href="index.php?n=meter_add" class="btn btn-sm btn-outline-secondary float-right">Add New Meter</a>
 	<?php
 	$output = "";
 	foreach ($locations AS $location) {

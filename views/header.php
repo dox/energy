@@ -11,6 +11,7 @@
           <ul class="list-unstyled">
             <li><a href="index.php?n=site" class="text-white">Site Settings</a></li>
             <li><a href="index.php?n=locations" class="text-white">Locations</a></li>
+            <li><a href="index.php?n=meter_add" class="text-white">Add New Meter</a></li>
             <li><a href="index.php?n=logs" class="text-white">Logs</a></li>
           </ul>
         </div>

@@ -18,12 +18,7 @@ $locationsAll = $locations->all();
 			<select class="form-control" id="location">
 				<?php
 				foreach ($locationsAll AS $location) {
-					if ($location['uid'] == $_GET['location']) {
-						$selected = " selected";
-					} else {
-						$selected = " ";
-					}
-					echo "<option value = \"" . $location['uid'] . "\" " . $selected . ">" . $location['name'] . "</option>";
+					echo "<option value = \"" . $location['uid'] . "\">" . $location['name'] . "</option>";
 				}
 				?>
 			</select>
