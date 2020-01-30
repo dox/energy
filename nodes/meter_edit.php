@@ -121,7 +121,7 @@ $locationsAll = $locations->all();
 			<label for="photograph">Photograph</label>
 			<input type="file" class="form-control-file" id="photograph" name="photograph">
 		</div>
-		 <button type="submit">Upload</button>
+		 <button type="submit" class="btn btn-success meterEdit">Upload</button>
 		</form>
 	</div>
 </div>
