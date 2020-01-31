@@ -32,7 +32,6 @@ footer p {
   margin-bottom: .25rem;
 }
 
-.carousel-control-next,
-.carousel-control-prev {
+.carousel-indicators {
     filter: invert(100%);
 }

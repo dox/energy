@@ -15,9 +15,9 @@ $readingsClass->meterUID = $meter['uid'];
 
 $readingsAll = $readingsClass->readingsByMeter(20);
 
-$consumptionThisYear = $readingsClass->consumptionByMeterByYear2($thisYear);
-$consumptionLastYear = $readingsClass->consumptionByMeterByYear2($lastYear);
-$consumptionLastLastYear = $readingsClass->consumptionByMeterByYear2($lastLastYear);
+$consumptionThisYear = $readingsClass->consumptionByMeterByYear($thisYear);
+$consumptionLastYear = $readingsClass->consumptionByMeterByYear($lastYear);
+$consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYear);
 
 $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 ?>
@@ -34,6 +34,10 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 	</div>
 	
 	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+		<ol class="carousel-indicators">
+			<li data-target="#carouselExampleControls" data-slide-to="0" class="active"></li>
+			<li data-target="#carouselExampleControls" data-slide-to="1"></li>
+		</ol>
 		<div class="carousel-inner">
 			<div class="carousel-item active">
 				<canvas id="canvas" width="400" height="200"></canvas>
@@ -42,14 +46,6 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				<canvas id="canvasYearly" width="400" height="200"></canvas>
 			</div>
 		</div>
-		<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-			<span class="sr-only">Previous</span>
-		</a>
-		<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-			<span class="carousel-control-next-icon" aria-hidden="true"></span>
-			<span class="sr-only">Next</span>
-		</a>
 	</div>
 	
 	

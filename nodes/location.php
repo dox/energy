@@ -14,19 +14,19 @@ $metersAll = $metersClass->allByLocation($location['uid']);
 $readingsClass = new Readings;
 $readingsClass->locationUID = $location['uid'];
 
-$readingsAll = $readingsClass->readingsByMeter(20);
+$readingsAll = $readingsClass->readingsByMeter(30);
 
-$gasConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, "Gas");
-$gasConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, "Gas");
-$gasConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, "Gas");
+$gasConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, $location['uid'], 'Gas');
+$gasConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, $location['uid'], 'Gas');
+$gasConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, $location['uid'], 'Gas');
 
-$electricConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, "Electric");
-$electricConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, "Electric");
-$electricConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, "Electric");
+$electricConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, $location['uid'], 'Electric');
+$electricConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, $location['uid'], 'Electric');
+$electricConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, $location['uid'], 'Electric');
 
-$waterConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, "Water");
-$waterConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, "Water");
-$waterConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, "Water");
+$waterConsumptionThisYear = $readingsClass->consumptionByLocationByYear($thisYear, $location['uid'], 'Water');
+$waterConsumptionLastYear = $readingsClass->consumptionByLocationByYear($lastYear, $location['uid'], 'Water');
+$waterConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($lastLastYear, $location['uid'], 'Water');
 
 ?>
 
@@ -36,6 +36,10 @@ $waterConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($las
 	</div>
 	
 	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+		<ol class="carousel-indicators">
+			<li data-target="#carouselExampleControls" data-slide-to="0" class="active"></li>
+			<li data-target="#carouselExampleControls" data-slide-to="1"></li>
+		</ol>
 		<div class="carousel-inner">
 			<div class="carousel-item active">
 				<canvas id="canvasGas" width="400" height="200"></canvas>
@@ -50,14 +54,6 @@ $waterConsumptionLastLastYear = $readingsClass->consumptionByLocationByYear($las
 				Consumption <?php echo $lastLastYear . ": " . array_sum($electricConsumptionLastLastYear) . $metersClass->thisMeterUnits("Electric") . " <i>(~£" . round((array_sum($electricConsumptionLastLastYear) * 0.14)) . ")</i>";?></h3>
 			</div>
 		</div>
-		<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-			<span class="sr-only">Previous</span>
-		</a>
-		<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-			<span class="carousel-control-next-icon" aria-hidden="true"></span>
-			<span class="sr-only">Next</span>
-		</a>
 	</div>
 
 
