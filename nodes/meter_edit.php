@@ -102,11 +102,12 @@ $locationsAll = $locations->all();
 			<input type="checkbox" class="form-check-input" id="enabled" <?php if ($meter['enabled'] == true) { echo " checked";} ?> value="<?php echo $meter['enabled'];?>">
 			<label for="enabled" class="form-check-label">Enabled</label>
 		</div>
-		</form>
+		
 		<div id="returnMessage"></div>
 		<a href="#" class="btn btn-success meterEdit" id="<?php echo $meter['uid'];?>">Update</a> 
 		<a href="#" class="btn btn-danger deleteBookingButton" id="<?php echo $meter['uid'];?>">Delete Meter</a>
 		<input type="hidden" id="uid" value="<?php echo $meter['uid'];?>">
+		</form>
 	</div>
 	<div class="col-sm">
 		<?php
@@ -121,7 +122,7 @@ $locationsAll = $locations->all();
 			<label for="photograph">Photograph</label>
 			<input type="file" class="form-control-file" id="photograph" name="photograph">
 		</div>
-		 <button type="submit" class="btn btn-success meterEdit">Upload</button>
+		 <button type="submit" class="btn btn-success">Upload</button>
 		</form>
 	</div>
 </div>
