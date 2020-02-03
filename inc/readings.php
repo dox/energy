@@ -55,8 +55,6 @@ public function readingsByLocationByYear($year = null, $location = null, $type =
 	do {
 		$readings = $db->rawQueryOne("SELECT year, month, type, sum(reading1) AS reading1 FROM readings_by_month WHERE location = '" . $location . "' AND year = '" . $year . "' AND type = '" . $type . "' AND month = '" . $monthNum . "'");
 		
-		//echo "<pre>"; print_r($readings); echo "</pre>";
-		
 		$readingsArray[$monthNum] = $readings['reading1'];
 		$monthNum++;
 	} while ($monthNum <= 12);
@@ -206,6 +204,81 @@ public function consumptionByMeterAllYears() {
 	// sort array to year order (oldest first)
 	ksort($consumtpionArray);
 	return $consumtpionArray;
+}
+
+public function readingsByLocationByYear2($year = null, $location = null, $type = null) {
+	global $db;
+	$consumtpionArray = array();
+	
+	$readings = $db->rawQueryOne("SELECT SUM(reading1) AS reading1 FROM (SELECT meter, type, MAX(reading1) AS reading1 FROM readings_by_month WHERE location = '" . $location . "' AND year = '" . $year . "' AND type = '" . $type . "' GROUP BY meter) s;");
+	
+	return $readings;
+}
+
+public function consumptionByLocationAllYears($location = null, $type = null) {
+	$i = 0;
+	$year = date('Y');
+	
+	do {
+		$readingsByLocationByYear = $this->readingsByLocationByYear2($year, $location, $type);
+		$readingsByLocationByPreviousYear = $this->readingsByLocationByYear2($year-1, $location, $type);
+		
+		if ($readingsByLocationByYear['reading1'] <= 0 || $readingsByLocationByPreviousYear['reading1'] <= 0) {
+			$consumptionArray[$year] = 0;
+		} else {
+			if ($readingsByLocationByYear['reading1'] - $readingsByLocationByPreviousYear['reading1'] <= 0) {
+				$consumptionArray[$year] = 0;	
+			} else {
+				$consumptionArray[$year] = $readingsByLocationByYear['reading1'] - $readingsByLocationByPreviousYear['reading1'];
+			}
+		}
+		
+		$year--;
+		$i++;
+	} while ($i < 10);
+
+	ksort($consumptionArray);
+	
+	//echo "<pre>"; print_r($consumptionArray); echo "</pre>";
+	
+	return $consumptionArray;
+}
+
+public function readingsBySiteByYear2($year = null, $type = null) {
+	global $db;
+	$consumtpionArray = array();
+	
+	$readings = $db->rawQueryOne("SELECT SUM(reading1) AS reading1 FROM (SELECT meter, type, MAX(reading1) AS reading1 FROM readings_by_month WHERE year = '" . $year . "' AND type = '" . $type . "' GROUP BY meter) s;");
+	
+	return $readings;
+}
+
+public function consumptionBySiteAllYears($type = null) {
+	$i = 0;
+	$year = date('Y');
+	
+	do {
+		$readingsByLocationByYear = $this->readingsBySiteByYear2($year, $type);
+		$readingsByLocationByPreviousYear = $this->readingsBySiteByYear2($year-1, $type);
+		
+		
+		if ($readingsByLocationByYear['reading1'] <= 0 || $readingsByLocationByPreviousYear['reading1'] <= 0) {
+			$consumptionArray[$year] = 0;
+		} else {
+			if ($readingsByLocationByYear['reading1'] - $readingsByLocationByPreviousYear['reading1'] <= 0) {
+				$consumptionArray[$year] = 0;	
+			} else {
+				$consumptionArray[$year] = $readingsByLocationByYear['reading1'] - $readingsByLocationByPreviousYear['reading1'];
+			}
+		}
+		
+		$year--;
+		$i++;
+	} while ($i < 10);
+
+	ksort($consumptionArray);
+	
+	return $consumptionArray;
 }
 
 } //end CLASS
