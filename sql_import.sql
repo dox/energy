@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 23, 2020 at 08:19 AM
--- Server version: 5.7.28-0ubuntu0.18.04.4
+-- Generation Time: Feb 03, 2020 at 08:44 AM
+-- Server version: 5.7.29-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -48,7 +48,8 @@ CREATE TABLE `meters` (
   `type` varchar(45) NOT NULL,
   `photograph` varchar(255) DEFAULT NULL,
   `serial` varchar(45) DEFAULT NULL,
-  `billed` varchar(45) DEFAULT NULL
+  `billed` varchar(45) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
