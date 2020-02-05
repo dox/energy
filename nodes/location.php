@@ -22,8 +22,10 @@ $waterConsumptionByYear = $readingsClass->consumptionByLocationAllYears($locatio
 ?>
 
 <div class="container">
+	<a href="index.php?n=location_disabled&locationUID=<?php echo $location['uid']; ?>" class="btn btn-secondary btn-sm float-right" role="button">View Disabled Meters here</a>
 	<div class="row">
 		<h3><?php echo $location['name'];?> <small class="text-muted"><?php echo $location['description']; ?></small></h3>
+		
 	</div>
 	
 	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -41,20 +43,23 @@ $waterConsumptionByYear = $readingsClass->consumptionByLocationAllYears($locatio
 		</div>
 	</div>
 	
-	<div class="btn-group float-right" role="group" aria-label="Basic example">
-		<a href="index.php?n=location_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
-		<a href="index.php?n=meter_add&location=<?php echo $location['uid'];?>" class="btn btn-sm btn-outline-secondary">Add Meter</a>
-		<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
+	<div class="row">
+		<div class="btn-group float-right" role="group" aria-label="Basic example">
+			<a href="index.php?n=location_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
+			<a href="index.php?n=meter_add&location=<?php echo $location['uid'];?>" class="btn btn-sm btn-outline-secondary">Add Meter</a>
+			<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
+		</div>
 	</div>
 	
-	
+	<div class="clearfix"></div>
 	<div class="row">
 		<?php
-		
-		$output = "";
+		$output  = "";
 		
 		foreach ($metersAll AS $meter) {
-			$output .= $metersClass->displayMeterCard($meter['uid']);
+			if ($meter['enabled'] == 1) {
+				$output .= $metersClass->displayMeterCard($meter['uid']);
+			}
 		}
 		
 		echo $output;
