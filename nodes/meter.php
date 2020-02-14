@@ -77,19 +77,29 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td><input type="text" id="date" class="form-control" value="<?php echo date('Y-m-d H:i', time()); ?>" placeholder="Date"></td>
-				<td>
-					<div class="input-group">
-						<input type="text" class="form-control" id="reading" placeholder="Reading">
-						<div class="input-group-append">
-							<button type="submit" id="submit" class="btn btn-success"><span>&#10003;</span></button>
-						</div>
-					</div>
-				</td>
-			</tr>
-
 			<?php
+			if (isset($_SESSION['username'])) {
+				$output  = "<tr>";
+				$output .= "<td><input type=\"text\" id=\"date\" class=\"form-control\" value=\"" . date('Y-m-d H:i', time()) . "\" placeholder=\"Date\"></td>";
+				$output .= "<td>";
+				$output .= "<div class=\"input-group\">";
+				$output .= "<input type=\"text\" class=\"form-control\" id=\"reading\" placeholder=\"Reading\">";
+				$output .= "<div class=\"input-group-append\">";
+				$output .= "<button type=\"submit\" id=\"submit\" class=\"btn btn-success\"><span>&#10003;</span></button>";
+				$output .= "</div>";
+				$output .= "</div>";
+				$output .= "</td>";
+				$output .= "</tr>";
+				
+				
+			} else {
+				$output  = "<tr>";
+				$output .= "<td colspan=\"2\"><a href=\"index.php?n=login\">You are not logged in</a></td>";
+				$output .= "</tr>";
+			}
+			
+			echo $output;
+			
 			foreach ($readingsAll AS $reading) {
 				$output  = "<tr>";
 				$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";

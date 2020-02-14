@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SESSION['username'])) {
+	echo "<a href=\"index.php?n=login\">You are not logged in</a>";
+	exit;
+}
+
 $meter = $db->where("uid", $_GET['meterUID']);
 $meter = $db->getOne("meters");	
 

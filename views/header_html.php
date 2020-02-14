@@ -3,6 +3,7 @@
 	
 	require_once('inc/config.php');
 	require_once('database/MysqliDb.php');
+	require_once('inc/adLDAP/adLDAP.php');
 	require_once('inc/locations.php');
 	require_once('inc/meters.php');
 	require_once('inc/readings.php');
@@ -62,4 +63,45 @@
     </style>
     <!-- Custom styles for this template -->
     <link href="css/readings.css" rel="stylesheet">
-  </head>
+</head>
+
+<?php
+//you should look into using PECL filter or some form of filtering here for POST variables
+if (isset($_POST["username"])) {
+	$username = strtoupper($_POST["username"]); //remove case sensitivity on the username
+	$password = $_POST["password"];
+}
+
+if (isset($_POST["oldform"])) { //prevent null bind
+	if ($username != NULL && $password != NULL){
+        try {
+		    $adldap = new adLDAP();
+        }
+        catch (adLDAPException $e) {
+            echo $e; 
+            exit();   
+        }
+        
+		//authenticate the user
+		if ($adldap->authenticate($username, $password)){
+			//establish your session and redirect
+			
+			$_SESSION["username"] = $username;
+            $_SESSION["userinfo"] = $adldap->user()->info($username);
+			$redir = "Location: http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/index.php";
+			
+			//$logSQLInsert = Array ("type" => "LOGON", "description" => $_SESSION["username"] . " logged on with LDAP");
+			//$id = $db->insert ('_logs', $logSQLInsert);
+			
+			header($redir);
+			exit;
+		} else {
+			//$logSQLInsert = Array ("type" => "LOGON FAIL", "description" => $username . " attempted to log on with LDAP");
+			//$id = $db->insert ('_logs', $logSQLInsert);
+		}
+	}
+	
+	$message = "<div class=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> Login attempt failed.</div>";
+}
+
+?>
