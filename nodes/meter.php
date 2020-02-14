@@ -33,96 +33,100 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 		</div>
 	</div>
 	
-	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-		<ol class="carousel-indicators">
-			<li data-target="#carouselExampleControls" data-slide-to="0" class="active"></li>
-			<li data-target="#carouselExampleControls" data-slide-to="1"></li>
-		</ol>
-		<div class="carousel-inner">
-			<div class="carousel-item active">
-				<canvas id="canvas" width="400" height="200"></canvas>
+	<div class="row">
+		<div class="col-sm">
+			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+				<ol class="carousel-indicators">
+					<li data-target="#carouselExampleControls" data-slide-to="0" class="active"></li>
+					<li data-target="#carouselExampleControls" data-slide-to="1"></li>
+				</ol>
+				<div class="carousel-inner">
+					<div class="carousel-item active">
+						<canvas id="canvas" width="400" height="200"></canvas>
+					</div>
+					<div class="carousel-item">
+						<canvas id="canvasYearly" width="400" height="200"></canvas>
+					</div>
+				</div>
 			</div>
-			<div class="carousel-item">
-				<canvas id="canvasYearly" width="400" height="200"></canvas>
+			
+			<div class="btn-group float-right" role="group">
+				<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
+				<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 			</div>
 		</div>
-	</div>
-	
-	
-	
-	
-	
-	<div class="btn-group float-right" role="group" aria-label="Basic example">
-		<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
-		<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 	</div>
 	
 	<div class="row">
 		<div class="col-sm">
-		<?php
-		foreach ($readingsAll AS $reading) {
-			$readingLabelsArray[] = "'" . $reading['date'] . "'";
-			$readingArray[] = $reading['reading1'];
-		}
-		?>
-		
-		<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
-		<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
-		<div class="alert alert-danger display-error" style="display: none"></div>
-		<table id="readingsTable" class="table table-bordered table-striped" >
-		<thead>
-			<tr>
-				<th width="50%">Date</td>
-				<th width="50%">Reading</td>
-			</tr>
-		</thead>
-		<tbody>
 			<?php
-			if (isset($_SESSION['username'])) {
-				$output  = "<tr>";
-				$output .= "<td><input type=\"text\" id=\"date\" class=\"form-control\" value=\"" . date('Y-m-d H:i', time()) . "\" placeholder=\"Date\"></td>";
-				$output .= "<td>";
-				$output .= "<div class=\"input-group\">";
-				$output .= "<input type=\"text\" class=\"form-control\" id=\"reading\" placeholder=\"Reading\">";
+			if (!isset($_SESSION['username'])) {
+				$output  = "<div class=\"clearfix\"></div>";
+				$output  = "<div class=\"input-group input-group-lg\">";
+				$output .= "<input type=\"text\" class=\"form-control\" id=\"date\" class=\"form-control\" value=\"" . date('Y-m-d H:i', time()) . "\" placeholder=\"Date\">";
+				$output .= "<input type=\"text\" class=\"form-control\" id=\"reading\" class=\"form-control\" placeholder=\"Reading Value\">";
 				$output .= "<div class=\"input-group-append\">";
-				$output .= "<button type=\"submit\" id=\"submit\" class=\"btn btn-success\"><span>&#10003;</span></button>";
+				$output .= "<button class=\"btn btn-success\" type=\"submit\" id=\"submit\">Submit</button>";
 				$output .= "</div>";
 				$output .= "</div>";
-				$output .= "</td>";
-				$output .= "</tr>";
-				
-				
+				$output .= "<div class=\"clearfix\"></div><br />";
 			} else {
-				$output  = "<tr>";
-				$output .= "<td colspan=\"2\"><a href=\"index.php?n=login\">You are not logged in</a></td>";
-				$output .= "</tr>";
+				$output = "<a href=\"index.php?n=login\">You are not logged in</a>";
 			}
 			
 			echo $output;
-			
+			?>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm">
+			<?php
 			foreach ($readingsAll AS $reading) {
-				$output  = "<tr>";
-				$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-				$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>" . "</td>";
-				$output .= "</tr>";
-				echo $output;
+				$readingLabelsArray[] = "'" . $reading['date'] . "'";
+				$readingArray[] = $reading['reading1'];
 			}
 			?>
-		</tbody>
-		</table>
-		</form>
+			
+			<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
+			<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
+			
+			<div class="clearfix"></div>
+			<div class="alert alert-danger display-error" style="display: none"></div>
+			
+			<div class="clearfix"></div>
+			
+			<table id="readingsTable" class="table table-bordered table-striped" >
+			<thead>
+				<tr>
+					<th width="50%">Date</td>
+					<th width="50%">Reading</td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($readingsAll AS $reading) {
+					$output  = "<tr>";
+					$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
+					$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>" . "</td>";
+					$output .= "</tr>";
+					echo $output;
+				}
+				?>
+			</tbody>
+			</table>
+			</form>
 		</div>
+		
 		<div class="col-sm">
 			<?php
 			if (isset($meter['photograph'])) {
-				$output  = "<img src=\"uploads/" . $meter['photograph'] . "\" class=\"img-fluid\" />";
+				$output  = "<img src=\"uploads/" . $meter['photograph'] . "\" class=\"img-fluid\" style=\"width:100%\" />";
 				
 				echo $output;
 			}
 			?>
 		</div>
 	</div>
-	
 </div>
 
 <script type="text/javascript">
