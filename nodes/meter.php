@@ -5,10 +5,10 @@ $lastLastYear = (date('Y')-2);
 
 $meterClass = new Meters;
 $meterClass->meterUID = $_GET['meterUID'];
-$meter = $meterClass->getOne();
+$meter = $meterClass->getOne();	
 
 $location = $db->where("uid", $meter['location']);
-$location = $db->getOne("locations");
+$location = $db->getOne("locations");	
 
 $readingsClass = new Readings;
 $readingsClass->meterUID = $meter['uid'];
@@ -16,7 +16,6 @@ $readingsClass->meterUID = $meter['uid'];
 $readingsAll = $readingsClass->readingsByMeter(20);
 
 $consumptionThisYear = $readingsClass->consumptionByMeterByYear($thisYear);
-print_r($consumptionThisYear);
 $consumptionLastYear = $readingsClass->consumptionByMeterByYear($lastYear);
 $consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYear);
 
@@ -33,7 +32,7 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 			<p class="text-right"><?php echo $meter['type'] . " meter serial: " . $meter['serial']; ?></p>
 		</div>
 	</div>
-
+	
 	<div class="row">
 		<div class="col-sm">
 			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -50,18 +49,18 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 					</div>
 				</div>
 			</div>
-
+			
 			<div class="btn-group float-right" role="group">
 				<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
 				<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 			</div>
 		</div>
 	</div>
-
+	
 	<div class="row">
 		<div class="col-sm">
 			<?php
-			if (isset($_SESSION['username'])) {
+			if (!isset($_SESSION['username'])) {
 				$output  = "<div class=\"clearfix\"></div>";
 				$output  = "<div class=\"input-group input-group-lg\">";
 				$output .= "<input type=\"text\" class=\"form-control\" id=\"date\" class=\"form-control\" value=\"" . date('Y-m-d H:i', time()) . "\" placeholder=\"Date\">";
@@ -72,9 +71,9 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				$output .= "</div>";
 				$output .= "<div class=\"clearfix\"></div><br />";
 			} else {
-				$output = "<h1><a href=\"index.php?n=login\">You are not logged in</a></h1>";
+				$output = "<a href=\"index.php?n=login\">You are not logged in</a>";
 			}
-
+			
 			echo $output;
 			?>
 		</div>
@@ -87,15 +86,15 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				$readingArray[] = $reading['reading1'];
 			}
 			?>
-
+			
 			<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
 			<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
-
+			
 			<div class="clearfix"></div>
 			<div class="alert alert-danger display-error" style="display: none"></div>
-
+			
 			<div class="clearfix"></div>
-
+			
 			<table id="readingsTable" class="table table-bordered table-striped" >
 			<thead>
 				<tr>
@@ -108,12 +107,8 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				foreach ($readingsAll AS $reading) {
 					$output  = "<tr>";
 					$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-					$output .= "<td>" . $reading['reading1'];
-
-					if (isset($_SESSION['username'])) {
-						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>";
-					}
-					$output .= "</td></tr>";
+					$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>" . "</td>";
+					$output .= "</tr>";
 					echo $output;
 				}
 				?>
@@ -121,12 +116,12 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 			</table>
 			</form>
 		</div>
-
+		
 		<div class="col-sm">
 			<?php
 			if (isset($meter['photograph'])) {
 				$output  = "<img src=\"uploads/" . $meter['photograph'] . "\" class=\"img-fluid\" style=\"width:100%\" />";
-
+				
 				echo $output;
 			}
 			?>
@@ -139,7 +134,7 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 
       $('#submit').click(function(e){
         e.preventDefault();
-
+    
         var date = $("#date").val();
         var reading = $("#reading").val();
         var meter = $("#meter").val();
@@ -238,7 +233,7 @@ window.onload = function() {
 			}
 		},
 	});
-
+	
 	window.myBar = new Chart(ctxYearly, {
 		type: 'bar',
 		data: yearlyBarChartData,
@@ -276,13 +271,13 @@ function done(){
 <script>
 $(".readingDelete").click(function() {
 	var r=confirm("Warning!  Are you sure you want to delete this reading?  This cannot be undone!");
-
+	
 	if (r==true) {
 		var thisObject = $(this);
 		var uid = $(thisObject).attr('id');
-
+		
 		var url = 'actions/reading_delete.php';
-
+		
 		// perform the post to the action (take the info and submit to database)
 		$.post(url,{
 		    uid: uid
@@ -291,7 +286,7 @@ $(".readingDelete").click(function() {
 		},'html');
 	} else {
 	}
-
+	
 	return false;
 
 });
