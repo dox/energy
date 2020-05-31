@@ -14,8 +14,6 @@ $metersAll = $metersClass->allByLocation($location['uid']);
 $readingsClass = new Readings;
 $readingsClass->locationUID = $location['uid'];
 
-$readingsAll = $readingsClass->readingsByMeter(30);
-
 $gasConsumptionByYear = $readingsClass->consumptionByLocationAllYears($location['uid'], 'Gas');
 $electricConsumptionByYear = $readingsClass->consumptionByLocationAllYears($location['uid'], 'Electric');
 $waterConsumptionByYear = $readingsClass->consumptionByLocationAllYears($location['uid'], 'Water');
@@ -25,9 +23,9 @@ $waterConsumptionByYear = $readingsClass->consumptionByLocationAllYears($locatio
 	<a href="index.php?n=location_disabled&locationUID=<?php echo $location['uid']; ?>" class="btn btn-secondary btn-sm float-right" role="button">View Disabled Meters here</a>
 	<div class="row">
 		<h3><?php echo $location['name'];?> <small class="text-muted"><?php echo $location['description']; ?></small></h3>
-		
+
 	</div>
-	
+
 	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 		<ol class="carousel-indicators">
 			<li data-target="#carouselExampleControls" data-slide-to="0" class="active"></li>
@@ -42,7 +40,7 @@ $waterConsumptionByYear = $readingsClass->consumptionByLocationAllYears($locatio
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="btn-group float-right" role="group" aria-label="Basic example">
 			<a href="index.php?n=location_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
@@ -50,18 +48,18 @@ $waterConsumptionByYear = $readingsClass->consumptionByLocationAllYears($locatio
 			<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
 		</div>
 	</div>
-	
+
 	<div class="clearfix"></div>
 	<div class="row">
 		<?php
 		$output  = "";
-		
+
 		foreach ($metersAll AS $meter) {
 			if ($meter['enabled'] == 1) {
 				$output .= $metersClass->displayMeterCard($meter['uid']);
 			}
 		}
-		
+
 		echo $output;
 		?>
 	</div>
@@ -110,7 +108,7 @@ var waterBarChartData = {
 window.onload = function() {
 	var ctx = document.getElementById('canvasGas').getContext('2d');
 	var ctx2 = document.getElementById('canvasElectric').getContext('2d');
-	
+
 	window.myBar = new Chart(ctx, {
 		type: 'bar',
 		data: gasBarChartData,
@@ -125,8 +123,8 @@ window.onload = function() {
 			}
 		},
 	});
-	
-	
+
+
 	window.myBar = new Chart(ctx2, {
 		type: 'bar',
 		data: electricBarChartData,
@@ -141,7 +139,7 @@ window.onload = function() {
 			}
 		},
 	});
-	
+
 
 };
 
