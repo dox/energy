@@ -13,6 +13,7 @@
             <li><a href="index.php?n=locations" class="text-white">Locations</a></li>
             <li><a href="index.php?n=meter_add" class="text-white">Add New Meter</a></li>
             <li><a href="index.php?n=logs" class="text-white">Logs</a></li>
+            <li><a href="index.php?n=audit_template" class="text-white">Usage Audit</a></li>
             <li><a href="index.php?n=login&logout=true" class="text-white">Log Out</a></li>
           </ul>
         </div>

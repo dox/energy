@@ -5,10 +5,10 @@ $lastLastYear = (date('Y')-2);
 
 $meterClass = new Meters;
 $meterClass->meterUID = $_GET['meterUID'];
-$meter = $meterClass->getOne();	
+$meter = $meterClass->getOne();
 
 $location = $db->where("uid", $meter['location']);
-$location = $db->getOne("locations");	
+$location = $db->getOne("locations");
 
 $readingsClass = new Readings;
 $readingsClass->meterUID = $meter['uid'];
@@ -16,10 +16,16 @@ $readingsClass->meterUID = $meter['uid'];
 $readingsAll = $readingsClass->readingsByMeter(20);
 
 $consumptionThisYear = $readingsClass->consumptionByMeterByYear($thisYear);
+//print_r($consumptionThisYear);
 $consumptionLastYear = $readingsClass->consumptionByMeterByYear($lastYear);
 $consumptionLastLastYear = $readingsClass->consumptionByMeterByYear($lastLastYear);
 
 $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
+
+$charsToRemove = array(" ","'","/","\\","&");
+
+$exportFileNameYearly = strtolower(str_replace($charsToRemove, "", $location['name'] . "_" . $meter['name'] . "_YEARLY.png"));
+$exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['name'] . "_" . $meter['name'] . "MONTHLY.png"));
 ?>
 
 <div class="container">
@@ -32,7 +38,7 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 			<p class="text-right"><?php echo $meter['type'] . " meter serial: " . $meter['serial']; ?></p>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-sm">
 			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -40,27 +46,30 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 					<li data-target="#carouselExampleControls" data-slide-to="0" class="active"></li>
 					<li data-target="#carouselExampleControls" data-slide-to="1"></li>
 				</ol>
-				<div class="carousel-inner">
+				<div class="carousel-inner" id="exportImage">
 					<div class="carousel-item active">
 						<canvas id="canvas" width="400" height="200"></canvas>
+						<div class="btn-group float-right" role="group">
+							<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
+							<a href="#" class="btn btn-sm btn-outline-secondary" id="export-link-1" download="<?php echo $exportFileNameYearly;?>">Export as Image</a>
+						</div>
 					</div>
 					<div class="carousel-item">
 						<canvas id="canvasYearly" width="400" height="200"></canvas>
+						<div class="btn-group float-right" role="group">
+							<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
+							<a href="#" class="btn btn-sm btn-outline-secondary" id="export-link-2" download="<?php echo $exportFileNameMonthly;?>">Export as Image</a>
+						</div>
 					</div>
 				</div>
 			</div>
-			
-			<div class="btn-group float-right" role="group">
-				<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
-				<a href="#" class="btn btn-sm btn-outline-secondary" id="link2" download="chart.png">Export as Image</a>
-			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-sm">
 			<?php
-			if (!isset($_SESSION['username'])) {
+			if (isset($_SESSION['username'])) {
 				$output  = "<div class=\"clearfix\"></div>";
 				$output  = "<div class=\"input-group input-group-lg\">";
 				$output .= "<input type=\"text\" class=\"form-control\" id=\"date\" class=\"form-control\" value=\"" . date('Y-m-d H:i', time()) . "\" placeholder=\"Date\">";
@@ -71,9 +80,9 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				$output .= "</div>";
 				$output .= "<div class=\"clearfix\"></div><br />";
 			} else {
-				$output = "<a href=\"index.php?n=login\">You are not logged in</a>";
+				$output = "<h1><a href=\"index.php?n=login\">You are not logged in</a></h1>";
 			}
-			
+
 			echo $output;
 			?>
 		</div>
@@ -86,15 +95,15 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				$readingArray[] = $reading['reading1'];
 			}
 			?>
-			
+
 			<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
 			<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
-			
+
 			<div class="clearfix"></div>
 			<div class="alert alert-danger display-error" style="display: none"></div>
-			
+
 			<div class="clearfix"></div>
-			
+
 			<table id="readingsTable" class="table table-bordered table-striped" >
 			<thead>
 				<tr>
@@ -107,8 +116,12 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 				foreach ($readingsAll AS $reading) {
 					$output  = "<tr>";
 					$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-					$output .= "<td>" . $reading['reading1'] . "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>" . "</td>";
-					$output .= "</tr>";
+					$output .= "<td>" . $reading['reading1'];
+
+					if (isset($_SESSION['username'])) {
+						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>";
+					}
+					$output .= "</td></tr>";
 					echo $output;
 				}
 				?>
@@ -116,12 +129,12 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 			</table>
 			</form>
 		</div>
-		
+
 		<div class="col-sm">
 			<?php
 			if (isset($meter['photograph'])) {
 				$output  = "<img src=\"uploads/" . $meter['photograph'] . "\" class=\"img-fluid\" style=\"width:100%\" />";
-				
+
 				echo $output;
 			}
 			?>
@@ -134,7 +147,7 @@ $consumptionByYear = $readingsClass->consumptionByMeterAllYears();
 
       $('#submit').click(function(e){
         e.preventDefault();
-    
+
         var date = $("#date").val();
         var reading = $("#reading").val();
         var meter = $("#meter").val();
@@ -220,7 +233,7 @@ window.onload = function() {
 			},
 			animation: {
 				duration: 1000,
-				onComplete: done
+				onComplete: export_1
 			},
 			scales: {
 				yAxes: [{
@@ -233,8 +246,8 @@ window.onload = function() {
 			}
 		},
 	});
-	
-	window.myBar = new Chart(ctxYearly, {
+
+	window.myBar2 = new Chart(ctxYearly, {
 		type: 'bar',
 		data: yearlyBarChartData,
 		options: {
@@ -244,7 +257,7 @@ window.onload = function() {
 			},
 			animation: {
 				duration: 1000,
-				onComplete: done
+				onComplete: export_2
 			},
 			scales: {
 				yAxes: [{
@@ -262,22 +275,27 @@ window.onload = function() {
 	});
 };
 
-function done(){
+function export_1(){
 	var url=myBar.toBase64Image();
-	document.getElementById("link2").href=url;
+	document.getElementById("export-link-1").href=url;
+}
+
+function export_2(){
+	var url=myBar2.toBase64Image();
+	document.getElementById("export-link-2").href=url;
 }
 </script>
 
 <script>
 $(".readingDelete").click(function() {
 	var r=confirm("Warning!  Are you sure you want to delete this reading?  This cannot be undone!");
-	
+
 	if (r==true) {
 		var thisObject = $(this);
 		var uid = $(thisObject).attr('id');
-		
+
 		var url = 'actions/reading_delete.php';
-		
+
 		// perform the post to the action (take the info and submit to database)
 		$.post(url,{
 		    uid: uid
@@ -286,7 +304,7 @@ $(".readingDelete").click(function() {
 		},'html');
 	} else {
 	}
-	
+
 	return false;
 
 });
