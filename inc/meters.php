@@ -90,10 +90,14 @@ public function all() {
 	return $meters;
 }
 
-public function allByLocation($locationUID = null) {
+public function allByLocation($locationUID = null, $type = null) {
 	global $db;
 
 	$meters = $db->where("location", $locationUID);
+	
+	if ($type != null) {
+		$meters = $db->where("type", $type);
+	}
 	$meters = $db->orderBy('name', "DESC");
 	$meters = $db->get("meters");
 
