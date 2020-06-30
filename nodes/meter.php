@@ -224,7 +224,7 @@ window.onload = function() {
 	var ctx = document.getElementById('canvas').getContext('2d');
 	var ctxYearly = document.getElementById('canvasYearly').getContext('2d');
 	window.myBar = new Chart(ctx, {
-		type: 'bar',
+		type: 'line',
 		data: barChartData,
 		options: {
 			responsive: true,
