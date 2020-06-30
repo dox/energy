@@ -94,7 +94,7 @@ public function allByLocation($locationUID = null, $type = null) {
 	global $db;
 
 	$meters = $db->where("location", $locationUID);
-	
+
 	if ($type != null) {
 		$meters = $db->where("type", $type);
 	}
@@ -112,10 +112,10 @@ public function displayMeterCard($uid = null) {
 		$lastUpdated = "<span class=\"badge badge-danger\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
 	} else if ($this->daysSinceLastUpdate($meter['uid']) > 40) {
 		$lastUpdated = "<span class=\"badge badge-warning\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
-	} else if ($this->daysSinceLastUpdate($meter['uid']) < 30) {
+	} else if ($this->daysSinceLastUpdate($meter['uid']) < 30 && $this->daysSinceLastUpdate($meter['uid']) > 0) {
 		$lastUpdated = "<span class=\"badge badge-primary\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
 	} else {
-		$lastUpdated = "<span class=\"badge badge-primary\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
+		$lastUpdated = "<span class=\"badge badge-primary\">No Readings Yet</span>";
 	}
 
 	$output  = "<div class=\"col-md-4\">";

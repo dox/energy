@@ -180,6 +180,8 @@ public function consumptionBySiteByYear($year = null, $type = null) {
 
 public function consumptionByMeterAllYears() {
 	global $db;
+
+	$readingsArray = array();
 	$consumtpionArray = array();
 	$readings = $db->rawQuery("SELECT year, meter, MAX(reading1) AS reading1 FROM readings_by_month WHERE meter = '" . $this->meterUID . "' GROUP BY year ORDER BY year DESC;");
 
