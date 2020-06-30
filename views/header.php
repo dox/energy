@@ -23,7 +23,7 @@
   <div class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container d-flex justify-content-between">
       <a href="index.php" class="navbar-brand d-flex align-items-center">
-        <img src="../assets/icons/bar-chart.svg" alt="" width="32" height="32" style="filter: invert(1);" title="Bootstrap"><strong>Utility Meter Readings</strong>
+        <span class="navbar-toggler-icon"></span><strong>Utility Meter Readings</strong>
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
