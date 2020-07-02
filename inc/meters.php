@@ -116,7 +116,9 @@ public function displayMeterCard($uid = null) {
 		$lastUpdated = "<span class=\"badge badge-warning\">" . $text . "</span>";
 	} else if ($this->daysSinceLastUpdate($meter['uid']) < 30 && $this->daysSinceLastUpdate($meter['uid']) > 0) {
 		$lastUpdated = "<span class=\"badge badge-primary\">" . $text . "</span>";
-	} else {
+	}	else if ($this->daysSinceLastUpdate($meter['uid']) == 0) {
+	 $lastUpdated = "<span class=\"badge badge-success\">Updated Today</span>";
+ } else {
 		$lastUpdated = "<span class=\"badge badge-primary\">No Readings Yet</span>";
 	}
 
