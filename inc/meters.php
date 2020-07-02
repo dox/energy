@@ -108,12 +108,14 @@ public function displayMeterCard($uid = null) {
 	$this->meterUID = $uid;
 	$meter = $this->getOne();
 
+	$text = "Updated " . $this->daysSinceLastUpdate($meter['uid']) . autoPluralise(" day", " days", $this->daysSinceLastUpdate($meter['uid'])) . " ago";
+
 	if ($this->daysSinceLastUpdate($meter['uid']) > 80) {
-		$lastUpdated = "<span class=\"badge badge-danger\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
+		$lastUpdated = "<span class=\"badge badge-danger\">" . $text . "</span>";
 	} else if ($this->daysSinceLastUpdate($meter['uid']) > 40) {
-		$lastUpdated = "<span class=\"badge badge-warning\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
+		$lastUpdated = "<span class=\"badge badge-warning\">" . $text . "</span>";
 	} else if ($this->daysSinceLastUpdate($meter['uid']) < 30 && $this->daysSinceLastUpdate($meter['uid']) > 0) {
-		$lastUpdated = "<span class=\"badge badge-primary\">Updated " . $this->daysSinceLastUpdate($meter['uid']) . " days ago</span>";
+		$lastUpdated = "<span class=\"badge badge-primary\">" . $text . "</span>";
 	} else {
 		$lastUpdated = "<span class=\"badge badge-primary\">No Readings Yet</span>";
 	}
@@ -145,4 +147,16 @@ public function displayMeterCard($uid = null) {
 	return $output;
 }
 } //end CLASS
+
+function autoPluralise ($singular, $plural, $count = 1) {
+	// fantasticly clever function to return the correct plural of a word/count combo
+	// Usage:	$singular	= single version of the word (e.g. 'Bus')
+	//       	$plural 	= plural version of the word (e.g. 'Busses')
+	//			$count		= the number you wish to work out the plural from (e.g. 2)
+	// Return:	the singular or plural word, based on the count (e.g. 'Jobs')
+	// Example:	autoPluralise("Bus", "Busses", 3)  -  would return "Busses"
+	//			autoPluralise("Bus", "Busses", 1)  -  would return "Bus"
+
+	return ($count == 1)? $singular : $plural;
+} // END function autoPluralise
 ?>
