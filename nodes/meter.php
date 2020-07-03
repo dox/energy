@@ -123,16 +123,10 @@ $exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['n
 						$output .= "<a href=\"index.php?n=reading_edit&uid=" .  $reading['uid'] . "\" class=\"float-right d-print-none\"><i class=\"fas fa-edit\"></i></span>";
 						$output .= "</td>";
 					} else {
-						$output .= "<td>" . $reading['reading1'];
-						//<a href="#" id="username" data-type="text" data-pk="1" data-url="/post" data-title="Enter username">superuser</a>
-						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"float-right d-print-none readingDelete\"><i class=\"fas fa-trash\"></i></span>";
-						$output .= "</td>";
+						$output .= "<td>" . $reading['reading1'] . "</td>";
 					}
-
+					
 					$output .= "</tr>";
-
-
-
 
 					echo $output;
 				}
