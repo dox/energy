@@ -19,20 +19,20 @@ $locations = $locations->all();
 	foreach ($locations AS $location) {
 		$metersClass = new meters;
 		$meters = $metersClass->allByLocation($location['uid']);
-		
+
 		$output .= "<a href=\"index.php?n=location_disabled&locationUID=" . $location['uid'] . "\" class=\"btn btn-secondary btn-sm float-right\" role=\"button\">View Disabled Meters here</a>";
 		$output .= "<h3><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h3>";
 		$output .= "<div class=\"row\">";
-		
+
 		foreach ($meters AS $meter) {
 			if ($meter['enabled'] == 1) {
 				$output .= $metersClass->displayMeterCard($meter['uid']);
 			}
 		}
-		
+
 		$output .= "</div>";
 	}
-	
+
 	echo $output;
 	?>
 </div>

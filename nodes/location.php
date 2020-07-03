@@ -120,6 +120,15 @@ window.onload = function() {
 			animation: {
 				duration: 1000,
 				onComplete: done
+			},
+			scales: {
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'm3'
+					}
+				}]
 			}
 		},
 	});
@@ -136,6 +145,15 @@ window.onload = function() {
 			animation: {
 				duration: 1000,
 				onComplete: done
+			},
+			scales: {
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'kWh'
+					}
+				}]
 			}
 		},
 	});

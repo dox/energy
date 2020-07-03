@@ -17,7 +17,7 @@ $waterConsumptionByYear = $readingsClass->consumptionBySiteAllYears('Water');
 	<div class="row">
 		<h3>Site Settings</h3>
 	</div>
-	
+
 	<div class="row">
 		<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 			<ol class="carousel-indicators">
@@ -80,7 +80,7 @@ var waterBarChartData = {
 window.onload = function() {
 	var ctx = document.getElementById('canvasGas').getContext('2d');
 	var ctx2 = document.getElementById('canvasElectric').getContext('2d');
-	
+
 	window.myBar = new Chart(ctx, {
 		type: 'bar',
 		data: gasBarChartData,
@@ -92,11 +92,20 @@ window.onload = function() {
 			animation: {
 				duration: 1000,
 				onComplete: done
+			},
+			scales: {
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'm3'
+					}
+				}]
 			}
 		},
 	});
-	
-	
+
+
 	window.myBar = new Chart(ctx2, {
 		type: 'bar',
 		data: electricBarChartData,
@@ -108,10 +117,19 @@ window.onload = function() {
 			animation: {
 				duration: 1000,
 				onComplete: done
+			},
+			scales: {
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'kWh'
+					}
+				}]
 			}
 		},
 	});
-	
+
 
 };
 
