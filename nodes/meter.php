@@ -38,7 +38,6 @@ $exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['n
 			<p class="text-right"><?php echo $meter['type'] . " meter serial: " . $meter['serial']; ?></p>
 		</div>
 	</div>
-
 	<div class="row">
 		<div class="col-sm">
 			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -116,12 +115,25 @@ $exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['n
 				foreach ($readingsAll AS $reading) {
 					$output  = "<tr>";
 					$output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-					$output .= "<td>" . $reading['reading1'];
 
 					if (isset($_SESSION['username'])) {
-						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"badge badge-pill badge-light float-right d-print-none readingDelete\">x</span>";
+						$output .= "<td>";
+						$output .= $reading['reading1'];
+						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"float-right d-print-none readingDelete\"><i class=\"fas fa-trash\"></i></span>";
+						$output .= "<a href=\"index.php?n=reading_edit&uid=" .  $reading['uid'] . "\" class=\"float-right d-print-none\"><i class=\"fas fa-edit\"></i></span>";
+						$output .= "</td>";
+					} else {
+						$output .= "<td>" . $reading['reading1'];
+						//<a href="#" id="username" data-type="text" data-pk="1" data-url="/post" data-title="Enter username">superuser</a>
+						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"float-right d-print-none readingDelete\"><i class=\"fas fa-trash\"></i></span>";
+						$output .= "</td>";
 					}
-					$output .= "</td></tr>";
+
+					$output .= "</tr>";
+
+
+
+
 					echo $output;
 				}
 				?>
@@ -179,6 +191,10 @@ if ($meter['type'] == "Gas"){
 	$colourLast = $colour_gas_year2;
 	$colourLastLast = $colour_gas_year3;
 } else if ($meter['type'] == "Electric") {
+	$colourThis = $colour_electric_year1;
+	$colourLast = $colour_electric_year2;
+	$colourLastLast = $colour_electric_year3;
+} else {
 	$colourThis = $colour_electric_year1;
 	$colourLast = $colour_electric_year2;
 	$colourLastLast = $colour_electric_year3;
@@ -310,4 +326,29 @@ $(".readingDelete").click(function() {
 });
 
 
+$(document).ready(function() {
+    //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'popup';
+
+    //make username editable
+    $('#reading1').editable();
+
+    //make status editable
+    $('#status').editable({
+        type: 'select',
+        title: 'Select status',
+        placement: 'right',
+        value: 2,
+        source: [
+            {value: 1, text: 'status 1'},
+            {value: 2, text: 'status 2'},
+            {value: 3, text: 'status 3'}
+        ]
+        /*
+        //uncomment these lines to send data on server
+        ,pk: 1
+        ,url: '/post'
+        */
+    });
+});
 </script>

@@ -1,13 +1,13 @@
 <?php
 	session_start();
-	
+
 	require_once('inc/config.php');
 	require_once('database/MysqliDb.php');
 	require_once('inc/adLDAP/adLDAP.php');
 	require_once('inc/locations.php');
 	require_once('inc/meters.php');
 	require_once('inc/readings.php');
-	
+
 	$db = new MysqliDb ($db_host, $db_username, $db_password, $db_name);
 ?>
 
@@ -24,7 +24,7 @@
     <!-- Bootstrap core CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.css" integrity="sha256-IvM9nJf/b5l2RoebiFno92E5ONttVyaEEsdemDC6iQA=" crossorigin="anonymous" />
-<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
 <!-- Favicons -->
 <link rel="apple-touch-icon" href="/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
@@ -37,10 +37,7 @@
 <meta name="theme-color" content="#563d7c">
 
 <script   src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
-
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha256-TQq84xX6vkwR0Qs1qH5ADkP+MvH0W+9E7TdHJsoIQiM=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 <script src="js/utils.js"></script>
@@ -78,21 +75,21 @@ if (isset($_POST["oldform"])) { //prevent null bind
 		    $adldap = new adLDAP();
         }
         catch (adLDAPException $e) {
-            echo $e; 
-            exit();   
+            echo $e;
+            exit();
         }
-        
+
 		//authenticate the user
 		if ($adldap->authenticate($username, $password)){
 			//establish your session and redirect
-			
+
 			$_SESSION["username"] = $username;
             $_SESSION["userinfo"] = $adldap->user()->info($username);
 			$redir = "Location: http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/index.php";
-			
+
 			//$logSQLInsert = Array ("type" => "LOGON", "description" => $_SESSION["username"] . " logged on with LDAP");
 			//$id = $db->insert ('_logs', $logSQLInsert);
-			
+
 			header($redir);
 			exit;
 		} else {
@@ -100,7 +97,7 @@ if (isset($_POST["oldform"])) { //prevent null bind
 			//$id = $db->insert ('_logs', $logSQLInsert);
 		}
 	}
-	
+
 	$message = "<div class=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> Login attempt failed.</div>";
 }
 
