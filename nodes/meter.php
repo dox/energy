@@ -118,14 +118,13 @@ $exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['n
 
 					if (isset($_SESSION['username'])) {
 						$output .= "<td>";
-						$output .= $reading['reading1'];
-						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"float-right d-print-none readingDelete\"><i class=\"fas fa-trash\"></i></span>";
-						$output .= "<a href=\"index.php?n=reading_edit&uid=" .  $reading['uid'] . "\" class=\"float-right d-print-none\"><i class=\"fas fa-edit\"></i></span>";
+						$output .= "<a href=\"#\" id=\"username\" class=\"readingsInput\" data-type=\"text\" data-pk=\"" . $reading['uid'] . "\" data-url=\"/actions/reading_edit.php\" data-placement=\"right\" data-title=\"Modify Reading\" class=\"editable editable-click\">" . $reading['reading1'] . "</a>";
+						$output .= "<a href=\"#\" id=\"" . $reading['uid'] . "\" class=\"float-right d-print-none readingDelete\"><i class=\"fas fa-trash-alt\"></i></span>";
 						$output .= "</td>";
 					} else {
 						$output .= "<td>" . $reading['reading1'] . "</td>";
 					}
-					
+
 					$output .= "</tr>";
 
 					echo $output;
@@ -324,25 +323,7 @@ $(document).ready(function() {
     //toggle `popup` / `inline` mode
     $.fn.editable.defaults.mode = 'popup';
 
-    //make username editable
-    $('#reading1').editable();
-
-    //make status editable
-    $('#status').editable({
-        type: 'select',
-        title: 'Select status',
-        placement: 'right',
-        value: 2,
-        source: [
-            {value: 1, text: 'status 1'},
-            {value: 2, text: 'status 2'},
-            {value: 3, text: 'status 3'}
-        ]
-        /*
-        //uncomment these lines to send data on server
-        ,pk: 1
-        ,url: '/post'
-        */
-    });
+    //make readings editable
+    $('.readingsInput').editable();
 });
 </script>
