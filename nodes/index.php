@@ -20,8 +20,8 @@ $locations = $locations->all();
 		$metersClass = new meters;
 		$meters = $metersClass->allByLocation($location['uid']);
 
-		$output .= "<a href=\"index.php?n=location_disabled&locationUID=" . $location['uid'] . "\" class=\"btn btn-secondary btn-sm float-right\" role=\"button\">View Disabled Meters here</a>";
-		$output .= "<h3><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h3>";
+		$output .= "<a href=\"index.php?n=location_disabled&locationUID=" . $location['uid'] . "\" class=\"btn btn-secondary btn-sm float-right\" role=\"button\" aria-label=\"View Disabled Meters for " . $location['name'] . "\">View Disabled Meters here</a>";
+		$output .= "<h1><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h1>";
 		$output .= "<div class=\"row\">";
 
 		foreach ($meters AS $meter) {

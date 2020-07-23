@@ -48,16 +48,16 @@ $exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['n
 				<div class="carousel-inner" id="exportImage">
 					<div class="carousel-item active">
 						<canvas id="canvas" width="400" height="200"></canvas>
-						<div class="btn-group float-right" role="group">
-							<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
-							<a href="#" class="btn btn-sm btn-outline-secondary" id="export-link-1" download="<?php echo $exportFileNameYearly;?>">Export as Image</a>
+						<div class="btn-group float-right" role="group" aria-label="Edit / Export Monthly options">
+							<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary" aria-label="Edit Meter">Edit</a>
+							<a href="#" class="btn btn-sm btn-outline-secondary" id="export-link-1" aria-label="Export (monthly) as Image" download="<?php echo $exportFileNameYearly;?>">Export as Image</a>
 						</div>
 					</div>
 					<div class="carousel-item">
 						<canvas id="canvasYearly" width="400" height="200"></canvas>
-						<div class="btn-group float-right" role="group">
-							<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary">Edit</a>
-							<a href="#" class="btn btn-sm btn-outline-secondary" id="export-link-2" download="<?php echo $exportFileNameMonthly;?>">Export as Image</a>
+						<div class="btn-group float-right" role="group" aria-label="Edit / Export Yearly options">
+							<a href="index.php?n=meter_edit&meterUID=<?php echo $meter['uid'];?>" class="btn btn-sm btn-outline-secondary" aria-label="Edit Meter">Edit</a>
+							<a href="#" class="btn btn-sm btn-outline-secondary" id="export-link-2" aria-label="Export (yearly) as Image" download="<?php echo $exportFileNameMonthly;?>">Export as Image</a>
 						</div>
 					</div>
 				</div>
@@ -95,7 +95,7 @@ $exportFileNameMonthly = strtolower(str_replace($charsToRemove, "", $location['n
 			}
 			?>
 
-			<form role="form" id="contactForm" class="form-inline" data-toggle="validator">
+			<form id="contactForm" class="form-inline" data-toggle="validator">
 			<input type="hidden" id="meter" value="<?php echo $meter['uid'];?>">
 
 			<div class="clearfix"></div>
