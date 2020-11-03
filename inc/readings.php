@@ -233,8 +233,6 @@ public function consumptionByLocationAllYears($location = null, $type = null) {
 
 	ksort($consumptionArray);
 
-	//echo "<pre>"; print_r($consumptionArray); echo "</pre>";
-
 	return $consumptionArray;
 }
 
@@ -254,7 +252,6 @@ public function consumptionBySiteAllYears($type = null) {
 	do {
 		$readingsByLocationByYear = $this->readingsBySiteByYear2($year, $type);
 		$readingsByLocationByPreviousYear = $this->readingsBySiteByYear2($year-1, $type);
-
 
 		if ($readingsByLocationByYear['reading1'] <= 0 || $readingsByLocationByPreviousYear['reading1'] <= 0) {
 			$consumptionArray[$year] = 0;
