@@ -1,38 +1,31 @@
 <?php
-$locations = new locations;
-$locations = $locations->all();
+$locationsClass = new locations();
+$metersClass = new meters();
+//$logs = $logsClass->paginatedAll($from, $resultsPerPage);
+$locations = $locationsClass->all();
+?>
+
+<div class="container">
+  <h1>Meters</h1>
+<?php
+
+foreach ($locations AS $location) {
+  $meters = $metersClass->allByLocation($location['uid']);
+
+  $output  = "<h1 class=\"display-4\"><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h1>";
+  $output .= $metersClass->meterTable($meters);
+
+  foreach ($meters AS $meter) {
+    if ($meter['enabled'] == 1) {
+    //  $output .= $metersClass->displayMeterCard($meter['uid']);
+    }
+  }
+
+  //$output .= "</div>";
+
+  echo $output;
+}
 
 
 ?>
-<section class="jumbotron text-center">
-	<div class="container">
-		<h1>SEH Meter Readings</h1>
-		<p class="lead text-muted">A simple system to record, review and report on utility meter readings.</p>
-		<p><a href="index.php?n=site" class="btn btn-primary my-2">Whole Site Usage</a> <a href="index.php?n=locations" class="btn btn-secondary my-2">Locations</a></p>
-	</div>
-</section>
-
-
-<div class="container">
-	<?php
-	$output = "";
-	foreach ($locations AS $location) {
-		$metersClass = new meters;
-		$meters = $metersClass->allByLocation($location['uid']);
-
-		$output .= "<a href=\"index.php?n=location_disabled&locationUID=" . $location['uid'] . "\" class=\"btn btn-secondary btn-sm float-right\" role=\"button\" aria-label=\"View Disabled Meters for " . $location['name'] . "\">View Disabled Meters here</a>";
-		$output .= "<h1><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h1>";
-		$output .= "<div class=\"row\">";
-
-		foreach ($meters AS $meter) {
-			if ($meter['enabled'] == 1) {
-				$output .= $metersClass->displayMeterCard($meter['uid']);
-			}
-		}
-
-		$output .= "</div>";
-	}
-
-	echo $output;
-	?>
 </div>

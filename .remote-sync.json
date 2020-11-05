@@ -1,0 +1,19 @@
+{
+  "logger": {
+    "title": "Remote Sync"
+  },
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": true,
+  "hostname": "hydrogen2",
+  "port": "22",
+  "username": "itsupport",
+  "password": "!!9Tedd100",
+  "target": "/var/www/readings.seh.ox.ac.uk/public_html",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "watch": [],
+  "transport": "scp"
+}
