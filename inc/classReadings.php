@@ -30,6 +30,18 @@ class readings {
     return $readings;
   }
 
+  public function create($meterUID = null, $reading1 = null) {
+    global $db;
+
+    $sql  = "INSERT INTO " . self::$table_name;
+    $sql .= " (meter, date, reading1) ";
+    $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "')";
+    
+    $insert = $db->query($sql);
+
+    return $insert;
+  }
+
   public function meterTable($meters = null) {
     $output .= "<table class=\"table\">";
     $output .= "<thead>";

@@ -1,5 +1,19 @@
 <?php
 	include_once("inc/include.php");
+
+	if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
+		if ($ldap_connection->auth()->attempt($_POST['inputUsername'] . LDAP_ACCOUNT_SUFFIX, $_POST['inputPassword'], $stayAuthenticated = true)) {
+			// Successfully authenticated user.
+			$_SESSION['logon'] = true;
+		} else {
+			// Username or password is incorrect.
+			$_SESSION['logon'] = false;
+		}
+	}
+
+	if (isset($_GET['logout'])) {
+	  $_SESSION['logon'] = false;
+	}
 ?>
 <!doctype html>
 <html lang="en">
@@ -45,13 +59,24 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">Admin</a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <li><a class="dropdown-item" href="index.php?n=site" class="text-white">Site Settings</a></li>
           <li><a class="dropdown-item" href="index.php?n=meter_add" class="text-white">Add New Meter</a></li>
+					<li><a class="dropdown-item" href="index.php?n=settings" class="text-white">Site Settings</a></li>
           <li><a class="dropdown-item" href="index.php?n=logs" class="text-white">Logs</a></li>
-          <li><a class="dropdown-item" href="index.php?n=login&logout=true" class="text-white">Log Out</a></li>
+					<?php
+					if ($_SESSION['logon'] == true) {
+						echo "<li><a class=\"dropdown-item\" href=\"index.php?n=logon&logout=true\" class=\"text-white\">Log Out</a></li>";
+					} else {
+						echo "<li><a class=\"dropdown-item\" href=\"index.php?n=logon\" class=\"text-white\">Log In</a></li>";
+					}
+					?>
         </ul>
       </li>
     </ul>
+		<?php
+		if ($_SESSION['logon'] == true) {
+			echo "<button type=\"button\" class=\"btn btn-warning btn-sm float-right\">You are logged in</button>";
+		}
+		?>
   </div>
 </div>
 </nav>
@@ -79,7 +104,7 @@
 <footer class="text-muted">
 	<div class="container">
 		<p class="float-right"><a href="#">Back to top</a></p>
-		<p>SEH Meter Readings  is &copy;<a href="https://github.com/dox/energy">Andrew Breakspear</a>, but please download and customise it for yourself.</p>
+		<p>Utility Meter Readings  is &copy;<a href="https://github.com/dox/energy">Andrew Breakspear</a>, but please download and customise it for yourself.</p>
 	</div>
 </footer>
 </body>

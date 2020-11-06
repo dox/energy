@@ -1,18 +1,14 @@
 <?php
-if (!isset($_SESSION['username'])) {
-	echo "<a href=\"index.php?n=login\">You are not logged in</a>";
+if ($_SESSION['logon'] != true) {
+  header("Location: http://readings.seh.ox.ac.uk/index.php?n=logon");
 	exit;
 }
-$locations = new locations;
-$locationsAll = $locations->all();
 ?>
 
 <div class="container">
-	<div class="row">
-		<h3>Add New Meter</h3>
-	</div>
-	<div class="row">
-		<form>
+  <h1>Add New Meter</h1>
+  <p>Coming soon... (please don't use this form yet!)</p>
+  <form>
 		<div class="form-group">
 			<label for="formGroupExampleInput">Name</label>
 			<input type="text" class="form-control" id="name" placeholder="Meter Name">
@@ -54,44 +50,7 @@ $locationsAll = $locations->all();
 		</form>
 	</div>
 	<div class="row">
-		<a href="#" class="btn btn-success meterAdd">Add</a> 
+		<a href="#" class="btn btn-success meterAdd">Add</a>
 	</div>
 	<div id="returnMessage"></div>
 </div>
-
-
-<script>
-$(".meterAdd").click(function() {
-	var r=confirm("Warning!  Are you sure you want to add this meter?");
-	
-	if (r==true) {
-		var thisObject = $(this);
-		var name = $("input#name").val();
-		var location = $("select#location").val();
-		var type = $("select#type").val();
-		var serial = $("input#serial").val();
-		
-		if ($("input#billed").is(':checked')) {
-			var billed = "Yes";
-		} else {
-			var billed = "No";
-		}
-		
-		var url = 'actions/meter_add.php';
-		
-		// perform the post to the action (take the info and submit to database)
-		$.post(url,{
-		    name: name,
-		    location: location,
-		    type: type,
-		    serial: serial,
-		    billed: billed
-		}, function(data){
-			location.href = 'index.php';
-		},'html');
-	}
-	
-	return false;
-
-});
-</script>

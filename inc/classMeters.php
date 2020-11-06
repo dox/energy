@@ -51,18 +51,25 @@ class meters extends meter {
       if ($meter->enabled == 1) {
         $rowClass = "";
       } else {
-        $rowClass = "table-secondary";
+        $rowClass = "table-secondary d-none";
       }
       $output .= "<tr class=\"" . $rowClass . "\">";
       $output .= "<th scope=\"row\"><a href=\"index.php?n=meter&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
-      $output .= "<td>" . $meter->type . "</td>";
-      $output .= "<td>" . $meter->type . "</td>";
-      $output .= "<td>" . $meter->serial . "</td>";
+      $output .= "<td>" . $meter->current_reading() . " " . $meter->unit . "</td>";
+      $output .= "<td>" . $meter->daysSinceLastUpdate() . "</td>";
+
+      if ($_SESSION['logon'] == true) {
+        $output .= "<td>" . $meter->serial . "</td>";
+      } else {
+        $output .= "<td>********</td>";
+      }
       $output .= "</tr>";
     }
 
     return $output;
   }
+
+
 }
 ?>

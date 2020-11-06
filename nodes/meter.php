@@ -2,6 +2,11 @@
 $locationsClass = new locations();
 $readingsClass = new readings();
 $meter = new meter($_GET['meterUID']);
+
+if (isset($_POST['reading1'])) {
+  $readingsClass->create($meter->uid, $_POST['reading1']);
+}
+
 $location = new location($meter->location);
 $readings = $readingsClass->allByMeter($meter->uid);
 ?>
@@ -31,10 +36,17 @@ $readings = $readingsClass->allByMeter($meter->uid);
           <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
         </h4>
 
-        <form class="card p-2">
+        <?php
+        if ($_SESSION['logon'] == true) {
+          $class = "";
+        } else {
+          $class = " disabled";
+        }
+        ?>
+        <form class="card p-2" method="post" id="readingSubmit" action="index.php?n=meter&meterUID=<?php echo $meter->uid; ?>">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Reading DO NOT USE THIS YET!">
-            <button type="submit" class="btn btn-secondary">Submit</button>
+            <input type="text" class="form-control" <?php echo $class; ?> name="reading1" placeholder="Reading">
+            <button type="submit" class="btn btn-secondary" <?php echo $class; ?> name="submit">Submit</button>
           </div>
         </form>
 

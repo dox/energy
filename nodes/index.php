@@ -6,6 +6,7 @@ $locations = $locationsClass->all();
 ?>
 
 <div class="container">
+  <button type="button" class="btn btn-primary float-right" data-toggle="button" aria-pressed="false" autocomplete="off">Single toggle</button>
   <h1>Meters</h1>
 <?php
 
@@ -29,3 +30,7 @@ foreach ($locations AS $location) {
 
 ?>
 </div>
+
+<script>
+$("tr").removeClass('d-none');
+</script>

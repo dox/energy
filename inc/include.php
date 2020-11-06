@@ -13,6 +13,30 @@ if (debug == true) {
 	error_reporting(0);
 }
 
+require 'vendor/autoload.php';
+
+use LdapRecord\Connection;
+
+// Create a new connection:
+$ldap_connection = new Connection([
+    'hosts' => [LDAP_SERVER],
+    'port' => LDAP_PORT,
+    'base_dn' => LDAP_BASE_DN,
+    'username' => LDAP_BIND_DN,
+		'password' => LDAP_BIND_PASSWORD,
+		'use_tls' => LDAP_STARTTLS,
+]);
+try {
+    $ldap_connection->connect();
+} catch (\LdapRecord\Auth\BindException $e) {
+    $error = $e->getDetailedError();
+
+    echo $error->getErrorCode();
+    echo $error->getErrorMessage();
+    echo $error->getDiagnosticMessage();
+}
+
+
 require_once('inc/globalFunctions.php');
 require_once('inc/database.php');
 //require_once('inc/adLDAP/adLDAP.php');
