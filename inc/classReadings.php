@@ -6,6 +6,7 @@ class readings {
   public $meter;
   public $date;
   public $reading1;
+  public $username;
 
   public function all() {
     global $db;
@@ -34,9 +35,9 @@ class readings {
     global $db;
 
     $sql  = "INSERT INTO " . self::$table_name;
-    $sql .= " (meter, date, reading1) ";
-    $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "')";
-    
+    $sql .= " (meter, date, reading1, username) ";
+    $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $_SESSION['username'] . "')";
+
     $insert = $db->query($sql);
 
     return $insert;

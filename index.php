@@ -5,9 +5,10 @@
 		if ($ldap_connection->auth()->attempt($_POST['inputUsername'] . LDAP_ACCOUNT_SUFFIX, $_POST['inputPassword'], $stayAuthenticated = true)) {
 			// Successfully authenticated user.
 			$_SESSION['logon'] = true;
+			$_SESSION['username'] = strtoupper($_POST['inputUsername']);
 		} else {
 			// Username or password is incorrect.
-			$_SESSION['logon'] = false;
+			session_destroy();
 		}
 	}
 

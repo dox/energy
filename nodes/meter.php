@@ -13,7 +13,7 @@ $readings = $readingsClass->allByMeter($meter->uid);
 
 <div class="container">
   <h1 class="float-right"><?php echo $meter->meterTypeBadge();?></h1>
-  <h1><?php echo $meter->name;?> <small class="text-muted"><?php echo $location->name; ?></small></h1>
+  <h1><?php echo $location->name;?> <small class="text-muted"><?php echo $meter->name; ?></small></h1>
 
   <main>
     <div class="row">
@@ -57,8 +57,8 @@ $readings = $readingsClass->allByMeter($meter->uid);
           foreach ($readings AS $reading) {
             $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\">";
             $output .= "<div>";
-            $output .= "<h6 class=\"my-0\">" . $reading['date'] . "</h6>";
-            $output .= "<small class=\"text-muted\">Brief description</small>";
+            $output .= "<h6 class=\"my-0\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</h6>";
+            $output .= "<small class=\"text-muted\">Recorded By: " . $reading['username'] . "</small>";
             $output .= "</div>";
             $output .= "<span class=\"text-muted\">" . $reading['reading1'] . " " . $meter->unit . "</span>";
             $output .= "</li>";
@@ -192,7 +192,7 @@ var meterReadingsChart = new Chart(meterReadings, {
           }],
           yAxes: [{
               ticks: {
-                  suggestedMin: 0
+                  suggestedMin: <?php echo min($timeChartArrray); ?>
               },
               scaleLabel: {
                   display: false,
