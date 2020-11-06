@@ -6,7 +6,7 @@ $locations = $locationsClass->all();
 ?>
 
 <div class="container">
-  <button type="button" class="btn btn-primary float-right" data-toggle="button" aria-pressed="false" autocomplete="off">Single toggle</button>
+  <button type="button" id="save" onclick="toggleHiddenMeters()" class="btn btn-primary float-right" data-toggle="button" aria-pressed="false" autocomplete="off">Show Hidden Meters</button>
   <h1>Meters</h1>
 <?php
 
@@ -32,5 +32,10 @@ foreach ($locations AS $location) {
 </div>
 
 <script>
-$("tr").removeClass('d-none');
+function toggleHiddenMeters() {
+  var elems = document.querySelectorAll(".d-none");
+  [].forEach.call(elems, function(el) {
+    el.classList.remove("d-none");
+  });
+}
 </script>
