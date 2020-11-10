@@ -19,12 +19,24 @@ class readings {
     return $meters;
   }
 
-  public function allByMeter($meterUID = null) {
+  public function meter_all_readings($meterUID = null) {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE meter = '" . $meterUID . "' ";
     $sql .= " ORDER BY date DESC";
+
+    $readings = $db->query($sql)->fetchAll();
+
+    return $readings;
+  }
+
+  public function location_all_readings($locationUID = null) {
+    global $db;
+
+    $sql  = "SELECT * FROM readings_by_month ";
+    $sql .= " WHERE location = '" . $locationUID . "' ";
+    $sql .= " ORDER BY year, month DESC";
 
     $readings = $db->query($sql)->fetchAll();
 
@@ -85,39 +97,7 @@ class readings {
     return $output;
   }
 
-  public function readings_monthlyByyear($meterUID = null) {
-    global $db;
-
-    $thisYear = date('Y');
-    $i = 0;
-    do {
-      $lookupYear = $thisYear - $i;
-
-      $lookupMonth = 1;
-      do  {
-        $sql  = "SELECT * FROM readings_by_month ";
-        $sql .= " WHERE meter = '" . $meterUID . "' ";
-        $sql .= " AND year = '" . $lookupYear . "' ";
-        $sql .= " AND month = '" . $lookupMonth . "' ";
-        $sql .= " ORDER BY year DESC";
-
-        $readings = $db->query($sql)->fetchAll();
-
-        // catch 0 values for each month!
-        if ($readings[0]['reading1'] <= 0) {
-          $readings[0]['reading1'] = 0;
-        }
-
-        $readingsArray[$lookupYear][$lookupMonth] = $readings[0]['reading1'];
-
-        $lookupMonth++;
-      } while ($lookupMonth <= 12);
-      $i++;
-    } while ($i < 2);
-    return $readingsArray;
-  }
-
-  public function consumption_monthly($meterUID = null, $lookupYear = null) {
+  public function meter_monthly_consumption($meterUID = null, $lookupYear = null) {
     global $db;
 
     if ($lookupYear == null) {
@@ -178,6 +158,104 @@ class readings {
     } while ($lookupMonth <= 12);
 
     return $readingsArray;
+  }
+
+  public function meter_yearly_consumption($meterUID = null) {
+    global $db;
+
+    $i = 0;
+    do  {
+      $thisYear = date('Y') - $i;
+      $previousYear = $thisYear - 1;
+
+      // this years
+      $sql  = "SELECT * FROM readings_by_month ";
+      $sql .= " WHERE meter = '" . $meterUID . "' ";
+      $sql .= " AND year = '" . $thisYear . "' ";
+      $sql .= " ORDER BY reading1 DESC";
+      $sql .= " LIMIT 1";
+
+      $yearTotal = $db->query($sql)->fetchAll();
+      $yearTotal = $yearTotal[0]['reading1'];
+
+      // previous years
+      $sql  = "SELECT * FROM readings_by_month ";
+      $sql .= " WHERE meter = '" . $meterUID . "' ";
+      $sql .= " AND year = '" . $previousYear . "' ";
+      $sql .= " ORDER BY reading1 DESC";
+      $sql .= " LIMIT 1";
+
+      $previousYearTotal = $db->query($sql)->fetchAll();
+      $previousYearTotal = $previousYearTotal[0]['reading1'];
+
+      $consumptionValue = $yearTotal - $previousYearTotal;
+
+      if ($consumptionValue <= 0) {
+        $consumptionValue = 0;
+      }
+
+      $readingsArray[$thisYear] = $consumptionValue;
+
+      $i++;
+    } while ($i <= years);
+
+    return $readingsArray;
+  }
+
+  public function location_monthly_consumption($locationUID = null, $year = null, $utility = null) {
+    global $db;
+
+    $metersClass = new meters();
+    $meters = $metersClass->allByLocation($locationUID);
+
+    $i = 0;
+    foreach ($meters AS $meter) {
+      if ($meter['type'] == $utility) {
+        $lookupMonth = 1;
+        do {
+          $lookupYear = $year - $i;
+
+          // this month
+          $sql  = "SELECT * FROM readings_by_month ";
+          $sql .= " WHERE meter = '" . $meter['uid'] . "' ";
+          $sql .= " AND year = '" . $lookupYear . "' ";
+          $sql .= " AND month = '" . $lookupMonth . "' ";
+
+          $thisMonthreading = $db->query($sql)->fetchAll();
+          $thisMonthreading = $thisMonthreading[0]['reading1'];
+
+          // previous month
+          // if this month is January, the previous month is December of the previous year
+          if ($lookupMonth == 1) {
+            $lookupYear2 = $lookupYear - 1;
+            $sql  = "SELECT * FROM readings_by_month ";
+            $sql .= " WHERE meter = '" . $meter['uid'] . "' ";
+            $sql .= " AND year = '" . $lookupYear2 . "' ";
+            $sql .= " AND month = '12' ";
+      		} else {
+            $lookupMonth2 = $lookupMonth - 1;
+            $sql  = "SELECT * FROM readings_by_month ";
+            $sql .= " WHERE meter = '" . $meter['uid'] . "' ";
+            $sql .= " AND year = '" . $lookupYear . "' ";
+            $sql .= " AND month = '" . $lookupMonth2 . "' ";
+      		}
+
+          $previousMonthreading = $db->query($sql)->fetchAll();
+          $previousMonthreading = $previousMonthreading[0]['reading1'];
+
+          $consumption = $thisMonthreading - $previousMonthreading;
+
+          if ($thisMonthreading <= 0 || $previousMonthreading <= 0 || $consumption <= 0) {
+            $consumption = 0;
+          }
+
+          $returnArray[$lookupMonth] = $returnArray[$lookupMonth] + $consumption;
+          $lookupMonth++;
+        } while ($lookupMonth <= 12);
+      }
+
+    }
+    return $returnArray;
   }
 }
 ?>

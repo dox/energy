@@ -8,7 +8,7 @@ if (isset($_POST['reading1'])) {
 }
 
 $location = new location($meter->location);
-$readings = $readingsClass->allByMeter($meter->uid);
+$readings = $readingsClass->meter_all_readings($meter->uid);
 ?>
 
 <div class="container">
@@ -22,7 +22,7 @@ $readings = $readingsClass->allByMeter($meter->uid);
       <canvas id="annualConsumption"></canvas>
       <hr class="my-4">
 
-      <h3>Consumption by Year (these calculations are not correct yet!)</h3>
+      <h3>Consumption by Year</h3>
       <canvas id="yearlyConsumption"></canvas>
       <hr class="my-4">
 
@@ -81,7 +81,7 @@ $i = 0;
 do {
   $lookupYear = $thisYear - $i;
 
-  $results = $readingsClass->consumption_monthly($meter->uid, $lookupYear);
+  $results = $readingsClass->meter_monthly_consumption($meter->uid, $lookupYear);
   $readingsByYearArray[$lookupYear] =  $results[$lookupYear];
 
   $i++;
@@ -116,8 +116,12 @@ var annualConsumptionChart = new Chart(annualConsumption, {
 });
 
 <?php
-foreach ($readingsByYearArray AS $year => $monthlyReadings) {
-  $yearlyTotal["'". $year . "'"] = array_sum($monthlyReadings);
+$consumptionYearly = $readingsClass->meter_yearly_consumption($meter->uid);
+$consumptionYearly = array_reverse($consumptionYearly, true);
+//printArray($consumptionYearly);
+
+foreach ($consumptionYearly AS $year => $yearlyReadings) {
+  $yearlyTotal["'". $year . "'"] = $yearlyReadings;
 }
 ?>
 var yearlyConsumption = document.getElementById('yearlyConsumption').getContext('2d');
@@ -133,6 +137,11 @@ var yearlyConsumptionChart = new Chart(yearlyConsumption, {
             backgroundColor: 'rgb(255, 99, 132, 0.3)',
             borderColor: 'rgb(255, 99, 132)',
             data: [<?php echo implode(",", $yearlyTotal); ?>]
+        },{
+            label: 'Consumption by Year2',
+            backgroundColor: 'rgb(4, 99, 132, 0.3)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [<?php //echo implode(",", $yearlyTotal); ?>]
         }]
     },
 
@@ -140,6 +149,14 @@ var yearlyConsumptionChart = new Chart(yearlyConsumption, {
     options: {
       legend: {
         display: false
+      },
+      scales: {
+        xAxes: [{
+          stacked: true
+        }],
+        yAxes: [{
+          stacked: true
+        }]
       }
     }
 });
