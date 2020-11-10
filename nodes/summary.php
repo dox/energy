@@ -26,14 +26,14 @@ $locations = $locations->all();
 		foreach ($locations AS $location) {
 			$metersClass = new meters;
 			$meters = $metersClass->allByLocation($location['uid'], 'Electric');
-			
+
 			$meterMAXArray2020 = null;
 			$meterMAXArray2019 = null;
 			$meterMAXArray2018 = null;
 			$meterMAXArray2017 = null;
 			$meterMAXArray2016 = null;
 			$meterMAXArray2015 = null;
-			
+
 			foreach ($meters AS $meter) {
 				$meterMAX2020 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC");
 				$meterMAX2019 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
@@ -48,7 +48,7 @@ $locations = $locations->all();
 				$meterMAXArray2016[] = $meterMAX2016['reading1'];
 				$meterMAXArray2015[] = $meterMAX2015['reading1'];
 			}
-			
+
 			if (isset($meterMAXArray2020)) {
 				$arraySum2020 = array_sum($meterMAXArray2020);
 			} else {
@@ -79,7 +79,7 @@ $locations = $locations->all();
 			} else {
 				$arraySum2015 = 0;
 			}
-			
+
 			$output  = "<tr>";
 			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
 			$output .= "<td>" . $arraySum2015 . "</td>";
@@ -89,7 +89,7 @@ $locations = $locations->all();
 			$output .= "<td>" . $arraySum2019 . "</td>";
 			$output .= "<td>" . $arraySum2020 . "</td>";
 			$output .= "</tr>";
-			
+
 			echo $output;
 		}
 		?>
@@ -116,14 +116,14 @@ $locations = $locations->all();
 		foreach ($locations AS $location) {
 			$metersClass = new meters;
 			$meters = $metersClass->allByLocation($location['uid'], 'Gas');
-			
+
 			$meterMAXArray2020 = null;
 			$meterMAXArray2019 = null;
 			$meterMAXArray2018 = null;
 			$meterMAXArray2017 = null;
 			$meterMAXArray2016 = null;
 			$meterMAXArray2015 = null;
-			
+
 			foreach ($meters AS $meter) {
 				$meterMAX2020 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC");
 				$meterMAX2019 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
@@ -138,7 +138,7 @@ $locations = $locations->all();
 				$meterMAXArray2016[] = $meterMAX2016['reading1'];
 				$meterMAXArray2015[] = $meterMAX2015['reading1'];
 			}
-			
+
 			if (isset($meterMAXArray2020)) {
 				$arraySum2020 = array_sum($meterMAXArray2020);
 			} else {
@@ -169,7 +169,7 @@ $locations = $locations->all();
 			} else {
 				$arraySum2015 = 0;
 			}
-			
+
 			$output  = "<tr>";
 			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
 			$output .= "<td>" . $arraySum2015 . "</td>";
@@ -179,7 +179,7 @@ $locations = $locations->all();
 			$output .= "<td>" . $arraySum2019 . "</td>";
 			$output .= "<td>" . $arraySum2020 . "</td>";
 			$output .= "</tr>";
-			
+
 			echo $output;
 		}
 		?>
@@ -206,14 +206,14 @@ $locations = $locations->all();
 		foreach ($locations AS $location) {
 			$metersClass = new meters;
 			$meters = $metersClass->allByLocation($location['uid'], 'Water');
-			
+
 			$meterMAXArray2020 = null;
 			$meterMAXArray2019 = null;
 			$meterMAXArray2018 = null;
 			$meterMAXArray2017 = null;
 			$meterMAXArray2016 = null;
 			$meterMAXArray2015 = null;
-			
+
 			foreach ($meters AS $meter) {
 				$meterMAX2020 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
 				$meterMAX2019 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
@@ -228,7 +228,7 @@ $locations = $locations->all();
 				$meterMAXArray2016[] = $meterMAX2016['reading1'];
 				$meterMAXArray2015[] = $meterMAX2015['reading1'];
 			}
-			
+
 			if (isset($meterMAXArray2020)) {
 				$arraySum2020 = array_sum($meterMAXArray2020);
 			} else {
@@ -259,7 +259,7 @@ $locations = $locations->all();
 			} else {
 				$arraySum2015 = 0;
 			}
-			
+
 			$output  = "<tr>";
 			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
 			$output .= "<td>" . $arraySum2015 . "</td>";
@@ -269,7 +269,7 @@ $locations = $locations->all();
 			$output .= "<td>" . $arraySum2019 . "</td>";
 			$output .= "<td>" . $arraySum2020 . "</td>";
 			$output .= "</tr>";
-			
+
 			echo $output;
 		}
 		?>
