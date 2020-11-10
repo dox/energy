@@ -52,7 +52,7 @@
         <a class="nav-link" href="index.php?n=locations" class="text-white">Locations</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="index.php?n=audit_template" class="text-white">Usage Audit</a>
+        <a class="nav-link" href="index.php?n=summary" class="text-white">Usage Summary</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">Admin</a>

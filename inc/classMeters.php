@@ -23,6 +23,19 @@ class meters extends meter {
     return $meters;
   }
 
+  public function allByLocationAndType($locationUID = null, $type = null) {
+    global $db;
+
+    $sql  = "SELECT * FROM " . self::$table_name;
+    $sql .= " WHERE location = '" . $locationUID . "' ";
+    $sql .= " AND type = '" . $type . "' ";
+    $sql .= " ORDER BY uid DESC";
+
+    $meters = $db->query($sql)->fetchAll();
+
+    return $meters;
+  }
+
   public function meterTable($meters = null) {
     $output .= "<table class=\"table\">";
     $output .= "<thead>";

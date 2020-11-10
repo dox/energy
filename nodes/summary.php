@@ -25,7 +25,7 @@ $locations = $locations->all();
 		<?php
 		foreach ($locations AS $location) {
 			$metersClass = new meters;
-			$meters = $metersClass->allByLocation($location['uid'], 'Electric');
+			$meters = $metersClass->allByLocationAndType($location['uid'], 'Electric');
 
 			$meterMAXArray2020 = null;
 			$meterMAXArray2019 = null;
@@ -35,18 +35,18 @@ $locations = $locations->all();
 			$meterMAXArray2015 = null;
 
 			foreach ($meters AS $meter) {
-				$meterMAX2020 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC");
-				$meterMAX2019 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
-				$meterMAX2018 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC");
-				$meterMAX2017 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC");
-				$meterMAX2016 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC");
-				$meterMAX2015 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC");
-				$meterMAXArray2020[] = $meterMAX2020['reading1'];
-				$meterMAXArray2019[] = $meterMAX2019['reading1'];
-				$meterMAXArray2018[] = $meterMAX2018['reading1'];
-				$meterMAXArray2017[] = $meterMAX2017['reading1'];
-				$meterMAXArray2016[] = $meterMAX2016['reading1'];
-				$meterMAXArray2015[] = $meterMAX2015['reading1'];
+				$meterMAX2020 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2019 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2018 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2017 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2016 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAXArray2020[] = $meterMAX2020[0]['reading1'];
+				$meterMAXArray2019[] = $meterMAX2019[0]['reading1'];
+				$meterMAXArray2018[] = $meterMAX2018[0]['reading1'];
+				$meterMAXArray2017[] = $meterMAX2017[0]['reading1'];
+				$meterMAXArray2016[] = $meterMAX2016[0]['reading1'];
+				$meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
 			}
 
 			if (isset($meterMAXArray2020)) {
@@ -87,7 +87,7 @@ $locations = $locations->all();
 			$output .= "<td>" . $arraySum2017 . "</td>";
 			$output .= "<td>" . $arraySum2018 . "</td>";
 			$output .= "<td>" . $arraySum2019 . "</td>";
-			$output .= "<td>" . $arraySum2020 . "</td>";
+      $output .= "<td>" . $arraySum2020 . "</td>";
 			$output .= "</tr>";
 
 			echo $output;
@@ -115,7 +115,7 @@ $locations = $locations->all();
 		<?php
 		foreach ($locations AS $location) {
 			$metersClass = new meters;
-			$meters = $metersClass->allByLocation($location['uid'], 'Gas');
+			$meters = $metersClass->allByLocationAndType($location['uid'], 'Gas');
 
 			$meterMAXArray2020 = null;
 			$meterMAXArray2019 = null;
@@ -125,18 +125,18 @@ $locations = $locations->all();
 			$meterMAXArray2015 = null;
 
 			foreach ($meters AS $meter) {
-				$meterMAX2020 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC");
-				$meterMAX2019 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
-				$meterMAX2018 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC");
-				$meterMAX2017 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC");
-				$meterMAX2016 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC");
-				$meterMAX2015 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC");
-				$meterMAXArray2020[] = $meterMAX2020['reading1'];
-				$meterMAXArray2019[] = $meterMAX2019['reading1'];
-				$meterMAXArray2018[] = $meterMAX2018['reading1'];
-				$meterMAXArray2017[] = $meterMAX2017['reading1'];
-				$meterMAXArray2016[] = $meterMAX2016['reading1'];
-				$meterMAXArray2015[] = $meterMAX2015['reading1'];
+        $meterMAX2020 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2019 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2018 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2017 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2016 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAXArray2020[] = $meterMAX2020[0]['reading1'];
+				$meterMAXArray2019[] = $meterMAX2019[0]['reading1'];
+				$meterMAXArray2018[] = $meterMAX2018[0]['reading1'];
+				$meterMAXArray2017[] = $meterMAX2017[0]['reading1'];
+				$meterMAXArray2016[] = $meterMAX2016[0]['reading1'];
+				$meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
 			}
 
 			if (isset($meterMAXArray2020)) {
@@ -205,7 +205,7 @@ $locations = $locations->all();
 		<?php
 		foreach ($locations AS $location) {
 			$metersClass = new meters;
-			$meters = $metersClass->allByLocation($location['uid'], 'Water');
+			$meters = $metersClass->allByLocationAndType($location['uid'], 'Water');
 
 			$meterMAXArray2020 = null;
 			$meterMAXArray2019 = null;
@@ -215,18 +215,18 @@ $locations = $locations->all();
 			$meterMAXArray2015 = null;
 
 			foreach ($meters AS $meter) {
-				$meterMAX2020 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
-				$meterMAX2019 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC");
-				$meterMAX2018 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC");
-				$meterMAX2017 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC");
-				$meterMAX2016 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC");
-				$meterMAX2015 = $db->rawQueryOne("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC");
-				$meterMAXArray2020[] = $meterMAX2020['reading1'];
-				$meterMAXArray2019[] = $meterMAX2019['reading1'];
-				$meterMAXArray2018[] = $meterMAX2018['reading1'];
-				$meterMAXArray2017[] = $meterMAX2017['reading1'];
-				$meterMAXArray2016[] = $meterMAX2016['reading1'];
-				$meterMAXArray2015[] = $meterMAX2015['reading1'];
+        $meterMAX2020 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2020' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2019 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2019' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2018 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2017 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2016 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+				$meterMAXArray2020[] = $meterMAX2020[0]['reading1'];
+				$meterMAXArray2019[] = $meterMAX2019[0]['reading1'];
+				$meterMAXArray2018[] = $meterMAX2018[0]['reading1'];
+				$meterMAXArray2017[] = $meterMAX2017[0]['reading1'];
+				$meterMAXArray2016[] = $meterMAX2016[0]['reading1'];
+				$meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
 			}
 
 			if (isset($meterMAXArray2020)) {
