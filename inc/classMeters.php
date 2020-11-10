@@ -16,6 +16,7 @@ class meters extends meter {
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE location = '" . $locationUID . "' ";
+    $sql .= " AND enabled = '1' ";
     $sql .= " ORDER BY uid DESC";
 
     $meters = $db->query($sql)->fetchAll();
@@ -29,6 +30,7 @@ class meters extends meter {
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE location = '" . $locationUID . "' ";
     $sql .= " AND type = '" . $type . "' ";
+    $sql .= " AND enabled = '1' ";
     $sql .= " ORDER BY uid DESC";
 
     $meters = $db->query($sql)->fetchAll();
