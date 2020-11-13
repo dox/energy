@@ -97,15 +97,20 @@ var annualConsumptionChart = new Chart(annualConsumption, {
     data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [<?php
+        $i = count($readingsByYearArray);
         foreach ($readingsByYearArray AS $year => $readingsYear) {
+          $colour = (count($readingsByYearArray)/count($readingsByYearArray)) - ($i/count($readingsByYearArray)) + (1/count($readingsByYearArray));
+          $colour = round($colour, 2);
+
           $output  = "{";
           $output .= "label: '" . $year . "',";
-          $output .= "backgroundColor: 'rgb(255, 99, 132, 0.3)',";
+          $output .= "backgroundColor: 'rgb(255, 99, 132, " . $colour . ")',";
           $output .= "borderColor: 'rgb(255, 99, 132)',";
           $output .= "data: [" . implode(",", $readingsYear) . "]";
           $output .= "}";
 
           $outputArray[] = $output;
+          $i--;
         }
         echo implode(",", $outputArray);
         ?>]
@@ -137,11 +142,6 @@ var yearlyConsumptionChart = new Chart(yearlyConsumption, {
             backgroundColor: 'rgb(255, 99, 132, 0.3)',
             borderColor: 'rgb(255, 99, 132)',
             data: [<?php echo implode(",", $yearlyTotal); ?>]
-        },{
-            label: 'Consumption by Year2',
-            backgroundColor: 'rgb(4, 99, 132, 0.3)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [<?php //echo implode(",", $yearlyTotal); ?>]
         }]
     },
 
