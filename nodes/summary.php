@@ -40,13 +40,15 @@ $locations = $locations->all();
 				$meterMAX2018 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAX2017 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAX2016 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC")->fetchAll();
-				$meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+        $meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+        $meterMAX2014 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2014' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAXArray2020[] = $meterMAX2020[0]['reading1'];
 				$meterMAXArray2019[] = $meterMAX2019[0]['reading1'];
 				$meterMAXArray2018[] = $meterMAX2018[0]['reading1'];
 				$meterMAXArray2017[] = $meterMAX2017[0]['reading1'];
 				$meterMAXArray2016[] = $meterMAX2016[0]['reading1'];
-				$meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
+        $meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
+        $meterMAXArray2014[] = $meterMAX2014[0]['reading1'];
 			}
 
 			if (isset($meterMAXArray2020)) {
@@ -80,14 +82,22 @@ $locations = $locations->all();
 				$arraySum2015 = 0;
 			}
 
+      //calculate difference/consumption
+      $arraySum2020 = $arraySum2020 - $arraySum2019;
+      $arraySum2019 = $arraySum2019 - $arraySum2018;
+      $arraySum2018 = $arraySum2018 - $arraySum2017;
+      $arraySum2017 = $arraySum2017 - $arraySum2016;
+      $arraySum2016 = $arraySum2016 - $arraySum2015;
+      $arraySum2015 = $arraySum2015 - $arraySum2014;
+
 			$output  = "<tr>";
 			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
-			$output .= "<td>" . $arraySum2015 . "</td>";
-			$output .= "<td>" . $arraySum2016 . "</td>";
-			$output .= "<td>" . $arraySum2017 . "</td>";
-			$output .= "<td>" . $arraySum2018 . "</td>";
-			$output .= "<td>" . $arraySum2019 . "</td>";
-      $output .= "<td>" . $arraySum2020 . "</td>";
+      $output .= "<td>" . number_format($arraySum2015) . "</td>";
+			$output .= "<td>" . number_format($arraySum2016) . "</td>";
+			$output .= "<td>" . number_format($arraySum2017) . "</td>";
+			$output .= "<td>" . number_format($arraySum2018) . "</td>";
+			$output .= "<td>" . number_format($arraySum2019) . "</td>";
+      $output .= "<td>" . number_format($arraySum2020) . "</td>";
 			$output .= "</tr>";
 
 			echo $output;
@@ -130,13 +140,15 @@ $locations = $locations->all();
 				$meterMAX2018 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAX2017 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAX2016 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC")->fetchAll();
-				$meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+        $meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+        $meterMAX2014 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2014' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAXArray2020[] = $meterMAX2020[0]['reading1'];
 				$meterMAXArray2019[] = $meterMAX2019[0]['reading1'];
 				$meterMAXArray2018[] = $meterMAX2018[0]['reading1'];
 				$meterMAXArray2017[] = $meterMAX2017[0]['reading1'];
 				$meterMAXArray2016[] = $meterMAX2016[0]['reading1'];
-				$meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
+        $meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
+        $meterMAXArray2014[] = $meterMAX2014[0]['reading1'];
 			}
 
 			if (isset($meterMAXArray2020)) {
@@ -170,14 +182,22 @@ $locations = $locations->all();
 				$arraySum2015 = 0;
 			}
 
+      //calculate difference/consumption
+      $arraySum2020 = $arraySum2020 - $arraySum2019;
+      $arraySum2019 = $arraySum2019 - $arraySum2018;
+      $arraySum2018 = $arraySum2018 - $arraySum2017;
+      $arraySum2017 = $arraySum2017 - $arraySum2016;
+      $arraySum2016 = $arraySum2016 - $arraySum2015;
+      $arraySum2015 = $arraySum2015 - $arraySum2014;
+
 			$output  = "<tr>";
 			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
-			$output .= "<td>" . $arraySum2015 . "</td>";
-			$output .= "<td>" . $arraySum2016 . "</td>";
-			$output .= "<td>" . $arraySum2017 . "</td>";
-			$output .= "<td>" . $arraySum2018 . "</td>";
-			$output .= "<td>" . $arraySum2019 . "</td>";
-			$output .= "<td>" . $arraySum2020 . "</td>";
+      $output .= "<td>" . number_format($arraySum2015) . "</td>";
+			$output .= "<td>" . number_format($arraySum2016) . "</td>";
+			$output .= "<td>" . number_format($arraySum2017) . "</td>";
+			$output .= "<td>" . number_format($arraySum2018) . "</td>";
+			$output .= "<td>" . number_format($arraySum2019) . "</td>";
+      $output .= "<td>" . number_format($arraySum2020) . "</td>";
 			$output .= "</tr>";
 
 			echo $output;
@@ -220,13 +240,14 @@ $locations = $locations->all();
 				$meterMAX2018 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2018' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAX2017 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2017' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAX2016 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2016' ORDER BY reading1 DESC")->fetchAll();
-				$meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+        $meterMAX2015 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2015' ORDER BY reading1 DESC")->fetchAll();
+        $meterMAX2014 = $db->query("SELECT * from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '2014' ORDER BY reading1 DESC")->fetchAll();
 				$meterMAXArray2020[] = $meterMAX2020[0]['reading1'];
 				$meterMAXArray2019[] = $meterMAX2019[0]['reading1'];
 				$meterMAXArray2018[] = $meterMAX2018[0]['reading1'];
 				$meterMAXArray2017[] = $meterMAX2017[0]['reading1'];
 				$meterMAXArray2016[] = $meterMAX2016[0]['reading1'];
-				$meterMAXArray2015[] = $meterMAX2015[0]['reading1'];
+				$meterMAXArray2014[] = $meterMAX2015[0]['reading1'];
 			}
 
 			if (isset($meterMAXArray2020)) {
@@ -260,16 +281,24 @@ $locations = $locations->all();
 				$arraySum2015 = 0;
 			}
 
-			$output  = "<tr>";
-			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
-			$output .= "<td>" . $arraySum2015 . "</td>";
-			$output .= "<td>" . $arraySum2016 . "</td>";
-			$output .= "<td>" . $arraySum2017 . "</td>";
-			$output .= "<td>" . $arraySum2018 . "</td>";
-			$output .= "<td>" . $arraySum2019 . "</td>";
-			$output .= "<td>" . $arraySum2020 . "</td>";
-			$output .= "</tr>";
+      //calculate difference/consumption
+      $arraySum2020 = $arraySum2020 - $arraySum2019;
+      $arraySum2019 = $arraySum2019 - $arraySum2018;
+      $arraySum2018 = $arraySum2018 - $arraySum2017;
+      $arraySum2017 = $arraySum2017 - $arraySum2016;
+      $arraySum2016 = $arraySum2016 - $arraySum2015;
+      $arraySum2015 = $arraySum2015 - $arraySum2014;
 
+      $output  = "<tr>";
+			$output .= "<th scope=\"row\">" . $location['name'] . "</th>";
+      $output .= "<td>" . number_format($arraySum2015) . "</td>";
+			$output .= "<td>" . number_format($arraySum2016) . "</td>";
+			$output .= "<td>" . number_format($arraySum2017) . "</td>";
+			$output .= "<td>" . number_format($arraySum2018) . "</td>";
+			$output .= "<td>" . number_format($arraySum2019) . "</td>";
+      $output .= "<td>" . number_format($arraySum2020) . "</td>";
+			$output .= "</tr>";
+      
 			echo $output;
 		}
 		?>
