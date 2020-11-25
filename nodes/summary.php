@@ -43,14 +43,15 @@ $locations = $locations->all();
           $meterMAXArrayPrevious = array();
           $meterMAXArray = array();
           foreach ($meters AS $meter) {
-            //echo "SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'";
             $meterMAXPrevious = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'")->fetchAll();
             $meterMAX = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $year . "'")->fetchAll();
-            $meterMAXArrayPrevious[] = $meterMAXPrevious[0]['reading1'];
-            $meterMAXArray[] = $meterMAX[0]['reading1'];
+
+            if ($meterMAX[0]['reading1'] > 0 && $meterMAXPrevious[0]['reading1'] > 0) {
+              $meterMAXArray[] = ($meterMAX[0]['reading1'] - $meterMAXPrevious[0]['reading1']);
+            }
           }
 
-          $arraySum = array_sum($meterMAXArray) - array_sum($meterMAXArrayPrevious);
+          $arraySum = array_sum($meterMAXArray);
 
           echo "<td>" . number_format($arraySum) . "</td>";
           $i--;
@@ -99,14 +100,15 @@ $locations = $locations->all();
           $meterMAXArrayPrevious = array();
           $meterMAXArray = array();
           foreach ($meters AS $meter) {
-            //echo "SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'";
             $meterMAXPrevious = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'")->fetchAll();
             $meterMAX = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $year . "'")->fetchAll();
-            $meterMAXArrayPrevious[] = $meterMAXPrevious[0]['reading1'];
-            $meterMAXArray[] = $meterMAX[0]['reading1'];
+
+            if ($meterMAX[0]['reading1'] > 0 && $meterMAXPrevious[0]['reading1'] > 0) {
+              $meterMAXArray[] = ($meterMAX[0]['reading1'] - $meterMAXPrevious[0]['reading1']);
+            }
           }
 
-          $arraySum = array_sum($meterMAXArray) - array_sum($meterMAXArrayPrevious);
+          $arraySum = array_sum($meterMAXArray);
 
           echo "<td>" . number_format($arraySum) . "</td>";
           $i--;
@@ -155,14 +157,15 @@ $locations = $locations->all();
           $meterMAXArrayPrevious = array();
           $meterMAXArray = array();
           foreach ($meters AS $meter) {
-            //echo "SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'";
             $meterMAXPrevious = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'")->fetchAll();
             $meterMAX = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $year . "'")->fetchAll();
-            $meterMAXArrayPrevious[] = $meterMAXPrevious[0]['reading1'];
-            $meterMAXArray[] = $meterMAX[0]['reading1'];
+
+            if ($meterMAX[0]['reading1'] > 0 && $meterMAXPrevious[0]['reading1'] > 0) {
+              $meterMAXArray[] = ($meterMAX[0]['reading1'] - $meterMAXPrevious[0]['reading1']);
+            }
           }
 
-          $arraySum = array_sum($meterMAXArray) - array_sum($meterMAXArrayPrevious);
+          $arraySum = array_sum($meterMAXArray);
 
           echo "<td>" . number_format($arraySum) . "</td>";
           $i--;
