@@ -11,12 +11,18 @@ class meters extends meter {
     return $meters;
   }
 
-  public function allByLocation($locationUID = null) {
+  public function allByLocation($locationUID = null, $enabledDisabled = "enabled") {
     global $db;
+
+    if ($enabledDisabled == "all") {
+      $sqlEnabled = "";
+    } else {
+      $sqlEnabled = " AND enabled = '1' ";
+    }
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE location = '" . $locationUID . "' ";
-    $sql .= " AND enabled = '1' ";
+    $sql .= $sqlEnabled;
     $sql .= " ORDER BY uid DESC";
 
     $meters = $db->query($sql)->fetchAll();
@@ -24,13 +30,19 @@ class meters extends meter {
     return $meters;
   }
 
-  public function allByLocationAndType($locationUID = null, $type = null) {
+  public function allByLocationAndType($locationUID = null, $type = null, $enabledDisabled = "enabled") {
     global $db;
+
+    if ($enabledDisabled == "all") {
+      $sqlEnabled = "";
+    } else {
+      $sqlEnabled = " AND enabled = '1' ";
+    }
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE location = '" . $locationUID . "' ";
     $sql .= " AND type = '" . $type . "' ";
-    $sql .= " AND enabled = '1' ";
+    $sql .= $sqlEnabled;
     $sql .= " ORDER BY uid DESC";
 
     $meters = $db->query($sql)->fetchAll();

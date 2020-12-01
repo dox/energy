@@ -11,7 +11,7 @@ $locations = $locationsClass->all();
 <?php
 
 foreach ($locations AS $location) {
-  $meters = $metersClass->allByLocation($location['uid']);
+  $meters = $metersClass->allByLocation($location['uid'], "all");
 
   $output  = "<h1 class=\"display-4\"><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h1>";
   $output .= $metersClass->meterTable($meters);
