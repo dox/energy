@@ -60,7 +60,7 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
             $output .= "<h6 class=\"my-0\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</h6>";
             $output .= "<small class=\"text-muted\">Recorded By: " . $reading['username'] . "</small>";
             $output .= "</div>";
-            $output .= "<span class=\"text-muted\">" . $reading['reading1'] . " " . $meter->unit . "</span>";
+            $output .= "<span class=\"text-muted\">" . number_format($reading['reading1']) . " " . $meter->unit . "</span>";
             $output .= "</li>";
 
             echo $output;
