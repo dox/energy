@@ -91,7 +91,7 @@ $readingsByYearArray = array_reverse($readingsByYearArray, true);
 var annualConsumption = document.getElementById('annualConsumption').getContext('2d');
 var annualConsumptionChart = new Chart(annualConsumption, {
     // The type of chart we want to create
-    type: 'bar',
+    type: 'line',
 
     // The data for our dataset
     data: {
@@ -99,13 +99,15 @@ var annualConsumptionChart = new Chart(annualConsumption, {
         datasets: [<?php
         $i = count($readingsByYearArray);
         foreach ($readingsByYearArray AS $year => $readingsYear) {
-          $colour = (count($readingsByYearArray)/count($readingsByYearArray)) - ($i/count($readingsByYearArray)) + (1/count($readingsByYearArray));
-          $colour = round($colour, 2);
+          //$colour = (count($readingsByYearArray)/count($readingsByYearArray)) - ($i/count($readingsByYearArray)) + (1/count($readingsByYearArray));
+          //$colour = round($colour, 2);
+
+          $colour = 0.2;
 
           $output  = "{";
           $output .= "label: '" . $year . "',";
           $output .= "backgroundColor: 'rgb(255, 99, 132, " . $colour . ")',";
-          $output .= "borderColor: 'rgb(255, 99, 132)',";
+          $output .= "borderColor: 'rgb(255, 99, 132, " . $colour . ")',";
           $output .= "data: [" . implode(",", $readingsYear) . "]";
           $output .= "}";
 
