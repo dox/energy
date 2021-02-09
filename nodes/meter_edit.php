@@ -4,8 +4,10 @@ admin_gatekeeper();
 $locationsClass = new locations();
 $metersClass = new meters();
 $readingsClass = new readings();
+$meter = new meter($_GET['meterUID']);
+$location = new location($meter->location);
 
-if (isset($_POST['name'])) {
+if (isset($_POST['uid'])) {
   if (!isset($_POST['billed'])) {
     $_POST['billed'] = 0;
   }
@@ -13,12 +15,18 @@ if (isset($_POST['name'])) {
     $_POST['enabled'] = 0;
   }
 
-  $metersClass->create($_POST);
-	echo "Meter added!";
-	exit();
+  $meter->update($_POST);
+  $meter = new meter($_GET['meterUID']);
 }
 
-$title = "Add Meter";
+if (isset($_GET['deleteMeterUID'])) {
+  $meter = new meter($_GET['deleteMeterUID']);
+  $meter->delete();
+  echo "Meter and corresponding readings deleted";
+  exit();
+}
+
+$title = "Edit Meter";
 $subtitle = $meter->name . ", " . $location->name;
 
 echo makeTitle($title, $subtitle);
@@ -35,7 +43,12 @@ echo makeTitle($title, $subtitle);
 		<select class="form-select" id="location" name="location">
 			<?php
 			foreach ($locationsClass->all() AS $location) {
-				echo "<option value = \"" . $location['uid'] . "\">" . $location['name'] . "</option>";
+        if ($location['uid'] == $meter->location) {
+          $selected = " selected";
+        } else {
+          $selected = "";
+        }
+				echo "<option value = \"" . $location['uid'] . "\" " . $selected . ">" . $location['name'] . "</option>";
 			}
 			?>
 		</select>
@@ -46,9 +59,13 @@ echo makeTitle($title, $subtitle);
     		<label for="type">Type</label>
     		<select class="form-select" id="type" name="type">
     			<?php
-    			$typesArray = array ("Electric", "Gas", "Water", "Refuse");
     			foreach ($metersClass->types() AS $type) {
-    				echo "<option value = \"" . $type . "\">" . $type . "</option>";
+    				if ($type == $meter->type) {
+    					$selected = " selected";
+    				} else {
+    					$selected = " ";
+    				}
+    				echo "<option value = \"" . $type . "\" " . $selected . ">" . $type . "</option>";
     			}
     			?>
     		</select>
@@ -59,8 +76,13 @@ echo makeTitle($title, $subtitle);
         <label for="unit">Unit</label>
         <select class="form-select" id="unit" name="unit">
           <?php
-					foreach ($metersClass->units() AS $unit) {
-            echo "<option value = \"" . $unit . "\">" . $unit . "</option>";
+          foreach ($metersClass->units() AS $unit) {
+            if ($unit == $meter->unit) {
+              $selected = " selected";
+            } else {
+              $selected = " ";
+            }
+            echo "<option value = \"" . $unit . "\" " . $selected . ">" . $unit . "</option>";
           }
           ?>
         </select>
@@ -72,17 +94,18 @@ echo makeTitle($title, $subtitle);
 		<input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo $meter->serial; ?>">
 	</div>
   <div class="form-check mb-3">
-		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1">
+		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1" <?php if ($meter->billed == "1") { echo " checked";} ?>>
 		<label for="billed" class="form-check-label">Billed to tenant</label>
 	</div>
 
   <div class="form-check mb-3">
-		<input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" checked>
+		<input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" <?php if ($meter->enabled == "1") { echo " checked";} ?>>
 		<label for="billed" class="form-check-label">Enabled</label>
 	</div>
 
   <div class="mb-3">
     <button type="submit" class="btn btn-primary w-100">Submit</button>
+    <input type="hidden" id="uid" name="uid" value="<?php echo $meter->uid; ?>">
   </div>
 
   <div id="returnMessage"></div>

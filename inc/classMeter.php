@@ -26,16 +26,22 @@ class meter {
   public function meterTypeBadge() {
     if ($this->type == "Gas") {
   		$class = "bg-primary";
+      $iconSymbol = "gas";
       //$icon = "<img src=\"/inc/icons/bootstrap.svg\" alt=\"\" width=\"32\" height=\"32\" title=\"Bootstrap\">";
   	} elseif ($this->type == "Electric") {
   		$class = "bg-warning";
+      $iconSymbol = "electric";
   	} elseif ($this->type == "Water") {
   		$class = "bg-info";
-  	} else {
+      $iconSymbol = "water";
+  	} elseif ($this->type == "Refuse") {
+      $class = "bg-dark";
+      $iconSymbol = "refuse";
+    } else {
   		$class = "bg-light";
   	}
-
-  	$output = "<span class=\"badge rounded-pill " . $class . "\">" . $this->type . "</span>";
+    $icon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . $iconSymbol . "\"/></svg>";
+  	$output = "<span class=\"badge rounded-pill " . $class . "\">" . $icon . $this->type . "</span>";
 
     return $output;
   }
@@ -100,6 +106,44 @@ class meter {
     }
 
     return $return;
+  }
+
+  public function update($array = null) {
+    global $db;
+
+    $sql  = "UPDATE " . self::$table_name;
+
+    foreach ($array AS $updateItem => $value) {
+      if ($updateItem != 'uid') {
+        $value = str_replace("'", "\'", $value);
+        $sqlUpdate[] = $updateItem ." = '" . $value . "' ";
+      }
+    }
+
+    $sql .= " SET " . implode(", ", $sqlUpdate);
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+
+    $update = $db->query($sql);
+
+    return $update;
+  }
+
+  public function delete() {
+    global $db;
+
+    $sql1  = "DELETE FROM readings";
+    $sql1 .= " WHERE meter = '" . $this->uid . "'";
+
+    $deleteReadings = $db->query($sql1);
+
+    $sql2  = "DELETE FROM " . self::$table_name;
+    $sql2 .= " WHERE uid = '" . $this->uid . "' ";
+    $sql2 .= " LIMIT 1";
+
+    $deleteMeter = $db->query($sql2);
+
+    return $deleteMeter;
   }
 
 }

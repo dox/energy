@@ -3,36 +3,34 @@ $location = new locations($_GET['locationUID']);
 $readingsClass = new readings();
 $metersClass = new meters();
 $meters = $metersClass->allByLocation($location->uid);
+
+$title = $location->name;
+$subtitle = $location->description;
+$icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#add\"/></svg> Add Meter", "value" => "onclick=\"location.href='index.php?n=meter_add'\"");
+//$icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"img/icons.svg#trash\"/></svg> Guest List", "value" => "onclick=\"window.open('guestlist.php?mealUID=" . $mealObject->uid . "')\"");
+
+echo makeTitle($title, $subtitle, $icons);
 ?>
 
-<div class="container">
-  <main>
-    <div class="row">
-      <div class="col-md-4">
-        <h3>Gas Consumption</h3>
-        <canvas id="annualConsumptionGas"></canvas>
-      </div>
-      <div class="col-md-4">
-        <h3>Electric Consumption</h3>
-        <canvas id="annualConsumptionElectric"></canvas>
-      </div>
-      <div class="col-md-4">
-        <h3>Water Consumption</h3>
-        <canvas id="annualConsumptionWater"></canvas>
-      </div>
-    </div>
-  </main>
+<div class="row">
+  <div class="col-md-4">
+    <h3>Gas Consumption</h3>
+    <canvas id="annualConsumptionGas"></canvas>
+  </div>
+  <div class="col-md-4">
+    <h3>Electric Consumption</h3>
+    <canvas id="annualConsumptionElectric"></canvas>
+  </div>
+  <div class="col-md-4">
+    <h3>Water Consumption</h3>
+    <canvas id="annualConsumptionWater"></canvas>
+  </div>
 </div>
-
-<div class="container">
-  <h1><?php echo $location->name; ?> <small class="text-muted"><?php echo $location->description; ?></small></h1>
 
 <h2>Meters</h2>
 <?php
 echo $metersClass->meterTable($meters);
 ?>
-
-</div>
 
 <script>
 <?php

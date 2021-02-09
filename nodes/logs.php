@@ -1,11 +1,8 @@
 <?php
-if ($_SESSION['logon'] != true) {
-  header("Location: http://readings.seh.ox.ac.uk/index.php?n=logon");
-	exit;
-}
+admin_gatekeeper();
+
+$title = "Logs";
+echo makeTitle($title, $subtitle, $icons);
 ?>
 
-<div class="container">
-  <h1>Logs</h1>
-  <p>Coming soon...</p>
-</div>
+<p>Coming soon...</p>

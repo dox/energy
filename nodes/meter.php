@@ -9,69 +9,76 @@ if (isset($_POST['reading1'])) {
 
 $location = new location($meter->location);
 $readings = $readingsClass->meter_all_readings($meter->uid);
+
+$title = $meter->name;
+$subtitle = $location->name;
+if ($_SESSION['logon'] == true) {
+  $icons[] = array("class" => "btn-danger", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#refuse\"/></svg> Delete Meter", "value" => "data-bs-toggle=\"modal\" data-bs-target=\"#deleteMeterModal\"");
+  $icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#edit\"/></svg> Edit Meter", "value" => "onclick=\"location.href='index.php?n=meter_edit&meterUID=" . $meter->uid . "'\"");
+}
+
+echo makeTitle($title, $subtitle, $icons);
 ?>
 
-<div class="container">
-  <h1 class="float-right"><?php echo $meter->meterTypeBadge();?></h1>
-  <h1><?php echo $location->name;?> <small class="text-muted"><?php echo $meter->name; ?></small></h1>
+<div class="row">
+  <div class="col-md-8">
+    <h3>Consumption by Month</h3>
+    <canvas id="annualConsumption"></canvas>
 
-  <main>
-    <div class="row">
-    <div class="col-md-8">
-      <h3>Consumption by Month</h3>
-      <canvas id="annualConsumption"></canvas>
-      <hr class="my-4">
+    <hr class="my-4">
 
-      <h3>Consumption by Year</h3>
-      <canvas id="yearlyConsumption"></canvas>
-      <hr class="my-4">
+    <h3>Consumption by Year</h3>
+    <canvas id="yearlyConsumption"></canvas>
 
-      <h3>Meter Total</h3>
-      <canvas id="meterReadings"></canvas>
-    </div>
+    <hr class="my-4">
 
-    <div class="col-md-4">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted">Readings</span>
-          <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
-        </h4>
-
-        <?php
-        if ($_SESSION['logon'] == true) {
-          $class = "";
-        } else {
-          $class = " disabled";
-        }
-        ?>
-        <form class="card p-2" method="post" id="readingSubmit" action="index.php?n=meter&meterUID=<?php echo $meter->uid; ?>">
-          <div class="input-group">
-            <input type="text" class="form-control" <?php echo $class; ?> name="reading1" placeholder="Reading">
-            <button type="submit" class="btn btn-secondary" <?php echo $class; ?> name="submit">Submit</button>
-          </div>
-        </form>
-
-        <hr class="my-4">
-
-        <ul class="list-group mb-3">
-          <?php
-          foreach ($readings AS $reading) {
-            $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\">";
-            $output .= "<div>";
-            $output .= "<h6 class=\"my-0\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</h6>";
-            $output .= "<small class=\"text-muted\">Recorded By: " . $reading['username'] . "</small>";
-            $output .= "</div>";
-            $output .= "<span class=\"text-muted\">" . number_format($reading['reading1']) . " " . $meter->unit . "</span>";
-            $output .= "</li>";
-
-            echo $output;
-          }
-          ?>
-        </ul>
-
-        <?php echo $meter->image(); ?>
-    </div>
+    <h3>Meter Total</h3>
+    <canvas id="meterReadings"></canvas>
   </div>
-  </main>
+
+  <div class="col-md-4">
+    <h1 class="text-center"><?php echo $meter->meterTypeBadge();?></h1>
+
+    <?php
+    if ($_SESSION['logon'] == true) {
+      $class = "";
+    } else {
+      $class = " disabled";
+    }
+    ?>
+
+    <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=meter&meterUID=<?php echo $meter->uid; ?>">
+      <div class="input-group">
+        <input type="text" class="form-control" <?php echo $class; ?> name="reading1" placeholder="Reading">
+        <button type="submit" class="btn btn-secondary" <?php echo $class; ?> name="submit">Submit</button>
+      </div>
+    </form>
+
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted">Readings</span>
+      <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
+    </h4>
+
+    <hr class="my-4">
+
+    <ul class="list-group mb-3">
+      <?php
+      foreach ($readings AS $reading) {
+        $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\">";
+        $output .= "<div>";
+        $output .= "<h6 class=\"my-0\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</h6>";
+        $output .= "<small class=\"text-muted\">Recorded By: " . $reading['username'] . "</small>";
+        $output .= "</div>";
+        $output .= "<span class=\"text-muted\">" . number_format($reading['reading1']) . " " . $meter->unit . "</span>";
+        $output .= "</li>";
+
+        echo $output;
+      }
+      ?>
+    </ul>
+
+    <?php echo $meter->image(); ?>
+  </div>
 </div>
 
 <script>
@@ -222,3 +229,25 @@ var meterReadingsChart = new Chart(meterReadings, {
   }
 });
 </script>
+
+
+<!-- Modal -->
+<div class="modal" tabindex="-1" id="deleteMeterModal" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Meter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this meter?  This will also delete all readings for this meter (affecting past statistics).</p>
+        <p>Are you sure you wouldn't rather just mark it as 'disabled'?</p>
+        <p class="text-danger"><strong>WARNING!</strong> This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link link-secondary mr-auto" data-bs-dismiss="modal">Close</button>
+        <a href="index.php?n=meter_edit&deleteMeterUID=<?php echo $meter->uid; ?>" role="button" class="btn btn-danger"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete</a>
+      </div>
+    </div>
+  </div>
+</div>

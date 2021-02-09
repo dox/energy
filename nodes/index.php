@@ -3,12 +3,12 @@ $locationsClass = new locations();
 $metersClass = new meters();
 //$logs = $logsClass->paginatedAll($from, $resultsPerPage);
 $locations = $locationsClass->all();
-?>
 
-<div class="container">
-  <button type="button" id="save" onclick="toggleHiddenMeters()" class="btn btn-primary float-right" data-toggle="button" aria-pressed="false" autocomplete="off">Show Hidden Meters</button>
-  <h1>Meters</h1>
-<?php
+
+$title = "Meters";
+$icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#hidden\"/></svg> Show Hidden Meters", "value" => "onclick=\"toggleHiddenMeters()\"");
+
+echo makeTitle($title, $subtitle, $icons);
 
 foreach ($locations AS $location) {
   $meters = $metersClass->allByLocation($location['uid'], "all");
@@ -26,8 +26,6 @@ foreach ($locations AS $location) {
 
   echo $output;
 }
-
-
 ?>
 </div>
 

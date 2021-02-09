@@ -97,6 +97,41 @@ class meters extends meter {
     return $output;
   }
 
+  public function create($array = null) {
+	   global $db;
+
+    $sql  = "INSERT INTO " . self::$table_name;
+
+    foreach ($array AS $updateItem => $value) {
+      $sqlColumns[] = $updateItem;
+      $sqlValues[] = "'" . $value . "' ";
+    }
+
+    $sql .= " (" . implode(",", $sqlColumns) . ") ";
+    $sql .= " VALUES (" . implode(",", $sqlValues) . ")";
+
+    $create = $db->query($sql);
+
+    return $create;
+  }
+
+  public function types() {
+    $type[] = "Electric";
+    $type[] = "Gas";
+    $type[] = "Water";
+    $type[] = "Refuse";
+
+    return $type;
+  }
+
+  public function units() {
+    $unit[] = "m³";
+    $unit[] = "kWh";
+    $unit[] = "KG";
+
+    return $unit;
+  }
+
 
 }
 ?>

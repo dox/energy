@@ -1,8 +1,5 @@
 <?php
-if ($_SESSION['logon'] != true) {
-  header("Location: http://readings.seh.ox.ac.uk/index.php?n=logon");
-	exit;
-}
+admin_gatekeeper();
 ?>
 
 <div class="container">
