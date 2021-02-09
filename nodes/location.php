@@ -54,7 +54,11 @@ foreach ($metersClass->types() AS $type) {
   $output .= "            data: [" . implode(",", $chartDataMonthly) . "]";
   $output .= "        }]";
   $output .= "    },";
-  $output .= "    options: {}";
+  $output .= "    options: {";
+    $output .= "      legend: {";
+    $output .= "         display: false";
+    $output .= "      }";
+    $output .= "  }";
   $output .= "});";
 
   echo $output;
