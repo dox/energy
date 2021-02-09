@@ -77,23 +77,16 @@ echo makeTitle($title, $subtitle, $icons);
       ?>
     </ul>
 
-    <?php echo $meter->image(); ?>
+    <?php echo $meter->getImage(); ?>
   </div>
 </div>
 
 <script>
 <?php
-$thisYear = date('Y');
-$i = 0;
-do {
-  $lookupYear = $thisYear - $i;
-
-  $results = $readingsClass->meter_monthly_consumption($meter->uid, $lookupYear);
-  $readingsByYearArray[$lookupYear] =  $results[$lookupYear];
-
-  $i++;
-} while ($i <= years);
-$readingsByYearArray = array_reverse($readingsByYearArray, true);
+foreach ($meter->consumptionByMonth() AS $month => $value) {
+  $chartLabelsMonthly[] = "'" . $month . "'";
+  $chartDataMonthly[] = "'" . $value . "'";
+}
 ?>
 var annualConsumption = document.getElementById('annualConsumption').getContext('2d');
 var annualConsumptionChart = new Chart(annualConsumption, {
@@ -102,40 +95,27 @@ var annualConsumptionChart = new Chart(annualConsumption, {
 
     // The data for our dataset
     data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [<?php
-        $i = count($readingsByYearArray);
-        foreach ($readingsByYearArray AS $year => $readingsYear) {
-          //$colour = (count($readingsByYearArray)/count($readingsByYearArray)) - ($i/count($readingsByYearArray)) + (1/count($readingsByYearArray));
-          //$colour = round($colour, 2);
-
-          $colour = 0.2;
-
-          $output  = "{";
-          $output .= "label: '" . $year . "',";
-          $output .= "backgroundColor: 'rgb(255, 99, 132, " . $colour . ")',";
-          $output .= "borderColor: 'rgb(255, 99, 132, " . $colour . ")',";
-          $output .= "data: [" . implode(",", $readingsYear) . "]";
-          $output .= "}";
-
-          $outputArray[] = $output;
-          $i--;
-        }
-        echo implode(",", $outputArray);
-        ?>]
+        labels: [<?php echo implode(",", $chartLabelsMonthly); ?>],
+        datasets: [{
+            label: 'Consumption',
+            backgroundColor: 'rgb(255, 99, 132, 0.3)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [<?php echo implode(",", $chartDataMonthly); ?>]
+        }]
     },
 
     // Configuration options go here
-    options: {}
+    options: {
+      legend: {
+        display: false
+      }
+    }
 });
 
 <?php
-$consumptionYearly = $readingsClass->meter_yearly_consumption($meter->uid);
-$consumptionYearly = array_reverse($consumptionYearly, true);
-//printArray($consumptionYearly);
-
-foreach ($consumptionYearly AS $year => $yearlyReadings) {
-  $yearlyTotal["'". $year . "'"] = $yearlyReadings;
+foreach ($meter->consumptionByYear() AS $month => $value) {
+  $chartLabelsYearly[] = "'" . $month . "'";
+  $chartDataYearly[] = "'" . $value . "'";
 }
 ?>
 var yearlyConsumption = document.getElementById('yearlyConsumption').getContext('2d');
@@ -145,12 +125,12 @@ var yearlyConsumptionChart = new Chart(yearlyConsumption, {
 
     // The data for our dataset
     data: {
-        labels: [<?php echo implode(",", array_keys($yearlyTotal)); ?>],
+        labels: [<?php echo implode(",", $chartLabelsYearly); ?>],
         datasets: [{
             label: 'Consumption by Year',
             backgroundColor: 'rgb(255, 99, 132, 0.3)',
             borderColor: 'rgb(255, 99, 132)',
-            data: [<?php echo implode(",", $yearlyTotal); ?>]
+            data: [<?php echo implode(",", $chartDataYearly); ?>]
         }]
     },
 
@@ -174,8 +154,6 @@ var yearlyConsumptionChart = new Chart(yearlyConsumption, {
 foreach ($readings AS $reading) {
   $timeChartArrray["'" . $reading['date'] . "'"] = "'" . $reading['reading1'] . "'";
 }
-
-
 ?>
 var timeFormat = 'YYYY/MM/DD';
 

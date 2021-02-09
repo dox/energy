@@ -46,7 +46,7 @@ class meter {
     return $output;
   }
 
-  public function image() {
+  public function getImage() {
     if (isset($this->photograph)) {
       $output = "<img src=\"uploads/" . $this->photograph . "\" class=\"rounded img-fluid\" alt=\"Image of utlity meter\">";
     } else {
@@ -54,6 +54,16 @@ class meter {
     }
 
     return $output;
+  }
+
+  public function deleteImage() {
+    if (isset($this->photograph)) {
+      $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $this->photograph;
+
+      if (file_exists($file)) {
+        unlink($file);
+      }
+    }
   }
 
   public function daysSinceLastUpdate() {
@@ -91,13 +101,13 @@ class meter {
   public function current_reading() {
     global $db;
 
-    $sql  = "SELECT * FROM readings";
+    $sql  = "SELECT reading1 FROM readings";
     $sql .= " WHERE meter = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
-    $lastReading = $db->query($sql)->fetchAll();
-    $lastReading = $lastReading[0]['reading1'];
+    $lastReading = $db->query($sql)->fetchAll()[0];
+    $lastReading = $lastReading['reading1'];
 
     if (isset($lastReading)) {
       $return = $lastReading;
@@ -137,6 +147,8 @@ class meter {
 
     $deleteReadings = $db->query($sql1);
 
+    $this->deleteImage();
+
     $sql2  = "DELETE FROM " . self::$table_name;
     $sql2 .= " WHERE uid = '" . $this->uid . "' ";
     $sql2 .= " LIMIT 1";
@@ -144,6 +156,123 @@ class meter {
     $deleteMeter = $db->query($sql2);
 
     return $deleteMeter;
+  }
+
+
+
+
+
+
+  public function highestReadingForMonth($date = null) {
+    global $db;
+
+    if ($date == null) {
+  		$date = date('Y-m');
+  	} else {
+      $date = date('Y-m', strtotime($date));
+    }
+
+    $sql  = "SELECT * FROM readings ";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " AND YEAR(date) = '" . date('Y', strtotime($date)) . "' ";
+    $sql .= " AND MONTH(date) = '" . date('m', strtotime($date)) . "' ";
+    $sql .= " ORDER BY reading1 DESC";
+    $sql .= " LIMIT 1";
+
+    $maxReading = $db->query($sql)->fetchAll()[0];
+
+    return $maxReading;
+  }
+
+  public function highestReadingsByMonth() {
+    global $db;
+
+    $i = 0;
+    do {
+      $lookupDate = date('Y-m', strtotime($i . " months ago"));
+
+      $reading = $this->highestReadingForMonth($lookupDate);
+
+      $readingsArray[$lookupDate] = $reading['reading1'];
+      $i++;
+    } while ($i < 12);
+
+    return $readingsArray;
+  }
+
+  public function consumptionByMonth() {
+    global $db;
+
+    $highestReadingsByMonth = $this->highestReadingsByMonth();
+
+    foreach ($highestReadingsByMonth AS $date => $value) {
+      $previousMonth = date('Y-m', strtotime($date . " -1 month"));
+
+
+      if ($value > 0 && $highestReadingsByMonth[$previousMonth] > 0) {
+        $readingsArray[$date] = $value - $highestReadingsByMonth[$previousMonth];
+      } else {
+        $readingsArray[$date] = 0;
+      }
+    }
+
+    $readingsArray = array_reverse($readingsArray, true);
+
+    return $readingsArray;
+  }
+
+
+
+
+  public function highestReadingForYear($date = null) {
+    global $db;
+
+    $sql  = "SELECT * FROM readings ";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " AND YEAR(date) = '" . $date . "' ";
+    $sql .= " ORDER BY reading1 DESC";
+    $sql .= " LIMIT 1";
+
+    $maxReading = $db->query($sql)->fetchAll()[0];
+
+    return $maxReading;
+  }
+
+  public function highestReadingsByYear() {
+    global $db;
+
+    $i = 0;
+    do {
+      $lookupDate = date('Y', strtotime($i . " years ago"));
+
+      $reading = $this->highestReadingForYear($lookupDate);
+
+      $readingsArray[$lookupDate] = $reading['reading1'];
+      $i++;
+    } while ($i < 10);
+
+    $readingsArray = array_reverse($readingsArray, true);
+
+    return $readingsArray;
+  }
+
+  public function consumptionByYear() {
+    global $db;
+
+    $highestReadingsByYear = $this->highestReadingsByYear();
+
+    foreach ($highestReadingsByYear AS $date => $value) {
+      $previousYear = $date - 1;
+      $previousYearReading = $highestReadingsByYear[$previousYear];
+
+      if ($value > 0 && $previousYearReading > 0) {
+        $readingsArray[$date] = $value - $previousYearReading;
+      } else {
+        $readingsArray[$date] = 0;
+      }
+    }
+
+    return $readingsArray;
   }
 
 }

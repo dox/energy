@@ -31,6 +31,7 @@ class readings {
     return $readings;
   }
 
+  //UNUSED??
   public function location_all_readings($locationUID = null) {
     global $db;
 
@@ -40,7 +41,7 @@ class readings {
 
     $readings = $db->query($sql)->fetchAll();
 
-    return $readings;
+    //return $readings;
   }
 
   public function create($meterUID = null, $reading1 = null) {
@@ -96,6 +97,8 @@ class readings {
 
     return $output;
   }
+
+  
 
   public function meter_monthly_consumption($meterUID = null, $lookupYear = null) {
     global $db;

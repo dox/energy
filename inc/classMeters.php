@@ -119,7 +119,7 @@ class meters extends meter {
     $type[] = "Electric";
     $type[] = "Gas";
     $type[] = "Water";
-    $type[] = "Refuse";
+    //$type[] = "Refuse";
 
     return $type;
   }
