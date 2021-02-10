@@ -41,7 +41,7 @@ class meter {
   		$class = "bg-light";
   	}
     $icon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . $iconSymbol . "\"/></svg>";
-  	$output = "<span class=\"badge rounded-pill " . $class . "\">" . $icon . $this->type . "</span>";
+  	$output = "<span class=\"badge rounded-pill w-100 " . $class . "\">" . $icon . " " . $this->type . "</span>";
 
     return $output;
   }
@@ -57,11 +57,23 @@ class meter {
   }
 
   public function deleteImage() {
+    global $logsClass;
+
     if (isset($this->photograph)) {
       $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $this->photograph;
 
       if (file_exists($file)) {
         unlink($file);
+
+        $logArray['category'] = "file";
+    		$logArray['type'] = "success";
+    		$logArray['value'] = $file . " file deleted successfully from [meterUID:" . $this->uid . "]";
+    		$logsClass->create($logArray);
+      } else {
+        $logArray['category'] = "file";
+    		$logArray['type'] = "error";
+    		$logArray['value'] = $file . " file did not exist to delete from [meterUID:" . $this->uid . "]";
+    		$logsClass->create($logArray);
       }
     }
   }
@@ -119,7 +131,7 @@ class meter {
   }
 
   public function update($array = null) {
-    global $db;
+    global $db, $logsClass;
 
     $sql  = "UPDATE " . self::$table_name;
 
@@ -136,11 +148,18 @@ class meter {
 
     $update = $db->query($sql);
 
+    $logArray['category'] = "meter";
+    $logArray['type'] = "success";
+    $logArray['value'] = "[meterUID:" . $this->uid . "] updated successfully";
+    $logsClass->create($logArray);
+
     return $update;
   }
 
   public function delete() {
-    global $db;
+    global $db, $logsClass;
+
+    $thisUID = $this->uid;
 
     $sql1  = "DELETE FROM readings";
     $sql1 .= " WHERE meter = '" . $this->uid . "'";
@@ -154,6 +173,11 @@ class meter {
     $sql2 .= " LIMIT 1";
 
     $deleteMeter = $db->query($sql2);
+
+    $logArray['category'] = "meter";
+    $logArray['type'] = "warning";
+    $logArray['value'] = "[meterUID:" . $thisUID . "] deleted successfully";
+    $logsClass->create($logArray);
 
     return $deleteMeter;
   }

@@ -1,8 +1,10 @@
 <?php
 admin_gatekeeper();
 
+$logsClass = new logs;
+
 $title = "Logs";
 echo makeTitle($title, $subtitle, $icons);
-?>
 
-<p>Coming soon...</p>
+echo $logsClass->displayTable();
+?>

@@ -45,13 +45,18 @@ class readings {
   }
 
   public function create($meterUID = null, $reading1 = null) {
-    global $db;
+    global $db, $logsClass;
 
     $sql  = "INSERT INTO " . self::$table_name;
     $sql .= " (meter, date, reading1, username) ";
     $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $_SESSION['username'] . "')";
 
     $insert = $db->query($sql);
+
+    $logArray['category'] = "reading";
+    $logArray['type'] = "success";
+    $logArray['value'] = "[readingUID:" . $insert->lastInsertID() . "] for [meterUID:" . $meterUID . "] created successfully";
+    $logsClass->create($logArray);
 
     return $insert;
   }
@@ -98,7 +103,7 @@ class readings {
     return $output;
   }
 
-  
+
 
   public function meter_monthly_consumption($meterUID = null, $lookupYear = null) {
     global $db;

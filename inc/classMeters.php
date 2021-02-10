@@ -98,7 +98,7 @@ class meters extends meter {
   }
 
   public function create($array = null) {
-	   global $db;
+	   global $db, $logsClass;
 
     $sql  = "INSERT INTO " . self::$table_name;
 
@@ -111,6 +111,11 @@ class meters extends meter {
     $sql .= " VALUES (" . implode(",", $sqlValues) . ")";
 
     $create = $db->query($sql);
+
+    $logArray['category'] = "meter";
+    $logArray['type'] = "success";
+    $logArray['value'] = "[meterUID:" . $create->lastInsertID() . "] created successfully";
+    $logsClass->create($logArray);
 
     return $create;
   }

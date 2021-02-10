@@ -5,6 +5,15 @@ function printArray($array) {
 	echo ("</pre>");
 }
 
+function escape($var) {
+	$var=stripslashes($var);
+	$var=htmlentities($var);
+	$var=strip_tags($var);
+	$var=str_replace("'", "\'", $var);
+
+	return $var;
+}
+
 function autoPluralise ($singular, $plural, $count = 1) {
 	// fantasticly clever function to return the correct plural of a word/count combo
 	// Usage:	$singular	= single version of the word (e.g. 'Bus')
@@ -45,6 +54,18 @@ function admin_gatekeeper() {
 
 		header("Location: http://" . $_SERVER['SERVER_NAME'] . "/index.php?n=logon");
 	  exit;
+	}
+
+	function dateDisplay($date = null, $time = false) {
+		if ($time) {
+			$dateFormat = "Y-m-d H:i:s";
+		} else {
+			$dateFormat = "Y-m-d";
+		}
+
+		$returnDate = date($dateFormat, strtotime($date));
+
+		return $returnDate;
 	}
 }
 ?>

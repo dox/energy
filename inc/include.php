@@ -39,13 +39,12 @@ try {
 
 require_once('inc/globalFunctions.php');
 require_once('inc/database.php');
-//require_once('inc/adLDAP/adLDAP.php');
+require_once('inc/classLogs.php');
 require_once('inc/classLocation.php');
 require_once('inc/classLocations.php');
 require_once('inc/classMeter.php');
 require_once('inc/classMeters.php');
 require_once('inc/classReadings.php');
 
-//$db = new MysqliDb ($db_host, $db_username, $db_password, $db_name);
 $db = new db(db_host, db_username, db_password, db_name);
 ?>

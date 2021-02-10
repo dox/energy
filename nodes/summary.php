@@ -15,7 +15,8 @@ echo makeTitle($title, $subtitle, $icons);
 $utilitiesToInclude = array("Electric", "Gas", "Water");
 
 foreach ($metersClass->types() AS $type) {
-  $output  = "<h1>" . $type . "</h1>";
+  $icon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . strtolower($type) . "\"/></svg>";
+  $output  = "<h1>" . $icon . " " . $type . "</h1>";
   $output .= "<table class=\"table mb-5\">";
   $output .= "<thead>";
   $output .= "<tr>";
