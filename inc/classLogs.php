@@ -60,6 +60,22 @@ class logs {
 		}
 	}
 
+  private function displayCategoryBadge($category = null) {
+    if ($category == "meter") {
+      $class = "bg-primary";
+    } elseif ($category == "reading") {
+      $class = "bg-success";
+    } elseif ($category == "logon") {
+      $class = "bg-primary";
+    } else {
+      $class = "bg-dark";
+    }
+
+    $output = "<span class=\"badge rounded-pill " . $class . " float-end\">" . $category . "</span>";
+
+    return $output;
+  }
+
   private function displayRow($array = null) {
     //$string = 'Some text [mealUID:123] here';
     $string = $log['description'];
@@ -79,8 +95,7 @@ class logs {
     $output .= "<td>" . dateDisplay($array['date'], true) . "</td>";
     $output .= "<td>" . $array['ip'] . "</td>";
     $output .= "<td>" . $array['username'] . "</td>";
-    $output .= "<td>" . $array['category'] . "</td>";
-    $output .= "<td>" . $array['value'] . "</td>";
+    $output .= "<td>" . $array['value'] . $this->displayCategoryBadge($array['category']) . "</td>";
     $output .= "</tr>";
 
     return $output;
@@ -92,7 +107,6 @@ class logs {
     $output .= "<td>" . "Date" . "</td>";
     $output .= "<td>" . "IP" . "</td>";
     $output .= "<td>" . "Username" . "</td>";
-    $output .= "<td>" . "Category" . "</td>";
     $output .= "<td>" . "Value" . "</td>";
     $output .= "</thead>";
 

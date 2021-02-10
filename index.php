@@ -9,14 +9,14 @@
 
 			$logArray['category'] = "logon";
 			$logArray['type'] = "success";
-			$logArray['value'] = "<code>" . $_SESSION['username'] . "</code> logged on successfully";
+			$logArray['value'] = $_SESSION['username'] . " logged on successfully";
 			$logsClass->create($logArray);
 
 		} else {
 			// Username or password is incorrect.
 			$logArray['category'] = "logon";
 			$logArray['type'] = "warning";
-			$logArray['value'] = "<code>" . $_POST['inputUsername'] . "</code> failed to log on.  Username or password incorrect";
+			$logArray['value'] = $_POST['inputUsername'] . " failed to log on.  Username or password incorrect";
 			$logsClass->create($logArray);
 
 			session_destroy();
@@ -29,6 +29,7 @@
 		$logArray['value'] = $_SESSION['username'] . " logged off successfully";
 		$logsClass->create($logArray);
 
+		session_destroy();
 	  $_SESSION['logon'] = false;
 	}
 ?>
