@@ -46,9 +46,9 @@ class meter {
     return $output;
   }
 
-  public function getImage() {
+  public function displayImage() {
     if (isset($this->photograph)) {
-      $output = "<img src=\"uploads/" . $this->photograph . "\" class=\"rounded img-fluid\" alt=\"Image of utlity meter\">";
+      $output = "<img src=\"uploads/" . $this->photograph . "\" class=\"rounded img-fluid w-100 mb-4\" alt=\"Image of utlity meter\">";
     } else {
       $output = "";
     }

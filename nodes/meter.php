@@ -41,18 +41,17 @@ echo makeTitle($title, $subtitle, $icons);
 
     <?php
     if ($_SESSION['logon'] == true) {
-      $class = "";
-    } else {
-      $class = " disabled";
-    }
     ?>
 
     <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=meter&meterUID=<?php echo $meter->uid; ?>">
       <div class="input-group">
-        <input type="text" class="form-control" <?php echo $class; ?> name="reading1" placeholder="Reading">
-        <button type="submit" class="btn btn-secondary" <?php echo $class; ?> name="submit">Submit</button>
+        <input type="text" class="form-control" name="reading1" placeholder="Reading">
+        <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
       </div>
     </form>
+    <?php } ?>
+
+    <?php echo $meter->displayImage(); ?>
 
     <h4 class="d-flex justify-content-between align-items-center mb-3">
       <span class="text-muted">Readings</span>
@@ -64,6 +63,12 @@ echo makeTitle($title, $subtitle, $icons);
     <ul class="list-group mb-3">
       <?php
       foreach ($readings AS $reading) {
+        if ($_SESSION['logon'] == true) {
+          $deleteIcon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#delete\"/></svg> ";
+        } else {
+          $deleteIcon = "";
+        }
+
         $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\">";
         $output .= "<div>";
         $output .= "<h6 class=\"my-0\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</h6>";
@@ -76,8 +81,6 @@ echo makeTitle($title, $subtitle, $icons);
       }
       ?>
     </ul>
-
-    <?php echo $meter->getImage(); ?>
   </div>
 </div>
 
