@@ -119,6 +119,16 @@ var annualConsumptionChart = new Chart(annualConsumption, {
 foreach ($meter->consumptionByYear() AS $month => $value) {
   $chartLabelsYearly[] = "'" . $month . "'";
   $chartDataYearly[] = "'" . $value . "'";
+
+  if ($month == date('Y-m')) {
+    $currentValue = $value;
+    $percentageThroughYear = (365 - date('z'))/100;
+    $projectedConsumption = $currentValue * $percentageThroughYear;
+
+    $chartDataYearlyProjection[] = "'" . $projectedConsumption . "'";
+  } else {
+    $chartDataYearlyProjection[] = "'0'";
+  }
 }
 ?>
 var yearlyConsumption = document.getElementById('yearlyConsumption').getContext('2d');
@@ -131,9 +141,14 @@ var yearlyConsumptionChart = new Chart(yearlyConsumption, {
         labels: [<?php echo implode(",", $chartLabelsYearly); ?>],
         datasets: [{
             label: 'Consumption by Year',
-            backgroundColor: 'rgb(255, 99, 132, 0.3)',
+            backgroundColor: 'rgb(255, 99, 132, 0.6)',
             borderColor: 'rgb(255, 99, 132)',
             data: [<?php echo implode(",", $chartDataYearly); ?>]
+        },{
+            label: 'Projected Consumption',
+            backgroundColor: 'rgb(255, 99, 132, 0.3)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [<?php echo implode(",", $chartDataYearlyProjection); ?>]
         }]
     },
 
