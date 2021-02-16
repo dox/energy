@@ -121,11 +121,7 @@ foreach ($meter->consumptionByYear() AS $month => $value) {
   $chartDataYearly[] = "'" . $value . "'";
 
   if ($month == date('Y-m')) {
-    $currentValue = $value;
-    $percentageThroughYear = (365 - date('z'))/100;
-    $projectedConsumption = $currentValue * $percentageThroughYear;
-
-    $chartDataYearlyProjection[] = "'" . $projectedConsumption . "'";
+    $chartDataYearlyProjection[] = "'" . $meter->getProjectedConsumptionForRemainderOfYear() . "'";
   } else {
     $chartDataYearlyProjection[] = "'0'";
   }

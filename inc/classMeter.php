@@ -299,6 +299,53 @@ class meter {
     return $readingsArray;
   }
 
+  public function getMostRecentReading() {
+    global $db;
+
+    $sql  = "SELECT * FROM readings ";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 1";
+
+    $recentReading = $db->query($sql)->fetchAll()[0];
+
+    return $recentReading;
+  }
+
+  public function getFirstReading() {
+    global $db;
+
+    $sql  = "SELECT * FROM readings ";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " AND date > '" . date('Y-m-d', strtotime('3 years ago')) . "' ";
+    $sql .= " ORDER BY date ASC";
+    $sql .= " LIMIT 1";
+
+    $recentReading = $db->query($sql)->fetchAll()[0];
+
+    return $recentReading;
+  }
+
+  public function getProjectedConsumptionForRemainderOfYear() {
+    global $db;
+
+    $firstReading = $this->getFirstReading();
+    $lastReading = $this->getMostRecentReading();
+
+    $consumption = $lastReading['reading1'] - $firstReading['reading1'];
+    $secondsDiff = strtotime($lastReading['date']) - strtotime($firstReading['date']);
+    $daysDiff = round($secondsDiff / (60 * 60 * 24));
+
+
+    $dailyConsumptionAverage = $consumption / $daysDiff;
+
+    $daysLeftInYear = 365 - date('z');
+
+    $projectedConsumption = round($dailyConsumptionAverage * $daysLeftInYear);
+
+    return $projectedConsumption;
+  }
+
 }
 
 ?>
