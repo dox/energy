@@ -342,9 +342,9 @@ class meter {
     $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
 
     $projectedConsumption = $metersAverageConsumptionDaily * $daysLeftInYear;
-    $projectedAdditionalConsumption = $projectedConsumption - $this->consumptionByYear()[date('Y')];
+    //$projectedAdditionalConsumption = $projectedConsumption - $this->consumptionByYear()[date('Y')];
 
-    return $projectedAdditionalConsumption;
+    return $projectedConsumption;
   }
 
 }

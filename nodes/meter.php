@@ -268,6 +268,7 @@ var meterReadingsChart = new Chart(meterReadings, {
         $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
 
         $projectedAdditionalConsumption = $meter->getProjectedConsumptionForRemainderOfYear();
+        $projectedYearlyConsumption = $projectedAdditionalConsumption + $meter->consumptionByYear()[date('Y')];
         ?>
         <p>Projected consumption is calculated based on the difference between the meter's first and last reading (the actual total consumption for the meter), divided by the difference in these 2 readings (in days), multiplied by the remaining days in the year.</p>
         <hr />
@@ -278,7 +279,8 @@ var meterReadingsChart = new Chart(meterReadings, {
         <p>Average Consumption Per Day: <?php echo $metersAverageConsumptionDaily . " " . $meterUnits; ?></p>
         <p>Current Year's Consumption: <?php echo $meter->consumptionByYear()[date('Y')] . " " . $meterUnits; ?></p>
         <p>Days Left In This Year: <?php echo $daysLeftInYear; ?></p>
-        <p>Projected Additional Consumption: <strong><?php echo $projectedAdditionalConsumption . " " . $meterUnits; ?></strong></p>
+        <p>Projected Additional Consumption: <strong><?php echo $projectedAdditionalConsumption . " " . $meterUnits; ?></strong><br />
+        Projected Yearly Consumption: <strong><?php echo $projectedYearlyConsumption . " " . $meterUnits; ?></strong></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link link-secondary mr-auto" data-bs-dismiss="modal">Close</button>
