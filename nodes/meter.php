@@ -276,7 +276,7 @@ var meterReadingsChart = new Chart(meterReadings, {
         Meter's Last Reading: <?php echo number_format($metersLastReading) . " " . $meterUnits; ?> <i>(Date: <?php echo $metersLastDate; ?>)</i></p>
         <p>Meter's Total Consumption: <?php echo number_format($metersTotalConsumption) . " " . $meterUnits; ?></p>
         <p>Duration between First/Last Reading: <?php echo $metersDurationDays; ?> days</p>
-        <p>Average Consumption Per Day: <?php echo number_format($metersAverageConsumptionDaily) . " " . $meterUnits; ?></p>
+        <p>Average Consumption Per Day: <?php echo number_format($metersAverageConsumptionDaily,2) . " " . $meterUnits; ?></p>
         <p>Current Year's Consumption: <?php echo number_format($meter->consumptionByYear()[date('Y')]) . " " . $meterUnits; ?></p>
         <p>Days Left In This Year: <?php echo $daysLeftInYear; ?></p>
         <p>Projected Additional Consumption: <strong><?php echo number_format($projectedAdditionalConsumption) . " " . $meterUnits; ?></strong><br />
