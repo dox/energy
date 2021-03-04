@@ -272,15 +272,15 @@ var meterReadingsChart = new Chart(meterReadings, {
         ?>
         <p>Projected consumption is calculated based on the difference between the meter's first and last reading (the actual total consumption for the meter), divided by the difference in these 2 readings (in days), multiplied by the remaining days in the year.</p>
         <hr />
-        <p>Meter's First Reading: <?php echo $metersFirstReading . " " . $meterUnits; ?> <i>(Date: <?php echo $metersFirstDate; ?>)</i><br />
-        Meter's Last Reading: <?php echo $metersLastReading . " " . $meterUnits; ?> <i>(Date: <?php echo $metersLastDate; ?>)</i></p>
-        <p>Meter's Total Consumption: <?php echo $metersTotalConsumption . " " . $meterUnits; ?></p>
+        <p>Meter's First Reading: <?php echo number_format($metersFirstReading) . " " . $meterUnits; ?> <i>(Date: <?php echo $metersFirstDate; ?>)</i><br />
+        Meter's Last Reading: <?php echo number_format($metersLastReading) . " " . $meterUnits; ?> <i>(Date: <?php echo $metersLastDate; ?>)</i></p>
+        <p>Meter's Total Consumption: <?php echo number_format($metersTotalConsumption) . " " . $meterUnits; ?></p>
         <p>Duration between First/Last Reading: <?php echo $metersDurationDays; ?> days</p>
-        <p>Average Consumption Per Day: <?php echo $metersAverageConsumptionDaily . " " . $meterUnits; ?></p>
-        <p>Current Year's Consumption: <?php echo $meter->consumptionByYear()[date('Y')] . " " . $meterUnits; ?></p>
+        <p>Average Consumption Per Day: <?php echo number_format($metersAverageConsumptionDaily) . " " . $meterUnits; ?></p>
+        <p>Current Year's Consumption: <?php echo number_format($meter->consumptionByYear()[date('Y')]) . " " . $meterUnits; ?></p>
         <p>Days Left In This Year: <?php echo $daysLeftInYear; ?></p>
-        <p>Projected Additional Consumption: <strong><?php echo $projectedAdditionalConsumption . " " . $meterUnits; ?></strong><br />
-        Projected Yearly Consumption: <strong><?php echo $projectedYearlyConsumption . " " . $meterUnits; ?></strong></p>
+        <p>Projected Additional Consumption: <strong><?php echo number_format($projectedAdditionalConsumption) . " " . $meterUnits; ?></strong><br />
+        Projected Yearly Consumption: <strong><?php echo number_format($projectedYearlyConsumption) . " " . $meterUnits; ?></strong></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link link-secondary mr-auto" data-bs-dismiss="modal">Close</button>
