@@ -29,6 +29,7 @@ echo makeTitle($title, $subtitle, $icons);
 
     <h3>Consumption by Year</h3>
     <canvas id="yearlyConsumption"></canvas>
+    <button type="button" class="btn btn-small btn-link float-end clear-fix" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
 
     <hr class="my-4">
 
@@ -239,6 +240,48 @@ var meterReadingsChart = new Chart(meterReadings, {
       <div class="modal-footer">
         <button type="button" class="btn btn-link link-secondary mr-auto" data-bs-dismiss="modal">Close</button>
         <a href="index.php?n=meter_edit&deleteMeterUID=<?php echo $meter->uid; ?>" role="button" class="btn btn-danger"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" id="projectedConsumptionModal" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Projected Consumption</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <?php
+        $meterUnits = $meter->unit;
+        $metersFirstReading = $meter->getFirstReading()['reading1'];
+        $metersLastReading = $meter->getMostRecentReading()['reading1'];
+        $metersTotalConsumption = $metersLastReading - $metersFirstReading;
+
+        $daysLeftInYear = 365 - date('z');
+
+        $metersFirstDate = date('Y-m-d', strtotime($meter->getFirstReading()['date']));
+        $metersLastDate = date('Y-m-d', strtotime($meter->getMostRecentReading()['date']));
+        $metersDurationSeconds = abs(strtotime($metersLastDate) - strtotime($metersFirstDate));
+        $metersDurationDays = round($metersDurationSeconds / (60 * 60 * 24));
+        $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
+
+        $projectedAdditionalConsumption = $meter->getProjectedConsumptionForRemainderOfYear();
+        ?>
+        <p>Projected consumption is calculated based on the difference between the meter's first and last reading (the actual total consumption for the meter), divided by the difference in these 2 readings (in days), multiplied by the remaining days in the year.</p>
+        <hr />
+        <p>Meter's First Reading: <?php echo $metersFirstReading . " " . $meterUnits; ?> <i>(Date: <?php echo $metersFirstDate; ?>)</i><br />
+        Meter's Last Reading: <?php echo $metersLastReading . " " . $meterUnits; ?> <i>(Date: <?php echo $metersLastDate; ?>)</i></p>
+        <p>Meter's Total Consumption: <?php echo $metersTotalConsumption . " " . $meterUnits; ?></p>
+        <p>Duration between First/Last Reading: <?php echo $metersDurationDays; ?> days</p>
+        <p>Average Consumption Per Day: <?php echo $metersAverageConsumptionDaily . " " . $meterUnits; ?></p>
+        <p>Current Year's Consumption: <?php echo $meter->consumptionByYear()[date('Y')] . " " . $meterUnits; ?></p>
+        <p>Days Left In This Year: <?php echo $daysLeftInYear; ?></p>
+        <p>Projected Additional Consumption: <strong><?php echo $projectedAdditionalConsumption . " " . $meterUnits; ?></strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link link-secondary mr-auto" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

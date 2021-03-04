@@ -317,7 +317,7 @@ class meter {
 
     $sql  = "SELECT * FROM readings ";
     $sql .= " WHERE meter = '" . $this->uid . "' ";
-    $sql .= " AND date > '" . date('Y-m-d', strtotime('3 years ago')) . "' ";
+    //$sql .= " AND date > '" . date('Y-m-d', strtotime('3 years ago')) . "' ";
     $sql .= " ORDER BY date ASC";
     $sql .= " LIMIT 1";
 
@@ -329,21 +329,22 @@ class meter {
   public function getProjectedConsumptionForRemainderOfYear() {
     global $db;
 
-    $firstReading = $this->getFirstReading();
-    $lastReading = $this->getMostRecentReading();
-
-    $consumption = $lastReading['reading1'] - $firstReading['reading1'];
-    $secondsDiff = strtotime($lastReading['date']) - strtotime($firstReading['date']);
-    $daysDiff = round($secondsDiff / (60 * 60 * 24));
-
-
-    $dailyConsumptionAverage = $consumption / $daysDiff;
+    $metersFirstReading = $this->getFirstReading()['reading1'];
+    $metersLastReading = $this->getMostRecentReading()['reading1'];
+    $metersTotalConsumption = $metersLastReading - $metersFirstReading;
 
     $daysLeftInYear = 365 - date('z');
 
-    $projectedConsumption = round($dailyConsumptionAverage * $daysLeftInYear);
+    $metersFirstDate = date('Y-m-d', strtotime($this->getFirstReading()['date']));
+    $metersLastDate = date('Y-m-d', strtotime($this->getMostRecentReading()['date']));
+    $metersDurationSeconds = abs(strtotime($metersLastDate) - strtotime($metersFirstDate));
+    $metersDurationDays = round($metersDurationSeconds / (60 * 60 * 24));
+    $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
 
-    return $projectedConsumption;
+    $projectedConsumption = $metersAverageConsumptionDaily * $daysLeftInYear;
+    $projectedAdditionalConsumption = $projectedConsumption - $this->consumptionByYear()[date('Y')];
+
+    return $projectedAdditionalConsumption;
   }
 
 }
