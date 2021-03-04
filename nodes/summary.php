@@ -58,8 +58,9 @@ foreach ($metersClass->types() AS $type) {
       $output .= "<td>" . number_format($arraySum) . "</td>";
       $i--;
     } while ($i >= 0);
+    $output .= "</tr>";
   }
-  $output .= "<table>";
+  $output .= "</table>";
 
   echo $output;
 }
