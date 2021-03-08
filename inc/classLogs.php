@@ -104,10 +104,10 @@ class logs {
   public function displayTable() {
     $output  = "<table class=\"table\">";
     $output .= "<thead>";
-    $output .= "<td>" . "Date" . "</td>";
-    $output .= "<td>" . "IP" . "</td>";
-    $output .= "<td>" . "Username" . "</td>";
-    $output .= "<td>" . "Value" . "</td>";
+    $output .= "<th>" . "Date" . "</th>";
+    $output .= "<th>" . "IP" . "</th>";
+    $output .= "<th>" . "Username" . "</th>";
+    $output .= "<th>" . "Value" . "</th>";
     $output .= "</thead>";
 
     $output .= "<tbody>";
