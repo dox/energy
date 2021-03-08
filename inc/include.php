@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-require_once('config.php');
+$root = $_SERVER['DOCUMENT_ROOT'];
+
+require_once($root . '/config.php');
 
 if (debug == true) {
 	ini_set('display_errors', 1);
@@ -13,7 +15,7 @@ if (debug == true) {
 	error_reporting(0);
 }
 
-require 'vendor/autoload.php';
+require $root . '/vendor/autoload.php';
 
 use LdapRecord\Connection;
 
@@ -37,14 +39,14 @@ try {
 }
 
 
-require_once('inc/globalFunctions.php');
-require_once('inc/database.php');
-require_once('inc/classLogs.php');
-require_once('inc/classLocation.php');
-require_once('inc/classLocations.php');
-require_once('inc/classMeter.php');
-require_once('inc/classMeters.php');
-require_once('inc/classReadings.php');
+require_once($root . '/inc/globalFunctions.php');
+require_once($root . '/inc/database.php');
+require_once($root . '/inc/classLogs.php');
+require_once($root . '/inc/classLocation.php');
+require_once($root . '/inc/classLocations.php');
+require_once($root . '/inc/classMeter.php');
+require_once($root . '/inc/classMeters.php');
+require_once($root . '/inc/classReadings.php');
 
 $db = new db(db_host, db_username, db_password, db_name);
 ?>
