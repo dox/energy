@@ -3,7 +3,7 @@ $locationsClass = new locations();
 $readingsClass = new readings();
 $meter = new meter($_GET['meterUID']);
 
-if (isset($_POST['reading1'])) {
+if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
   $readingsClass->create($meter->uid, $_POST['reading1']);
 }
 
@@ -65,15 +65,15 @@ echo makeTitle($title, $subtitle, $icons);
       <?php
       foreach ($readings AS $reading) {
         if ($_SESSION['logon'] == true) {
-          $deleteIcon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#delete\"/></svg> ";
+          $deleteIcon = "<svg width=\"1em\" height=\"1em\" onclick=\"readingDelete(" . $reading['uid'] . ")\" class=\"text-decoration-none text-muted me-1\"><use xlink:href=\"inc/icons.svg#delete\"/></svg>";
         } else {
           $deleteIcon = "";
         }
 
-        $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\">";
+        $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\" id=\"reading_row_" . $reading['uid' ]. "\">";
         $output .= "<div>";
         $output .= "<h6 class=\"my-0\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</h6>";
-        $output .= "<small class=\"text-muted\">Recorded By: " . $reading['username'] . "</small>";
+        $output .= "<small class=\"text-muted\">" . $deleteIcon . "Recorded By: " . $reading['username'] . "</small>";
         $output .= "</div>";
         $output .= "<span class=\"text-muted\">" . number_format($reading['reading1']) . " " . $meter->unit . "</span>";
         $output .= "</li>";
@@ -86,6 +86,41 @@ echo makeTitle($title, $subtitle, $icons);
 </div>
 
 <script>
+function readingDelete(this_id) {
+  event.preventDefault();
+
+  var readingRow = document.getElementById('reading_row_' + this_id);
+
+  var isGood=confirm('Are you sure you want to delete this specific meter reading?  This action cannot be undone!');
+
+	if(isGood) {
+    var formData = new FormData();
+
+    formData.append("readingUID", this_id);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", "../actions/reading_delete.php", true);
+    request.send(formData);
+
+    // 4. This will be called after the response is received
+    request.onload = function() {
+      if (request.status != 200) { // analyze HTTP status of the response
+        alert("Something went wrong.  Please refresh this page and try again.");
+        alert(`Error ${request.status}: ${request.statusText}`); // e.g. 404: Not Found
+      } else {
+        readingRow.className = 'visually-hidden';
+      }
+    }
+
+    request.onerror = function() {
+      alert("Request failed");
+    };
+
+    return false;
+  }
+}
+
 <?php
 foreach ($meter->consumptionByMonth() AS $month => $value) {
   $chartLabelsMonthly[] = "'" . $month . "'";

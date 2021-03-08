@@ -61,6 +61,23 @@ class readings {
     return $insert;
   }
 
+  public function delete($readingUID = null) {
+    global $db, $logsClass;
+
+    $sql  = "DELETE FROM " . self::$table_name;
+    $sql .= " WHERE uid = '" . $readingUID . "'";
+    $sql .= " LIMIT 1";
+
+    $delete = $db->query($sql);
+
+    $logArray['category'] = "reading";
+    $logArray['type'] = "warning";
+    $logArray['value'] = "[readingUID:" . $readingUID . "] deleted successfully";
+    $logsClass->create($logArray);
+
+    return $delete;
+  }
+
   public function meterTable($meters = null) {
     $output .= "<table class=\"table\">";
     $output .= "<thead>";
