@@ -81,7 +81,7 @@ class meters extends meter {
         $rowClass = "table-secondary d-none";
       }
       $output .= "<tr class=\"" . $rowClass . "\">";
-      $output .= "<th scope=\"row\"><a href=\"index.php?n=meter&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
+      $output .= "<th scope=\"row\"><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td>" . number_format($meter->current_reading()) . " " . $meter->unit . "</td>";
       $output .= "<td>" . $meter->daysSinceLastUpdate() . "</td>";

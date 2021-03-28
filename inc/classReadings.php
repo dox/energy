@@ -19,6 +19,18 @@ class readings {
     return $meters;
   }
 
+  public function getRecentReadings() {
+    global $db;
+
+    $sql  = "SELECT * FROM " . self::$table_name;
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 40";
+
+    $readings = $db->query($sql)->fetchAll();
+
+    return $readings;
+  }
+
   public function meter_all_readings($meterUID = null) {
     global $db;
 

@@ -1,8 +1,7 @@
-<?php
-$title = "Accessibility Statement";
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Accessibility Statement</h1>
+</div>
 
-echo makeTitle($title, $subtitle, $icons);
-?>
 <p>This accessibility statement applies to St Edmund Hall&rsquo;s Utility Meter Readings System: <a href="http://readings.seh.ox.ac.uk/">http://readings.seh.ox.ac.uk/</a>.</p>
 <p>This website is run by St Edmund Hall. We want as many people as possible to be able to use this website, and we are working towards bringing it in line with the <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1</a> AA standard (WCAG).</p>
 

@@ -18,12 +18,11 @@ if (isset($_POST['name'])) {
 	exit();
 }
 
-$title = "Add Meter";
-$subtitle = $meter->name . ", " . $location->name;
-
-echo makeTitle($title, $subtitle);
-
 ?>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Node: Add</h1>
+</div>
 
 <form method="post" id="meterUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 	<div class="mb-3">

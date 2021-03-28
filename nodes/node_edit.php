@@ -4,7 +4,7 @@ admin_gatekeeper();
 $locationsClass = new locations();
 $metersClass = new meters();
 $readingsClass = new readings();
-$meter = new meter($_GET['meterUID']);
+$meter = new meter($_GET['nodeUID']);
 $location = new location($meter->location);
 
 if (isset($_POST['uid'])) {
@@ -16,7 +16,7 @@ if (isset($_POST['uid'])) {
   }
 
   $meter->update($_POST);
-  $meter = new meter($_GET['meterUID']);
+  $meter = new meter($_POST['uid']);
 }
 
 if (isset($_GET['deleteMeterUID'])) {
@@ -25,13 +25,11 @@ if (isset($_GET['deleteMeterUID'])) {
   echo "Meter and corresponding readings deleted";
   exit();
 }
-
-$title = "Edit Meter";
-$subtitle = $meter->name . ", " . $location->name;
-
-echo makeTitle($title, $subtitle);
-
 ?>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Node: Edit</h1>
+</div>
 
 <form method="post" id="meterUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 	<div class="mb-3">

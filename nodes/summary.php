@@ -7,16 +7,17 @@ $metersClass = new meters;
 $locations = new locations;
 $locations = $locations->all();
 
-$title = "Usage Summary";
-//$subtitle = $location->name;
-
-echo makeTitle($title, $subtitle, $icons);
+?>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Site Summary</h1>
+</div>
+<?php
 
 $utilitiesToInclude = array("Electric", "Gas", "Water");
 
 foreach ($metersClass->types() AS $type) {
   $icon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . strtolower($type) . "\"/></svg>";
-  $output  = "<h1>" . $icon . " " . $type . "</h1>";
+  $output  = "<h3>" . $icon . " " . $type . "</h3>";
   $output .= "<table class=\"table mb-5\">";
   $output .= "<thead>";
   $output .= "<tr>";

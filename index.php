@@ -41,7 +41,7 @@
   <meta name="description" content="">
   <meta name="author" content="Andrew Breakspear">
   <meta name="generator" content="Github Atom">
-  <title>Utility Meter Readings</title>
+  <title><?php echo site_name; ?></title>
 
 	<link rel="apple-touch-icon" sizes="57x57" href="/inc/favicons/apple-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="/inc/favicons/apple-icon-60x60.png">
@@ -63,37 +63,53 @@
 
   <link rel="canonical" href="http://readings.seh.ox.ac.uk">
 
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.css" integrity="sha256-IvM9nJf/b5l2RoebiFno92E5ONttVyaEEsdemDC6iQA=" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha256-TQq84xX6vkwR0Qs1qH5ADkP+MvH0W+9E7TdHJsoIQiM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+	<script src="/js/chart.js"></script>
+
+	<link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+	<script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1"></script>
+
+  <link href="css/application.css" rel="stylesheet">
 </head>
 
 <body>
+
 <?php include_once("views/header.php"); ?>
-<main>
-	<div class="py-5">
-		<?php
-		if (isset($_GET['n'])) {
-			$node = "nodes/" . $_GET['n'] . ".php";
 
-			if (!file_exists($node)) {
-				$node = "nodes/404.php";
-			}
-		} elseif (!isset($_GET['n'])) {
-			$node = "nodes/index.php";
-		} else {
-			$node = "nodes/404.php";
-		}
+<div class="container-fluid">
+  <div class="row">
+    <?php include_once("views/sidebar.php"); ?>
 
-		echo "<div class=\"container\">";
-		include_once($node);
-		echo "</div>";
-		?>
-	</div>
-</main>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <?php
+			if (isset($_SESSION['last_node_access'])) {
+				$node = "nodes/" . $_SESSION['last_node_access'] . ".php";
+				unset($_SESSION['last_node_access']);
+			} elseif (isset($_GET['n'])) {
+  			$node = "nodes/" . $_GET['n'] . ".php";
 
-<?php include_once("views/footer.php"); ?>
+  			if (!file_exists($node)) {
+  				$node = "nodes/404.php";
+  			}
+  		} elseif (!isset($_GET['n'])) {
+  			$node = "nodes/dashboard.php";
+  		} else {
+  			$node = "nodes/404.php";
+  		}
+
+  		echo "<div class=\"container\">";
+  		include_once($node);
+  		echo "</div>";
+  		?>
+
+			<?php include_once("views/footer.php"); ?>
+    </main>
+  </div>
+</div>
 </body>
 </html>

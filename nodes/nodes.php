@@ -1,29 +1,52 @@
 <?php
 $locationsClass = new locations();
 $readingsClass = new readings();
-$meter = new meter($_GET['meterUID']);
+$metersClass = new meters();
 
 if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
   $readingsClass->create($meter->uid, $_POST['reading1']);
 }
 
-$location = new location($meter->location);
 $readings = $readingsClass->meter_all_readings($meter->uid);
+?>
 
-$title = $meter->name;
-$subtitle = $location->name;
-if ($_SESSION['logon'] == true) {
-  $icons[] = array("class" => "btn-danger", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#refuse\"/></svg> Delete Meter", "value" => "data-bs-toggle=\"modal\" data-bs-target=\"#deleteMeterModal\"");
-  $icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#edit\"/></svg> Edit Meter", "value" => "onclick=\"location.href='index.php?n=meter_edit&meterUID=" . $meter->uid . "'\"");
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Nodes</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+        <ul class="dropdown-menu" aria-labelledby="title_dropdown">
+          <li><a class="dropdown-item" href="index.php?n=node_add"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Add Node</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php
+foreach ($locationsClass->all() AS $location) {
+  $meters = $metersClass->allByLocation($location['uid'], "all");
+
+  $output  = "<h3><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h3>";
+  $output .= $metersClass->meterTable($meters);
+
+  foreach ($meters AS $meter) {
+    if ($meter['enabled'] == 1) {
+    //  $output .= $metersClass->displayMeterCard($meter['uid']);
+    }
+  }
+
+  //$output .= "</div>";
+
+  echo $output;
 }
-
-echo makeTitle($title, $subtitle, $icons);
 ?>
 
 <div class="row">
   <div class="col-md-8">
     <h3>Consumption by Month</h3>
-    <canvas id="annualConsumption"></canvas>
+    <canvas id="monthlyConsumption"></canvas>
 
     <hr class="my-4">
 
@@ -85,6 +108,10 @@ echo makeTitle($title, $subtitle, $icons);
   </div>
 </div>
 
+
+
+
+
 <script>
 function readingDelete(this_id) {
   event.preventDefault();
@@ -123,33 +150,11 @@ function readingDelete(this_id) {
 
 <?php
 foreach ($meter->consumptionByMonth() AS $month => $value) {
-  $chartLabelsMonthly[] = "'" . $month . "'";
+  $chartLabelsMonthly[] = "'" . date('M', strtotime($month)) . "'";
   $chartDataMonthly[] = "'" . $value . "'";
 }
 ?>
-var annualConsumption = document.getElementById('annualConsumption').getContext('2d');
-var annualConsumptionChart = new Chart(annualConsumption, {
-    // The type of chart we want to create
-    type: 'line',
 
-    // The data for our dataset
-    data: {
-        labels: [<?php echo implode(",", $chartLabelsMonthly); ?>],
-        datasets: [{
-            label: 'Consumption',
-            backgroundColor: 'rgb(255, 99, 132, 0.3)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [<?php echo implode(",", $chartDataMonthly); ?>]
-        }]
-    },
-
-    // Configuration options go here
-    options: {
-      legend: {
-        display: false
-      }
-    }
-});
 
 <?php
 foreach ($meter->consumptionByYear() AS $month => $value) {
@@ -163,99 +168,206 @@ foreach ($meter->consumptionByYear() AS $month => $value) {
   }
 }
 ?>
-var yearlyConsumption = document.getElementById('yearlyConsumption').getContext('2d');
-var yearlyConsumptionChart = new Chart(yearlyConsumption, {
-    // The type of chart we want to create
-    type: 'bar',
-
-    // The data for our dataset
-    data: {
-        labels: [<?php echo implode(",", $chartLabelsYearly); ?>],
-        datasets: [{
-            label: 'Consumption by Year',
-            backgroundColor: 'rgb(255, 99, 132, 0.6)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [<?php echo implode(",", $chartDataYearly); ?>]
-        },{
-            label: 'Projected Consumption',
-            backgroundColor: 'rgb(255, 99, 132, 0.3)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [<?php echo implode(",", $chartDataYearlyProjection); ?>]
-        }]
-    },
-
-    // Configuration options go here
-    options: {
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          stacked: true
-        }],
-        yAxes: [{
-          stacked: true
-        }]
-      }
-    }
-});
 
 <?php
 foreach ($readings AS $reading) {
   $timeChartArrray["'" . $reading['date'] . "'"] = "'" . $reading['reading1'] . "'";
 }
+
 ?>
 var timeFormat = 'YYYY/MM/DD';
 
-var meterReadings = document.getElementById('meterReadings').getContext('2d');
-var meterReadingsChart = new Chart(meterReadings, {
-  type: 'line',
+var config_meter_consumption_monthly = {
+	type: 'bar',
+	data: {
+	   labels: [ <?php echo implode(",", $chartLabelsMonthly); ?> ],
+     datasets: [{
+      label: 'Monthly Consumption',
+      backgroundColor: "#3CB44B30",
+      borderColor: "#3CB44B",
+      fill: true,
+      data: [<?php echo implode(",", $chartDataMonthly); ?>]
+    }]
+	},
+	options: {
+    plugins: {
+			title: {
+				text: 'Monthly Consumption',
+				display: false
+			},
+      legend: {
+        display: false,
+      },
+		},
+		scales: {
+			x: {
+				title: {
+				  display: false
+				}
+			},
+			y: {
+				title: {
+					display: true,
+					text: '<?php echo $meter->unit; ?>'
+				}
+			}
+		},
+	}
+};
+
+var config_meter_consumption_yearly = {
+	type: 'bar',
   data: {
-      labels: [<?php echo implode(",", array_keys($timeChartArrray)); ?>],
+      labels: [<?php echo implode(",", $chartLabelsYearly); ?>],
       datasets: [{
-          label: '<?php echo $meter->unit; ?>',
-          borderColor: "#3CB44B",
-          backgroundColor: "#3CB44B30",
-          fill: true,
-          data: [<?php echo implode(",", $timeChartArrray); ?>]
+          label: 'Consumption by Year',
+          backgroundColor: 'rgb(255, 99, 132, 0.6)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: [<?php echo implode(",", $chartDataYearly); ?>]
+      },{
+          label: 'Projected Consumption',
+          backgroundColor: 'rgb(255, 99, 132, 0.3)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: [<?php echo implode(",", $chartDataYearlyProjection); ?>]
       }]
   },
-  options: {
-      title: {
-          text: 'Running Budget'
-      },
-      elements: {
-          line: {
-              tension: 0
-          }
-      },
+	options: {
+    plugins: {
+			title: {
+				text: 'Yearly Consumption',
+				display: false
+			},
       legend: {
-          display: false
+        display: false,
       },
-      scales: {
-          xAxes: [{
-              type: 'time',
-              time: {
-                  parser: timeFormat,
-                  // round: 'day'
-                  tooltipFormat: 'll'
-              },
-              scaleLabel: {
-                  display: false
-              }
-          }],
-          yAxes: [{
-              ticks: {
-                  suggestedMin: <?php echo min($timeChartArrray); ?>
-              },
-              scaleLabel: {
-                  display: false,
-                  labelString: '<?php echo $meter->unit; ?>'
-              }
-          }]
+		},
+		scales: {
+			x: {
+				title: {
+				  display: false
+				},
+        stacked: true
+			},
+			y: {
+				title: {
+					display: true,
+					text: '<?php echo $meter->unit; ?>'
+				},
+        ticks: {
+            suggestedMin: <?php echo min($timeChartArrray); ?>
+        },
+        stacked: true
+			}
+		},
+	}
+};
+
+var config_meter_readings = {
+	type: 'line',
+	data: {
+	   labels: [ <?php echo implode(",", array_keys($timeChartArrray)); ?> ],
+     datasets: [{
+      label: 'Meter Total',
+      backgroundColor: "#3CB44B30",
+      borderColor: "#3CB44B",
+      fill: true,
+      data: [<?php //echo implode(",", $timeChartArrray); ?>]
+    }]
+	},
+	options: {
+		plugins: {
+			title: {
+				text: 'Meter Total',
+				display: false
+			},
+      legend: {
+        display: false,
       },
+		},
+		scales: {
+			x: {
+				type: 'time',
+        min: <?php echo min(array_keys($timeChartArrray)); ?>,
+				time: {
+					parser: timeFormat,
+					// round: 'day'
+					tooltipFormat: 'll',
+          scaleLabel: {
+              display: false
+          }
+				},
+				title: {
+				  display: false
+				}
+			},
+			y: {
+				title: {
+					display: true,
+					text: '<?php echo $meter->unit; ?>'
+				},
+        ticks: {
+            suggestedMin: <?php echo min($timeChartArrray); ?>
+        },
+
+			}
+		},
+	}
+};
+
+window.onload = function() {
+  var chart_meter_consumption_monthly = document.getElementById('monthlyConsumption').getContext('2d');
+	window.monthly = new Chart(chart_meter_consumption_monthly, config_meter_consumption_monthly);
+
+  var chart_meter_consumption_yearly = document.getElementById('yearlyConsumption').getContext('2d');
+	window.yearly = new Chart(chart_meter_consumption_yearly, config_meter_consumption_yearly);
+
+  var chart_meter_readings = document.getElementById('meterReadings').getContext('2d');
+	window.readings = new Chart(chart_meter_readings, config_meter_readings);
+};
+
+
+
+//var url = 'http://my-json-server.typicode.com/apexcharts/apexcharts.js/yearly';
+var url = 'http://readings.seh.ox.ac.uk/api.php?meterUID=<?php echo $meter->uid; ?>';
+
+
+
+function loadJSON(path, success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function()
+    {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (success)
+                    success(JSON.parse(xhr.responseText));
+            } else {
+                if (error)
+                    error(xhr);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
+}
+
+loadJSON(url,
+  function(data) {
+    console.log(data);
+
+    data.forEach((item, i) => {
+      addData(window.readings, item.x, item.y);
+    });
   }
-});
+);
+
+function addData(chart, label, data) {
+  chart.data.labels.push(label);
+  chart.data.datasets.forEach((dataset) => {
+    dataset.data.push(data);
+  });
+
+  chart.update();
+}
 </script>
 
 
