@@ -39,8 +39,8 @@ $readings_recent = $readingsClass->getRecentReadings();
 
         $output  = "<tr>";
         $output .= "<td><a href=\"index.php?n=node&meterUID=" . $node->uid . "\">" . $node->name . "</a></td>";
-        $output .= "<td>" . $reading['date'] . "</td>";
-        $output .= "<td>" . $reading['reading1'] . "</td>";
+        $output .= "<td>" . dateDisplay($reading['date']) . "</td>";
+        $output .= "<td>" . number_format($reading['reading1']) . " " . $node->unit . "</td>";
         $output .= "<td>" . $reading['username'] . "</td>";
         $output .= "</tr>";
 

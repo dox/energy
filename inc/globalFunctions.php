@@ -35,17 +35,19 @@ function admin_gatekeeper() {
 		include_once("nodes/logon.php");
 	  exit;
 	}
+}
 
-	function dateDisplay($date = null, $time = false) {
-		if ($time) {
-			$dateFormat = "Y-m-d H:i:s";
-		} else {
-			$dateFormat = "Y-m-d";
-		}
+function dateDisplay($date = null, $longFormat = false) {
+	global $settingsClass;
 
-		$returnDate = date($dateFormat, strtotime($date));
-
-		return $returnDate;
+	if ($longFormat == true) {
+		$dateFormat = $settingsClass->value('datetime_format_long');
+	} else {
+		$dateFormat = $settingsClass->value('datetime_format_short');
 	}
+
+	$returnDate = date($dateFormat, strtotime($date));
+
+	return $returnDate;
 }
 ?>

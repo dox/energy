@@ -57,7 +57,7 @@ if (isset($_GET['deleteMeterUID'])) {
     		<label for="type">Type</label>
     		<select class="form-select" id="type" name="type">
     			<?php
-    			foreach ($metersClass->types() AS $type) {
+    			foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
     				if ($type == $meter->type) {
     					$selected = " selected";
     				} else {
@@ -74,7 +74,7 @@ if (isset($_GET['deleteMeterUID'])) {
         <label for="unit">Unit</label>
         <select class="form-select" id="unit" name="unit">
           <?php
-          foreach ($metersClass->units() AS $unit) {
+          foreach (explode(",", $settingsClass->value('node_units')) AS $unit) {
             if ($unit == $meter->unit) {
               $selected = " selected";
             } else {

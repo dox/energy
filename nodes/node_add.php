@@ -45,8 +45,7 @@ if (isset($_POST['name'])) {
     		<label for="type">Type</label>
     		<select class="form-select" id="type" name="type">
     			<?php
-    			$typesArray = array ("Electric", "Gas", "Water", "Refuse");
-    			foreach ($metersClass->types() AS $type) {
+    			foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
     				echo "<option value = \"" . $type . "\">" . $type . "</option>";
     			}
     			?>
@@ -58,7 +57,7 @@ if (isset($_POST['name'])) {
         <label for="unit">Unit</label>
         <select class="form-select" id="unit" name="unit">
           <?php
-					foreach ($metersClass->units() AS $unit) {
+					foreach (explode(",", $settingsClass->value('node_units')) AS $unit) {
             echo "<option value = \"" . $unit . "\">" . $unit . "</option>";
           }
           ?>

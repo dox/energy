@@ -119,24 +119,5 @@ class meters extends meter {
 
     return $create;
   }
-
-  public function types() {
-    $type[] = "Electric";
-    $type[] = "Gas";
-    $type[] = "Water";
-    //$type[] = "Refuse";
-
-    return $type;
-  }
-
-  public function units() {
-    $unit[] = "m³";
-    $unit[] = "kWh";
-    $unit[] = "KG";
-
-    return $unit;
-  }
-
-
 }
 ?>

@@ -13,9 +13,7 @@ $locations = $locations->all();
 </div>
 <?php
 
-$utilitiesToInclude = array("Electric", "Gas", "Water");
-
-foreach ($metersClass->types() AS $type) {
+foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
   $icon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . strtolower($type) . "\"/></svg>";
   $output  = "<h3>" . $icon . " " . $type . "</h3>";
   $output .= "<table class=\"table mb-5\">";
