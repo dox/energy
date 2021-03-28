@@ -18,7 +18,7 @@ $icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=
       <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
       <ul class="dropdown-menu" aria-labelledby="title_dropdown">
         <li><a class="dropdown-item" href="index.php?n=node_add"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Add Node</a></li>
-        <li><a class="dropdown-item" href="index.php?n=location_edit"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Locationn</a></li>
+        <li><a class="dropdown-item" href="index.php?n=location_edit&locationUID=<?php echo $location->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Location</a></li>
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteMeterModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete Location</a></li>
       </ul>
     </div>

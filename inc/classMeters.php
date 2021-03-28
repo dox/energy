@@ -11,6 +11,18 @@ class meters extends meter {
     return $meters;
   }
 
+  public function allEnabled() {
+    global $db;
+
+    $sql  = "SELECT * FROM " . self::$table_name;
+    $sql .= " WHERE enabled = 1";
+    $sql .= " ORDER BY uid DESC";
+
+    $meters = $db->query($sql)->fetchAll();
+
+    return $meters;
+  }
+
   public function allByLocation($locationUID = null, $enabledDisabled = "enabled") {
     global $db;
 

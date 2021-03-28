@@ -62,7 +62,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 <?php
-foreach ($metersClass->all() AS $meter) {
+foreach ($metersClass->allEnabled() AS $meter) {
   if (isset($meter['geo'])) {
     $output  = "L.marker([" . $meter['geo'] . "]).addTo(map)";
     $output .= ".bindPopup('<a href=\'index.php?n=node&meterUID=" . $meter['uid'] . "\'>" . escape($meter['name']) . "</a>');";

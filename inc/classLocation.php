@@ -5,6 +5,7 @@ class location {
   public $uid;
   public $name;
   public $description;
+  public $geo;
 
   function __construct($locationUID = null) {
 
@@ -15,6 +16,18 @@ class location {
 		foreach ($meter AS $key => $value) {
 			$this->$key = $value;
 		}
+  }
+
+  public function geoLocation() {
+    global $settingsClass;
+
+    if (isset($this->geo)) {
+      $geoReturn = $this->geo;
+    } else {
+      $geoReturn = $settingsClass->value('site_geolocation');
+    }
+
+    return $geoReturn;
   }
 
   public function highestReadingsByMonth($type = null) {
@@ -54,6 +67,32 @@ class location {
     $readingsArray = array_reverse($readingsArray, true);
 
     return $readingsArray;
+  }
+
+  public function update($array = null) {
+    global $db, $logsClass;
+
+    $sql  = "UPDATE " . self::$table_name;
+
+    foreach ($array AS $updateItem => $value) {
+      if ($updateItem != 'uid') {
+        $value = str_replace("'", "\'", $value);
+        $sqlUpdate[] = $updateItem ." = '" . $value . "' ";
+      }
+    }
+
+    $sql .= " SET " . implode(", ", $sqlUpdate);
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+
+    $update = $db->query($sql);
+
+    $logArray['category'] = "location";
+    $logArray['type'] = "success";
+    $logArray['value'] = "[locationUID:" . $this->uid . "] updated successfully";
+    $logsClass->create($logArray);
+
+    return $update;
   }
 }
 ?>
