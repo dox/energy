@@ -1,4 +1,6 @@
 <?php
+$metersClass = new meters();
+
 $readingsClass = new readings();
 $readings_recent = $readingsClass->getRecentReadings();
 ?>
@@ -17,7 +19,7 @@ $readings_recent = $readingsClass->getRecentReadings();
   </div>
 </div>
 
-<div id = "map" style = "width: 100%; height: 500px"></div>
+<div id="map" style="width: 100%; height: 500px"></div>
 
 <hr />
 
@@ -53,18 +55,20 @@ $readings_recent = $readingsClass->getRecentReadings();
 
 
 <script>
-// Creating map options
-var mapOptions = {
-   center: [51.75283, -1.24969],
-   zoom: 18
+var map = L.map('map').setView([<?php echo $settingsClass->value('site_geolocation'); ?>], 18);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+<?php
+foreach ($metersClass->all() AS $meter) {
+  if (isset($meter['geo'])) {
+    $output  = "L.marker([" . $meter['geo'] . "]).addTo(map)";
+    $output .= ".bindPopup('<a href=\'index.php?n=node&meterUID=" . $meter['uid'] . "\'>" . escape($meter['name']) . "</a>');";
+
+    echo $output;
+  }
 }
-
-// Creating a map object
-var map = new L.map('map', mapOptions);
-
-// Creating a Layer object
-var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-
-// Adding layer to the map
-map.addLayer(layer);
+?>
 </script>

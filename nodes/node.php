@@ -25,9 +25,32 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
   </div>
 </div>
 
+<div class="row">
+  <div class="col-6">
+    <h1 class="text-center"><?php echo $meter->meterTypeBadge();?></h1>
+  </div>
+  <div class="col-6">
+    <?php
+    if ($_SESSION['logon'] == true) {
+    ?>
+    <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
+      <div class="input-group">
+        <input type="text" class="form-control" name="reading1" placeholder="Reading">
+        <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
+      </div>
+    </form>
+    <?php } ?>
+  </div>
+</div>
+
 <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab" aria-controls="home" aria-selected="true">
+    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
+      Details
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab" aria-controls="home" aria-selected="false">
       Consumption By Month
     </button>
   </li>
@@ -44,7 +67,13 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 </ul>
 
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="monthly" role="tabpanel" aria-labelledby="monthly-tab">
+  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+    <h3>Details</h3>
+    <div id="map" style="width: 100%; height: 500px"></div>
+
+    <?php echo $meter->displayImage(); ?>
+  </div>
+  <div class="tab-pane fade" id="monthly" role="tabpanel" aria-labelledby="monthly-tab">
     <h3>Consumption by Month</h3>
     <canvas id="monthlyConsumption"></canvas>
   </div>
@@ -56,68 +85,50 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
   <div class="tab-pane fade" id="readings" role="tabpanel" aria-labelledby="readings-tab">
     <h3>Meter Total</h3>
     <canvas id="meterReadings"></canvas>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Reading</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          foreach ($readings AS $reading) {
+            if ($_SESSION['logon'] == true) {
+              $deleteIcon = "<svg width=\"1em\" height=\"1em\" onclick=\"readingDelete(" . $reading['uid'] . ")\" class=\"text-decoration-none text-muted me-1 float-end\"><use xlink:href=\"inc/icons.svg#delete\"/></svg>";
+            } else {
+              $deleteIcon = "";
+            }
+
+            $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\" id=\"reading_row_" . $reading['uid' ]. "\">";
+
+            $output  = "<tr>";
+            $output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
+            $output .= "<td>" . number_format($reading['reading1']) . " " . $meter->unit . "</td>";
+            $output .= "<td>" . "Recorded By: " . $reading['username'] . $deleteIcon . "</td>";
+            $output .= "</tr>";
+
+            echo $output;
+          }
+          ?>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <hr />
-
-<div class="row">
-  <div class="col-6">
-    <?php echo $meter->displayImage(); ?>
-  </div>
-  <div class="col-6">
-    <h1 class="text-center"><?php echo $meter->meterTypeBadge();?></h1>
-
-    <?php
-    if ($_SESSION['logon'] == true) {
-    ?>
-    <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
-      <div class="input-group">
-        <input type="text" class="form-control" name="reading1" placeholder="Reading">
-        <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
-      </div>
-    </form>
-    <?php } ?>
-  </div>
-</div>
 
 
 <h4 class="d-flex justify-content-between align-items-center mb-3">Readings
   <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
 </h4>
 
-<div class="table-responsive">
-  <table class="table table-striped table-sm">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Reading</th>
-        <th>Username</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      foreach ($readings AS $reading) {
-        if ($_SESSION['logon'] == true) {
-          $deleteIcon = "<svg width=\"1em\" height=\"1em\" onclick=\"readingDelete(" . $reading['uid'] . ")\" class=\"text-decoration-none text-muted me-1 float-end\"><use xlink:href=\"inc/icons.svg#delete\"/></svg>";
-        } else {
-          $deleteIcon = "";
-        }
 
-        $output  = "<li class=\"list-group-item d-flex justify-content-between lh-sm\" id=\"reading_row_" . $reading['uid' ]. "\">";
-
-        $output  = "<tr>";
-        $output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-        $output .= "<td>" . number_format($reading['reading1']) . " " . $meter->unit . "</td>";
-        $output .= "<td>" . "Recorded By: " . $reading['username'] . $deleteIcon . "</td>";
-        $output .= "</tr>";
-
-        echo $output;
-      }
-      ?>
-    </tbody>
-  </table>
-</div>
 
 
 
@@ -444,3 +455,22 @@ function addData(chart, label, data) {
     </div>
   </div>
 </div>
+
+
+<script>
+var map = L.map('map').setView([<?php echo $meter->geoLocation(); ?>], 18);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+<?php
+if (isset($meter->geo)) {
+  $output  = "L.marker([" . $meter->geoLocation() . "]).addTo(map)";
+  $output .= ".bindPopup('" . $meter->name . "')";
+  $output .= ".openPopup();";
+
+  echo $output;
+}
+?>
+</script>

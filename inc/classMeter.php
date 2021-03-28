@@ -11,6 +11,7 @@ class meter {
   public $serial;
   public $billed;
   public $enabled;
+  public $geo;
 
   function __construct($meterUID = null) {
 
@@ -54,6 +55,18 @@ class meter {
     }
 
     return $output;
+  }
+
+  public function geoLocation() {
+    global $settingsClass;
+
+    if (isset($this->geo)) {
+      $geoReturn = $this->geo;
+    } else {
+      $geoReturn = $settingsClass->value('site_geolocation');
+    }
+
+    return $geoReturn;
   }
 
   public function deleteImage() {

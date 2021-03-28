@@ -101,6 +101,9 @@ if (isset($_GET['deleteMeterUID'])) {
 		<label for="billed" class="form-check-label">Enabled</label>
 	</div>
 
+  <input type="hidden" id="geo" name="geo">
+  <div id="map" style="width: 100%; height: 500px"></div>
+
   <div class="mb-3">
     <button type="submit" class="btn btn-primary w-100">Submit</button>
     <input type="hidden" id="uid" name="uid" value="<?php echo $meter->uid; ?>">
@@ -108,3 +111,33 @@ if (isset($_GET['deleteMeterUID'])) {
 
   <div id="returnMessage"></div>
 </form>
+
+<script>
+var map = L.map('map').setView([<?php echo $meter->geoLocation(); ?>], 18);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+<?php
+if (isset($meter->geo)) {
+  $output  = "L.marker([" . $meter->geoLocation() . "]).addTo(map)";
+  $output .= ".bindPopup('" . $meter->name . "')";
+  $output .= ".openPopup();";
+
+  echo $output;
+}
+?>
+var popup = L.popup();
+
+function onMapClick(e) {
+  popup
+    .setLatLng(e.latlng)
+    .setContent("New Node Location: " + e.latlng.toString())
+    .openOn(map);
+
+  document.getElementById("geo").value = e.latlng.lat + ',' + e.latlng.lng;
+}
+
+map.on('click', onMapClick);
+</script>
