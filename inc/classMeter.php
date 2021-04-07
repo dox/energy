@@ -360,6 +360,16 @@ class meter {
     return $projectedConsumption;
   }
 
+  public function displaySerialNumber() {
+    if ($_SESSION['logon'] == true) {
+      $serial = $this->serial;
+    } else {
+      $serial = "*******";
+    }
+
+    return $serial;
+  }
+
 }
 
 ?>

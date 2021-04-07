@@ -17,8 +17,8 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
       <div class="dropdown">
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
         <ul class="dropdown-menu" aria-labelledby="title_dropdown">
-          <li><a class="dropdown-item" href="index.php?n=node_add"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Add Node</a></li>
-          <li><a class="dropdown-item" href="javascript:toggleHiddenMeters();"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg> Show Hidden Node</a></li>
+          <li><a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_add"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Add Node</a></li>
+          <li><a class="dropdown-item" href="javascript:toggleHiddenMeters();"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg> Show Hidden Nodes</a></li>
         </ul>
       </div>
     </div>

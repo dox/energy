@@ -18,30 +18,35 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
       <ul class="dropdown-menu" aria-labelledby="title_dropdown">
-        <li><a class="dropdown-item" href="index.php?n=node_edit&nodeUID=<?php echo $meter->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Node</a></li>
-        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteMeterModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete Node</a></li>
+        <li><a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_edit&nodeUID=<?php echo $meter->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Node</a></li>
+        <li><a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="#" data-bs-toggle="modal" data-bs-target="#deleteMeterModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete Node</a></li>
       </ul>
     </div>
   </div>
 </div>
 
 <div class="row">
+  <div class="col-3">
+  </div>
   <div class="col-6">
     <h1 class="text-center"><?php echo $meter->meterTypeBadge();?></h1>
   </div>
-  <div class="col-6">
-    <?php
-    if ($_SESSION['logon'] == true) {
-    ?>
-    <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
-      <div class="input-group">
-        <input type="text" class="form-control" name="reading1" placeholder="Reading">
-        <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
-      </div>
-    </form>
-    <?php } ?>
+  <div class="col-3">
   </div>
 </div>
+
+<?php
+if ($_SESSION['logon'] == true) {
+?>
+<form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
+  <div class="input-group">
+    <input type="text" class="form-control" name="reading1" placeholder="Reading">
+    <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
+  </div>
+</form>
+<?php } ?>
+
+
 
 <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
@@ -69,6 +74,8 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
     <h3>Details</h3>
+
+    <?php echo "<strong>Serial Number: " . $meter->displaySerialNumber() . "</strong>"; ?>
     <div id="map" style="width: 100%; height: 500px"></div>
 
     <?php echo $meter->displayImage(); ?>
@@ -79,12 +86,17 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
   </div>
   <div class="tab-pane fade" id="yearly" role="tabpanel" aria-labelledby="yearly-tab">
     <h3>Consumption by Year</h3>
+    <button type="button" class="btn btn-small btn-link float-end" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
+
     <canvas id="yearlyConsumption"></canvas>
-    <button type="button" class="btn btn-small btn-link float-end clear-fix" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
   </div>
   <div class="tab-pane fade" id="readings" role="tabpanel" aria-labelledby="readings-tab">
     <h3>Meter Total</h3>
     <canvas id="meterReadings"></canvas>
+
+    <h4 class="d-flex justify-content-between align-items-center mb-3">Readings
+      <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
+    </h4>
 
     <div class="table-responsive">
       <table class="table table-striped table-sm">
@@ -120,16 +132,6 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     </div>
   </div>
 </div>
-
-<hr />
-
-
-<h4 class="d-flex justify-content-between align-items-center mb-3">Readings
-  <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
-</h4>
-
-
-
 
 
 <script>

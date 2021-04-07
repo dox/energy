@@ -99,7 +99,7 @@ class meters extends meter {
       $output .= "<td>" . $meter->daysSinceLastUpdate() . "</td>";
 
       if ($_SESSION['logon'] == true) {
-        $output .= "<td>" . $meter->serial . "</td>";
+        $output .= "<td>" . $meter->displaySerialNumber() . "</td>";
       } else {
         $output .= "<td>********</td>";
       }

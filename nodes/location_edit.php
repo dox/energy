@@ -2,7 +2,6 @@
 admin_gatekeeper();
 
 $location = new locations($_GET['locationUID']);
-printArray($_POST);
 
 if (isset($_POST['uid'])) {
   $location->update($_POST);

@@ -12,7 +12,7 @@ $readings_recent = $readingsClass->getRecentReadings();
       <div class="dropdown">
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
         <ul class="dropdown-menu" aria-labelledby="title_dropdown">
-          <li><a class="dropdown-item" href="#"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Node</a></li>
+          <li><a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_add"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg> Add Node</a></li>
         </ul>
       </div>
     </div>
