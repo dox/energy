@@ -171,14 +171,13 @@ function readingDelete(this_id) {
 }
 
 <?php
+// CONSUMPTION BY MONTH
 foreach ($meter->consumptionByMonth() AS $month => $value) {
   $chartLabelsMonthly[] = "'" . date('M', strtotime($month)) . "'";
   $chartDataMonthly[] = "'" . $value . "'";
 }
-?>
 
-
-<?php
+// CONSUMPTION BY YEAR
 foreach ($meter->consumptionByYear() AS $month => $value) {
   $chartLabelsYearly[] = "'" . $month . "'";
   $chartDataYearly[] = "'" . $value . "'";
@@ -189,13 +188,11 @@ foreach ($meter->consumptionByYear() AS $month => $value) {
     $chartDataYearlyProjection[] = "'0'";
   }
 }
-?>
 
-<?php
+// READINGS (CHEATING, I KONW - THIS NEEDS TO COME FROM THE JSON!)
 foreach ($readings AS $reading) {
   $timeChartArrray["'" . $reading['date'] . "'"] = "'" . $reading['reading1'] . "'";
 }
-
 ?>
 var timeFormat = 'YYYY/MM/DD';
 
@@ -275,9 +272,6 @@ var config_meter_consumption_yearly = {
 					display: true,
 					text: '<?php echo $meter->unit; ?>'
 				},
-        ticks: {
-            suggestedMin: <?php echo min($timeChartArrray); ?>
-        },
         stacked: true
 			}
 		},
@@ -292,8 +286,7 @@ var config_meter_readings = {
       label: 'Meter Total',
       backgroundColor: "#3CB44B30",
       borderColor: "#3CB44B",
-      fill: true,
-      data: [<?php //echo implode(",", $timeChartArrray); ?>]
+      fill: true
     }]
 	},
 	options: {
@@ -336,6 +329,7 @@ var config_meter_readings = {
 	}
 };
 
+// create the graphs
 window.onload = function() {
   var chart_meter_consumption_monthly = document.getElementById('monthlyConsumption').getContext('2d');
 	window.monthly = new Chart(chart_meter_consumption_monthly, config_meter_consumption_monthly);
@@ -345,51 +339,20 @@ window.onload = function() {
 
   var chart_meter_readings = document.getElementById('meterReadings').getContext('2d');
 	window.readings = new Chart(chart_meter_readings, config_meter_readings);
+
+  // load the remote data into the readings graph
+  var url = './api.php?meterUID=<?php echo $meter->uid; ?>';
+
+  loadJSON(url,
+    function(data) {
+      console.log(data);
+
+      data.forEach((item, i) => {
+        addData(window.readings, item.x, item.y);
+      });
+    }
+  );
 };
-
-
-
-//var url = 'http://my-json-server.typicode.com/apexcharts/apexcharts.js/yearly';
-var url = 'http://readings.seh.ox.ac.uk/api.php?meterUID=<?php echo $meter->uid; ?>';
-
-
-
-function loadJSON(path, success, error) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function()
-    {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                if (success)
-                    success(JSON.parse(xhr.responseText));
-            } else {
-                if (error)
-                    error(xhr);
-            }
-        }
-    };
-    xhr.open("GET", path, true);
-    xhr.send();
-}
-
-loadJSON(url,
-  function(data) {
-    console.log(data);
-
-    data.forEach((item, i) => {
-      addData(window.readings, item.x, item.y);
-    });
-  }
-);
-
-function addData(chart, label, data) {
-  chart.data.labels.push(label);
-  chart.data.datasets.forEach((dataset) => {
-    dataset.data.push(data);
-  });
-
-  chart.update();
-}
 </script>
 
 
