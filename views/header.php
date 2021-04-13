@@ -24,7 +24,7 @@
   //printArray($metersClass->all());
 
   foreach ($metersClass->all() AS $meter) {
-    $output = "<option value=\"" . $meter['uid'] . "\">" . escape($meter['name']) . "</option>";
+    $output = "<option id=\"" . $meter['uid'] . "\" value=\"" . escape($meter['name']) . "\">";
 
     //$output .= "</div>";
 

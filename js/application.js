@@ -12,9 +12,8 @@ function onInput() {
   for (var i = 0; i < opts.length; i++) {
     if (opts[i].value === val) {
       // An item was selected from the list!
-      // yourCallbackHere()
-      window.location.href = 'index.php?n=node&meterUID='+opts[i].value;
-      //alert(opts[i].value);
+      window.location.href = 'index.php?n=node&meterUID='+opts[i].id;
+      //alert(opts[i].id);
       break;
     }
   }
