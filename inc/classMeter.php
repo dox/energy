@@ -370,6 +370,19 @@ class meter {
     return $serial;
   }
 
+
+
+
+  public function fetchReadingsAll() {
+    $readingsClass = new readings();
+
+    $readings = $readingsClass->meter_all_readings($this->uid);
+
+    return $readings;
+  }
+
+  
+
 }
 
 ?>

@@ -2,7 +2,6 @@
 // API usage:
 // meterUID
 
-
 include_once("inc/include.php");
 
 $meter_uid = $_GET['meterUID'];
@@ -16,8 +15,10 @@ foreach ($readings AS $reading) {
   $label = date('r', strtotime($reading['date']));
   $value = $reading['reading1'];
 
-  $timeChartArrray[] = array('x' => $label, 'y' => $value);
+  $timeChartArray[] = array('name' => $label, 'age' => $value);
 }
+$timeChartArray = array_reverse($timeChartArray);
 
-echo json_encode($timeChartArrray);
+$timeChartArray = array('jsonarray' => $timeChartArray);
+echo json_encode($timeChartArray);
 ?>

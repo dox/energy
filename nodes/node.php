@@ -1,5 +1,4 @@
 <?php
-$locationsClass = new locations();
 $readingsClass = new readings();
 $meter = new meter($_GET['meterUID']);
 
@@ -7,7 +6,6 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
   $readingsClass->create($meter->uid, $_POST['reading1']);
 }
 
-$location = new location($meter->location);
 $readings = $readingsClass->meter_all_readings($meter->uid);
 ?>
 
@@ -95,7 +93,7 @@ if ($_SESSION['logon'] == true) {
     <canvas id="meterReadings"></canvas>
 
     <h4 class="d-flex justify-content-between align-items-center mb-3">Readings
-      <span class="badge bg-secondary rounded-pill"><?php echo count($readings); ?></span>
+      <span class="badge bg-secondary rounded-pill"><?php echo count($meter->fetchReadingsAll()); ?></span>
     </h4>
 
     <div class="table-responsive">
@@ -109,7 +107,7 @@ if ($_SESSION['logon'] == true) {
         </thead>
         <tbody>
           <?php
-          foreach ($readings AS $reading) {
+          foreach ($meter->fetchReadingsAll() AS $reading) {
             if ($_SESSION['logon'] == true) {
               $deleteIcon = "<svg width=\"1em\" height=\"1em\" onclick=\"readingDelete(" . $reading['uid'] . ")\" class=\"text-decoration-none text-muted me-1 float-end\"><use xlink:href=\"inc/icons.svg#delete\"/></svg>";
             } else {
@@ -190,7 +188,7 @@ foreach ($meter->consumptionByYear() AS $month => $value) {
 }
 
 // READINGS (CHEATING, I KONW - THIS NEEDS TO COME FROM THE JSON!)
-foreach ($readings AS $reading) {
+foreach ($meter->fetchReadingsAll() AS $reading) {
   $timeChartArrray["'" . $reading['date'] . "'"] = "'" . $reading['reading1'] . "'";
 }
 ?>
@@ -337,21 +335,54 @@ window.onload = function() {
   var chart_meter_consumption_yearly = document.getElementById('yearlyConsumption').getContext('2d');
 	window.yearly = new Chart(chart_meter_consumption_yearly, config_meter_consumption_yearly);
 
-  var chart_meter_readings = document.getElementById('meterReadings').getContext('2d');
-	window.readings = new Chart(chart_meter_readings, config_meter_readings);
+
+	//window.readings = new Chart(chart_meter_readings, config_meter_readings);
 
   // load the remote data into the readings graph
   var url = './api.php?meterUID=<?php echo $meter->uid; ?>';
 
-  loadJSON(url,
-    function(data) {
-      console.log(data);
+  readTextFile(url, function(text){
+      var jsonfile2 = JSON.parse(text);
 
-      data.forEach((item, i) => {
-        addData(window.readings, item.x, item.y);
-      });
-    }
-  );
+  		var labels = jsonfile2.jsonarray.map(function(e) {
+  		   return e.name;
+  		});
+  		var data = jsonfile2.jsonarray.map(function(e) {
+  		   return e.age;
+  		});
+
+      var chart_meter_readings = document.getElementById('meterReadings').getContext('2d');
+  		var config = {
+  		   type: 'line',
+  		   data: {
+  		      labels: labels,
+  		      datasets: [{
+  		         label: 'Meter Total',
+  		         data: data,
+  		         backgroundColor: 'rgba(0, 119, 204, 0.3)',
+               fill: true
+  		      }]
+  		   },
+         options: {
+           plugins: {
+             title: {
+               text: 'Meter Total',
+               display: false
+             },
+             legend: {
+               display: false,
+             },
+           },
+           scales: {
+             x: {
+               type: 'time',
+             }
+           } //end scales
+         } // end options
+       }; //end config
+
+  		var chart = new Chart(chart_meter_readings, config);
+  });
 };
 </script>
 
