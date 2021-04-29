@@ -103,9 +103,7 @@
   			$node = "nodes/404.php";
   		}
 
-  		echo "<div class=\"container\">";
   		include_once($node);
-  		echo "</div>";
   		?>
 
 			<?php include_once("views/footer.php"); ?>
