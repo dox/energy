@@ -96,12 +96,26 @@ if (isset($_GET['deleteMeterUID'])) {
 		<label for="billed" class="form-check-label">Billed to tenant</label>
 	</div>
 
+  <div class="mb-3">
+    <label for="retention_days">Retention Policy</label>
+    <select class="form-select" id="retention_days" name="retention_days">
+      <option value="0" <?php if ($meter->retention_days == 0) { echo " selected"; } ?>>Forever (do not delete readings)</option>
+      <option value="1" <?php if ($meter->retention_days == 1) { echo " selected"; } ?>>1 day</option>
+      <option value="7" <?php if ($meter->retention_days == 7) { echo " selected"; } ?>>1 week</option>
+      <option value="31" <?php if ($meter->retention_days == 31) { echo " selected"; } ?>>1 month</option>
+      <option value="365" <?php if ($meter->retention_days == 365) { echo " selected"; } ?>>1 year</option>
+      <option value="1825" <?php if ($meter->retention_days == 1825) { echo " selected"; } ?>>5 years</option>
+      <option value="3650" <?php if ($meter->retention_days == 3650) { echo " selected"; } ?>>10 years</option>
+    </select>
+    <div id="retention_daysHelp" class="form-text">Readings older than this duration will be automatically deleted.</div>
+  </div>
+
   <div class="form-check mb-3">
 		<input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" <?php if ($meter->enabled == "1") { echo " checked";} ?>>
 		<label for="billed" class="form-check-label">Enabled</label>
 	</div>
 
-  <input type="hidden" id="geo" name="geo">
+  <input type="hidden" id="geo" name="geo" value="<?php echo $meter->geoLocation(); ?>">
   <div id="map" style="width: 100%; height: 500px"></div>
 
   <div class="mb-3">

@@ -63,7 +63,7 @@ class meter {
   public function geoLocation() {
     global $settingsClass;
 
-    if (isset($this->geo)) {
+    if (isset($this->geo) && !empty($this->geo)) {
       $geoReturn = $this->geo;
     } else {
       $geoReturn = $settingsClass->value('site_geolocation');
