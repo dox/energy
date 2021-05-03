@@ -66,11 +66,11 @@ class meters extends meter {
     $output .= "<table class=\"table\">";
     $output .= "<thead>";
     $output .= "<tr>";
-    $output .= "<th scope=\"col\" style=\"width: 500px\">Name</th>";
-    $output .= "<th scope=\"col\">Type</th>";
-    $output .= "<th scope=\"col\">Current Value</th>";
-    $output .= "<th scope=\"col\">Last Reading</th>";
-    $output .= "<th scope=\"col\">Serial</th>";
+    $output .= "<th scope=\"col\" style=\"width: 40%\">Name</th>";
+    $output .= "<th scope=\"col\" style=\"width: 10%\">Type</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\">Current Value</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\">Last Reading</th>";
+    $output .= "<th scope=\"col\" style=\"width: 20%\">Serial</th>";
     $output .= "</tr>";
     $output .= "</thead>";
 
@@ -96,7 +96,7 @@ class meters extends meter {
       $output .= "<th scope=\"row\"><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td>" . number_format($meter->current_reading()) . " " . $meter->unit . "</td>";
-      $output .= "<td>" . $meter->daysSinceLastUpdate() . "</td>";
+      $output .= "<td>" . howLongAgo(strtotime($meter->mostRecentReadingDate())) . "</td>";
 
       if ($_SESSION['logon'] == true) {
         $output .= "<td>" . $meter->displaySerialNumber() . "</td>";

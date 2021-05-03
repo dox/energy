@@ -61,7 +61,7 @@ $settings = $settingsClass->all();
   ?>
 </div>
 
-<h2 class="m-3">Icons Availabe in <code>./img/icon.svg</code></h2>
+<h2 class="m-3">Icons Availabe in <code>./inc/icons.svg</code></h2>
 
 
 <?php
@@ -77,6 +77,7 @@ $iconsArray = array(
   "gas" => "Gas",
   "water" => "Water",
   "refuse" => "Refuse",
+  "temperature" => "temperature",
   "hidden" => "Hidden",
   "users-class" => "Users",
   "add" => "Add",

@@ -24,13 +24,19 @@ class logs {
   public function create($array = null) {
     global $db;
 
+    if (isset($_SESSION['username'])) {
+      $username = $_SESSION['username'];
+    } else {
+      $username = "SYSTEM";
+    }
+
     $array['value'] = escape($array['value']);
 
     $sql  = "INSERT INTO " . self::$table_name;
     $sql .= " (ip, username, category, type, value) ";
     $sql .= " VALUES (";
     $sql .= "'" . ip2long($_SERVER['REMOTE_ADDR']) . "', ";
-    $sql .= "'" . $_SESSION['username'] . "', ";
+    $sql .= "'" . $username . "', ";
     $sql .= "'" . $array['category'] . "', ";
     $sql .= "'" . $array['type'] . "', ";
     $sql .= "'" . $array['value'] . "'";
@@ -79,7 +85,7 @@ class logs {
   private function displayRow($array = null) {
     //$string = 'Some text [mealUID:123] here';
     $string = $log['description'];
-    $patternArray['/\[meterUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=meter&meterUID=$1\" class=\"text-decoration-none\">[meterUID:$1]</a></code>";
+    $patternArray['/\[meterUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=node&meterUID=$1\" class=\"text-decoration-none\">[meterUID:$1]</a></code>";
     $patternArray['/\[readingUID:([0-9]+)\]/'] = "<code>[readingUID:$1]</code>";
     //$patternArray['/\[bookingUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=booking&bookingUID=$1\" class=\"text-decoration-none\">[bookingUID:$1]</a></code>";
     $patternArray['/\[locationUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=location&locationUID=$1\" class=\"text-decoration-none\">[locationUID:$1]</a></code>";

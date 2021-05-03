@@ -339,7 +339,7 @@ window.onload = function() {
 	//window.readings = new Chart(chart_meter_readings, config_meter_readings);
 
   // load the remote data into the readings graph
-  var url = './api.php?meterUID=<?php echo $meter->uid; ?>';
+  var url = './api.php?action=meterread&meterUID=<?php echo $meter->uid; ?>';
 
   readTextFile(url, function(text){
       var jsonfile2 = JSON.parse(text);

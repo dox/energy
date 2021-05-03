@@ -59,9 +59,15 @@ class readings {
   public function create($meterUID = null, $reading1 = null) {
     global $db, $logsClass;
 
+    if (isset($_SESSION['username'])) {
+      $username = $_SESSION['username'];
+    } else {
+      $username = "SYSTEM";
+    }
+
     $sql  = "INSERT INTO " . self::$table_name;
     $sql .= " (meter, date, reading1, username) ";
-    $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $_SESSION['username'] . "')";
+    $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $username . "')";
 
     $insert = $db->query($sql);
 

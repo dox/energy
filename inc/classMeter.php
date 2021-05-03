@@ -38,6 +38,9 @@ class meter {
   	} elseif ($this->type == "Refuse") {
       $class = "bg-dark";
       $iconSymbol = "refuse";
+    } elseif ($this->type == "Temperature") {
+      $class = "bg-danger";
+      $iconSymbol = "temperature";
     } else {
   		$class = "bg-light";
   	}
@@ -91,38 +94,6 @@ class meter {
     }
   }
 
-  public function daysSinceLastUpdate() {
-  	global $db;
-
-    $sql  = "SELECT * FROM readings";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
-    $sql .= " ORDER BY date DESC";
-    $sql .= " LIMIT 1";
-
-    $lastReading = $db->query($sql)->fetchAll();
-    $lastReading = $lastReading[0]['date'];
-
-  	if (isset($lastReading)) {
-      $today = date('Y-m-d H:i:s'); // today date
-      $diff = strtotime($today) - strtotime($lastReading);
-
-      $differenceInDays = round($days = (int)$diff/(60*60*24));
-
-  	} else {
-  		$differenceInDays = 0;
-  	}
-
-    if ($differenceInDays < 0) {
-      $return = "Unknown";
-    } elseif ($differenceInDays == 0) {
-      $return = "Today";
-    } else {
-      $return = round($differenceInDays) . autoPluralise (" day ", " days ", $differenceInDays) . " ago";
-    }
-
-  	return $return;
-  }
-
   public function current_reading() {
     global $db;
 
@@ -141,6 +112,14 @@ class meter {
     }
 
     return $return;
+  }
+
+  public function mostRecentReadingDate() {
+    return $this->getMostRecentReading()['date'];
+  }
+
+  public function mostRecentReadingValue() {
+    return $this->getMostRecentReading()['reading1'];
   }
 
   public function update($array = null) {
@@ -381,7 +360,7 @@ class meter {
     return $readings;
   }
 
-  
+
 
 }
 
