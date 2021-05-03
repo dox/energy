@@ -118,7 +118,7 @@ if ($_SESSION['logon'] == true) {
 
             $output  = "<tr>";
             $output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
-            $output .= "<td>" . number_format($reading['reading1']) . " " . $meter->unit . "</td>";
+            $output .= "<td>" . displayReading($reading['reading1']) . " " . $meter->unit . "</td>";
             $output .= "<td>" . "Recorded By: " . $reading['username'] . $deleteIcon . "</td>";
             $output .= "</tr>";
 

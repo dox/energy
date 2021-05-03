@@ -95,7 +95,7 @@ class meters extends meter {
       $output .= "<tr class=\"" . $rowClass . "\">";
       $output .= "<th scope=\"row\"><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
-      $output .= "<td>" . number_format($meter->current_reading()) . " " . $meter->unit . "</td>";
+      $output .= "<td>" . displayReading($meter->current_reading()) . " " . $meter->unit . "</td>";
       $output .= "<td>" . howLongAgo(strtotime($meter->mostRecentReadingDate())) . "</td>";
 
       if ($_SESSION['logon'] == true) {

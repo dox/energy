@@ -5,6 +5,15 @@ function printArray($array) {
 	echo ("</pre>");
 }
 
+function displayReading($reading = null) {
+	if (is_numeric( $reading ) && floor( $reading ) != $reading) {
+		$returnReading = $reading;
+	} else {
+		$returnReading = number_format($reading);
+	}
+	return $returnReading;
+}
+
 function escape($var) {
 	$var=stripslashes($var);
 	$var=htmlentities($var);
@@ -69,7 +78,7 @@ function howLongAgo($time) {
 	if($difference != 1) {
 		$periods[$j].= "s";
 	}
-	
+
 	return "$difference $periods[$j] ago";
 }
 ?>
