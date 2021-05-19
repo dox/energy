@@ -24,72 +24,50 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 </div>
 
 <div class="row">
-  <div class="col-3">
+  <div class="col-8">
+    <h3 class="text-center float-end"><?php echo $meter->meterTypeBadge();?></h3>
+
+    <p>Serial Number: <?php echo $meter->displaySerialNumber(); ?></p>
+    <p>MPRN: <?php echo $meter->displayMPRNNumber(); ?></p>
+
+    <?php
+    if ($_SESSION['logon'] == true) {
+    ?>
+    <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
+      <div class="input-group">
+        <input type="text" class="form-control" name="reading1" placeholder="Reading">
+        <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
+      </div>
+    </form>
+    <?php } ?>
+
   </div>
-  <div class="col-6">
-    <h1 class="text-center"><?php echo $meter->meterTypeBadge();?></h1>
-  </div>
-  <div class="col-3">
+  <div class="col-4">
+    <?php echo $meter->displayImage(); ?>
   </div>
 </div>
 
-<?php
-if ($_SESSION['logon'] == true) {
-?>
-<form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
-  <div class="input-group">
-    <input type="text" class="form-control" name="reading1" placeholder="Reading">
-    <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
-  </div>
-</form>
-<?php } ?>
+<div id="map" style="width: 100%; height: 500px"></div>
 
+<hr />
 
-
-<ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
-      Details
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab" aria-controls="home" aria-selected="false">
-      Consumption By Month
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="yearly-tab" data-bs-toggle="tab" data-bs-target="#yearly" type="button" role="tab" aria-controls="profile" aria-selected="false">
-      Consumption By Year
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="readings-tab" data-bs-toggle="tab" data-bs-target="#readings" type="button" role="tab" aria-controls="contact" aria-selected="false">
-      Readings
-    </button>
-  </li>
-</ul>
-
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
-    <h3>Details</h3>
-
-    <?php echo "<strong>Serial Number: " . $meter->displaySerialNumber() . "</strong>"; ?>
-    <div id="map" style="width: 100%; height: 500px"></div>
-
-    <?php echo $meter->displayImage(); ?>
-  </div>
-  <div class="tab-pane fade" id="monthly" role="tabpanel" aria-labelledby="monthly-tab">
-    <h3>Consumption by Month</h3>
+<h2>Consumption</h2>
+<div class="row">
+  <div class="col-6">
     <canvas id="monthlyConsumption"></canvas>
   </div>
-  <div class="tab-pane fade" id="yearly" role="tabpanel" aria-labelledby="yearly-tab">
-    <h3>Consumption by Year</h3>
-    <button type="button" class="btn btn-small btn-link float-end" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
-
+  <div class="col-6">
     <canvas id="yearlyConsumption"></canvas>
+    <button type="button" class="btn btn-small btn-link float-end" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
   </div>
-  <div class="tab-pane fade" id="readings" role="tabpanel" aria-labelledby="readings-tab">
-    <h3>Meter Total</h3>
+</div>
+
+<hr />
+
+<h2>All Readings</h2>
+
+<div class="row">
+  <div class="col-12">
     <canvas id="meterReadings"></canvas>
 
     <h4 class="d-flex justify-content-between align-items-center mb-3">Readings
@@ -130,6 +108,8 @@ if ($_SESSION['logon'] == true) {
     </div>
   </div>
 </div>
+
+
 
 
 <script>

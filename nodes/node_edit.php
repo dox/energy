@@ -87,14 +87,25 @@ if (isset($_GET['deleteMeterUID'])) {
       </div>
     </div>
   </div>
-	<div class="mb-3">
-		<label for="serial">Serial</label>
-		<input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo $meter->serial; ?>">
-	</div>
-  <div class="form-check mb-3">
-		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1" <?php if ($meter->billed == "1") { echo " checked";} ?>>
-		<label for="billed" class="form-check-label">Billed to tenant</label>
-	</div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="mb-3">
+    		<label for="serial">Serial</label>
+    		<input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo $meter->serial; ?>">
+    	</div>
+      <div class="form-check mb-3">
+    		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1" <?php if ($meter->billed == "1") { echo " checked";} ?>>
+    		<label for="billed" class="form-check-label">Billed to tenant</label>
+    	</div>
+    </div>
+    <div class="col-6">
+      <div class="mb-3">
+    		<label for="mprn">MPRN</label>
+    		<input type="text" class="form-control" id="mprn" name="mprn" placeholder="MPRN" value="<?php echo $meter->mprn; ?>">
+    	</div>
+    </div>
+  </div>
 
   <div class="mb-3">
     <label for="retention_days">Retention Policy</label>

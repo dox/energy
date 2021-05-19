@@ -65,14 +65,27 @@ if (isset($_POST['name'])) {
       </div>
     </div>
   </div>
-	<div class="mb-3">
-		<label for="serial">Serial</label>
-		<input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo $meter->serial; ?>">
-	</div>
-  <div class="form-check mb-3">
-		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1">
-		<label for="billed" class="form-check-label">Billed to tenant</label>
-	</div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="mb-3">
+    		<label for="serial">Serial</label>
+    		<input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number">
+    	</div>
+      <div class="form-check mb-3">
+    		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1">
+    		<label for="billed" class="form-check-label">Billed to tenant</label>
+    	</div>
+    </div>
+    <div class="col-6">
+      <div class="mb-3">
+    		<label for="mprn">MPRN</label>
+    		<input type="text" class="form-control" id="mprn" name="mprn" placeholder="MPRN">
+    	</div>
+    </div>
+  </div>
+
+
 
   <div class="form-check mb-3">
 		<input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" checked>

@@ -9,6 +9,7 @@ class meter {
   public $unit;
   public $photograph;
   public $serial;
+  public $mprn;
   public $billed;
   public $enabled;
   public $geo;
@@ -347,6 +348,16 @@ class meter {
     }
 
     return $serial;
+  }
+
+  public function displayMPRNNumber() {
+    if ($_SESSION['logon'] == true) {
+      $mprn = $this->mprn;
+    } else {
+      $mprn = "";
+    }
+
+    return $mprn;
   }
 
 

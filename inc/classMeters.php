@@ -66,11 +66,12 @@ class meters extends meter {
     $output .= "<table class=\"table\">";
     $output .= "<thead>";
     $output .= "<tr>";
-    $output .= "<th scope=\"col\" style=\"width: 40%\">Name</th>";
+    $output .= "<th scope=\"col\" style=\"width: 30%\">Name</th>";
     $output .= "<th scope=\"col\" style=\"width: 10%\">Type</th>";
     $output .= "<th scope=\"col\" style=\"width: 15%\">Current Value</th>";
     $output .= "<th scope=\"col\" style=\"width: 15%\">Last Reading</th>";
-    $output .= "<th scope=\"col\" style=\"width: 20%\">Serial</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\">Serial</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\">MPRN</th>";
     $output .= "</tr>";
     $output .= "</thead>";
 
@@ -97,12 +98,8 @@ class meters extends meter {
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td>" . displayReading($meter->current_reading()) . " " . $meter->unit . "</td>";
       $output .= "<td>" . howLongAgo(strtotime($meter->mostRecentReadingDate())) . "</td>";
-
-      if ($_SESSION['logon'] == true) {
-        $output .= "<td>" . $meter->displaySerialNumber() . "</td>";
-      } else {
-        $output .= "<td>********</td>";
-      }
+      $output .= "<td>" . $meter->displaySerialNumber() . "</td>";
+      $output .= "<td>" . $meter->displayMPRNNumber() . "</td>";
       $output .= "</tr>";
     }
 
