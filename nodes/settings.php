@@ -134,7 +134,7 @@ echo "</ul>";
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link text-muted" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary"><svg width="2em" height="2em"><use xlink:href="img/icons.svg#sliders"/></svg> Add Setting</button>
+        <button type="submit" class="btn btn-primary"><svg width="2em" height="2em"><use xlink:href="inc/icons.svg#sliders"/></svg> Add Setting</button>
       </div>
       </form>
     </div>
