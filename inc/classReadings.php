@@ -43,6 +43,19 @@ class readings {
     return $readings;
   }
 
+  public function meter_all_readings_older_than($meterUID = null, $age = 0) {
+    global $db;
+
+    $sql  = "SELECT * FROM " . self::$table_name;
+    $sql .= " WHERE meter = '" . $meterUID . "' ";
+    $sql .= " AND DATE(date) < '" . date('Y-m-d', strtotime('-' . $age . ' days')) . "'";
+    $sql .= " ORDER BY date DESC";
+
+    $readings = $db->query($sql)->fetchAll();
+
+    return $readings;
+  }
+
   //UNUSED??
   public function location_all_readings($locationUID = null) {
     global $db;

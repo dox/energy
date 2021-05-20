@@ -22,6 +22,7 @@ $settings = $settingsClass->all();
       <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
       <ul class="dropdown-menu" aria-labelledby="title_dropdown">
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg> Add Setting</a></li>
+        <li><a class="dropdown-item" href="#" onclick="purgeOldLogs()"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#delete"/></svg> Purge Old Readings</a></li>
       </ul>
     </div>
   </div>

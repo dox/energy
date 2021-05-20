@@ -60,10 +60,12 @@ class logs {
 			if (count($logsToDelete) > 0) {
 				$sql = "DELETE FROM " . self::$table_name . " WHERE DATE(date) < '" . date('Y-m-d', strtotime('-' . $logs_retention . ' days')) . "'";
 				$logsToDelete = $db->query($sql);
-
-        $this->create("purge", count($logsToDelete) . " log(s) purged");
 			}
 		}
+    $logArray['category'] = "admin";
+    $logArray['type'] = "warning";
+    $logArray['value'] = count($logsToDelete) . " log(s) purged";
+    $this->create($logArray);
 	}
 
   private function displayCategoryBadge($category = null) {
