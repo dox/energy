@@ -24,7 +24,7 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 </div>
 
 <div class="row">
-  <div class="col-8">
+  <div class="col-lg-8">
     <h3 class="text-center float-end"><?php echo $meter->meterTypeBadge();?></h3>
 
     <p>Serial Number: <?php echo $meter->displaySerialNumber(); ?></p>
@@ -35,14 +35,14 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     ?>
     <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
       <div class="input-group">
-        <input type="text" class="form-control" name="reading1" placeholder="Reading">
+        <input type="text" class="form-control" name="reading1" placeholder="New Reading">
         <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
       </div>
     </form>
     <?php } ?>
 
   </div>
-  <div class="col-4">
+  <div class="col-lg-4">
     <?php echo $meter->displayImage(); ?>
   </div>
 </div>
@@ -51,12 +51,13 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 
 <hr />
 
-<h2>Consumption</h2>
 <div class="row">
-  <div class="col-6">
+  <div class="col-lg-6">
+    <h2>Consumption By Month</h2>
     <canvas id="monthlyConsumption"></canvas>
   </div>
-  <div class="col-6">
+  <div class="col-lg-6">
+    <h2>Consumption By Year</h2>
     <canvas id="yearlyConsumption"></canvas>
     <button type="button" class="btn btn-small btn-link float-end" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
   </div>
@@ -64,15 +65,15 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 
 <hr />
 
-<h2>All Readings</h2>
+
 
 <div class="row">
   <div class="col-12">
-    <canvas id="meterReadings"></canvas>
-
-    <h4 class="d-flex justify-content-between align-items-center mb-3">Readings
+    <h2 class="d-flex justify-content-between align-items-center mb-3">All Readings
       <span class="badge bg-secondary rounded-pill"><?php echo count($meter->fetchReadingsAll()); ?></span>
-    </h4>
+    </h2>
+
+    <canvas id="meterReadings"></canvas>
 
     <div class="table-responsive">
       <table class="table table-striped table-sm">
