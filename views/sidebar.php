@@ -51,6 +51,21 @@
       </li>
     </ul>
 
+    <hr />
+
+    <ul class="nav flex-column mb-2">
+      <li class="nav-item">
+        <a class="nav-link" href="index.php?n=filter">
+          <svg width="1em" height="1em">
+            <use xlink:href="inc/icons.svg#report"/>
+          </svg>
+          Quick Filter
+        </a>
+      </li>
+    </ul>
+
+    <hr />
+
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
       <span>Saved reports</span>
       <a class="link-secondary" href="#" aria-label="Add a new report">
@@ -63,30 +78,6 @@
             <use xlink:href="inc/icons.svg#usage"/>
           </svg>
           Usage Summary
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <svg width="1em" height="1em">
-            <use xlink:href="inc/icons.svg#report"/>
-          </svg>
-          This Week
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <svg width="1em" height="1em">
-            <use xlink:href="inc/icons.svg#report"/>
-          </svg>
-          This Month
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <svg width="1em" height="1em">
-            <use xlink:href="inc/icons.svg#report"/>
-          </svg>
-          This Year
         </a>
       </li>
     </ul>

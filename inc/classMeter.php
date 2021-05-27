@@ -217,6 +217,24 @@ class meter {
     return $readingsArray;
   }
 
+  public function consumptionBetweenDates($dateFrom = null, $dateTo = null) {
+    global $db;
+
+    $dateFromSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) >= '" . $dateFrom . "' ORDER BY date ASC LIMIT 1";
+    $dateFromReading = $db->query($dateFromSQL)->fetchAll()[0]['reading1'];
+
+    $dateToSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) <= '" . $dateTo . "' ORDER BY date DESC LIMIT 1";
+    $dateToReading = $db->query($dateToSQL)->fetchAll()[0]['reading1'];
+
+    $difference = $dateToReading - $dateFromReading;
+
+    if ($difference < 0) {
+      $difference = 0;
+    }
+
+    return $difference;
+  }
+
   public function consumptionByMonth() {
     global $db;
 
@@ -237,9 +255,6 @@ class meter {
 
     return $readingsArray;
   }
-
-
-
 
   public function highestReadingForYear($date = null) {
     global $db;
