@@ -54,12 +54,30 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 <div class="row">
   <div class="col-lg-6">
     <h2>Consumption By Month</h2>
-    <canvas id="monthlyConsumption"></canvas>
+      <canvas id="monthlyConsumption" width="100%"></canvas>
+      <a id="download-monthly"
+          download="monthlyConsumption.jpg"
+          href=""
+          class="btn btn-text float-end"
+          title="Line Graph Download">
+          <svg width="1em" height="1em">
+            <use xlink:href="inc/icons.svg#download"/>
+          </svg>
+        </a>
   </div>
   <div class="col-lg-6">
     <h2>Consumption By Year</h2>
-    <canvas id="yearlyConsumption"></canvas>
-    <button type="button" class="btn btn-small btn-link float-end" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
+      <canvas id="yearlyConsumption" width="100%"></canvas>
+      <a id="download-yearly"
+          download="yearlyConsumption.jpg"
+          href=""
+          class="btn btn-text float-end"
+          title="Line Graph Download">
+          <svg width="1em" height="1em">
+            <use xlink:href="inc/icons.svg#download"/>
+          </svg>
+        </a>
+      <button type="button" class="btn btn-small btn-link" data-bs-toggle="modal" data-bs-target="#projectedConsumptionModal">How Is 'Projected Comsumption' calculated?</button>
   </div>
 </div>
 
@@ -457,4 +475,25 @@ if (isset($meter->geo)) {
   echo $output;
 }
 ?>
+</script>
+
+<!--Download charts to images -->
+<script>
+document.getElementById("download-monthly").addEventListener('click', function(){
+  /*Get image of canvas element*/
+  var url_base64jp = document.getElementById("monthlyConsumption").toDataURL("image/jpg");
+  /*get download button (tag: <a></a>) */
+  var a =  document.getElementById("download-monthly");
+  /*insert chart image url to download button (tag: <a></a>) */
+  a.href = url_base64jp;
+});
+
+document.getElementById("download-yearly").addEventListener('click', function(){
+  /*Get image of canvas element*/
+  var url_base64jp = document.getElementById("yearlyConsumption").toDataURL("image/jpg");
+  /*get download button (tag: <a></a>) */
+  var a =  document.getElementById("download-yearly");
+  /*insert chart image url to download button (tag: <a></a>) */
+  a.href = url_base64jp;
+});
 </script>

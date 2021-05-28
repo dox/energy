@@ -85,7 +85,8 @@ $iconsArray = array(
   "edit" => "Edit",
   "delete" => "Delete",
   "logs" => "logs",
-  "report" => "Report"
+  "report" => "Report",
+  "download" => "Download"
 );
 
 

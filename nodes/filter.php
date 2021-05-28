@@ -116,9 +116,27 @@ foreach ($_POST['locations'] AS $locationUID) {
 <div class="row">
   <div class="col-md-8 col-12">
     <canvas id="lineChartMonthlyUsage" width="100%"></canvas>
+    <a id="download-line"
+        download="monthlyData.jpg"
+        href=""
+        class="btn btn-text float-end"
+        title="Line Graph Download">
+        <svg width="1em" height="1em">
+          <use xlink:href="inc/icons.svg#download"/>
+        </svg>
+      </a>
   </div>
   <div class="col-md-4 col-12">
     <canvas id="pieChartSiteUsage" width="100%"></canvas>
+      <a id="download-pie"
+          download="pieChart.jpg"
+          href=""
+          class="btn btn-text float-end"
+          title="Pie Chart Download">
+          <svg width="1em" height="1em">
+            <use xlink:href="inc/icons.svg#download"/>
+          </svg>
+        </a>
   </div>
 </div>
 
@@ -334,5 +352,27 @@ var myChart = new Chart(ctx2, {
       }
     }
   }
+});
+</script>
+
+
+<!--Download charts to images -->
+<script>
+document.getElementById("download-line").addEventListener('click', function(){
+  /*Get image of canvas element*/
+  var url_base64jp = document.getElementById("lineChartMonthlyUsage").toDataURL("image/jpg");
+  /*get download button (tag: <a></a>) */
+  var a =  document.getElementById("download-line");
+  /*insert chart image url to download button (tag: <a></a>) */
+  a.href = url_base64jp;
+});
+
+document.getElementById("download-pie").addEventListener('click', function(){
+  /*Get image of canvas element*/
+  var url_base64jp = document.getElementById("pieChartSiteUsage").toDataURL("image/jpg");
+  /*get download button (tag: <a></a>) */
+  var a =  document.getElementById("download-pie");
+  /*insert chart image url to download button (tag: <a></a>) */
+  a.href = url_base64jp;
 });
 </script>
