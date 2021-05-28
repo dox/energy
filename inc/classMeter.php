@@ -25,6 +25,245 @@ class meter {
 		}
   }
 
+  public function currentReading() {
+    global $db;
+
+    $sql  = "SELECT reading1 FROM readings";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 1";
+
+    $lastReading = $db->query($sql)->fetchAll()[0];
+    $lastReading = $lastReading['reading1'];
+
+    // check for no value at all (in which case, default to 0)
+    if (isset($lastReading)) {
+      $return = $lastReading;
+    } else {
+      $return = 0;
+    }
+
+    return $return;
+  }
+
+  public function consumptionForMonth($date = null) {
+    global $db;
+
+    if ($date == null) {
+      $date = date('Y-m-d');
+    }
+
+    $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
+
+    // get this month's and previous months readings
+    $thisMonthReading = $this->readingForMonth($date);
+    $previousMonthReading = $this->readingForMonth($previousMonthDate);
+
+    // check if there is actually a reading for this/previous month
+    if ($thisMonthReading == 0 || $previousMonthReading == 0) {
+      $difference = 0;
+    } else {
+      // the difference between the 2 readings is the consumption
+      $difference = $thisMonthReading - $previousMonthReading;
+    }
+
+    // check in case the difference is a negative value (it shouldn't be!)
+    if ($difference < 0) {
+      $difference = 0;
+    }
+
+    return $difference;
+  }
+
+  public function consumptionForYear($year = null) {
+    global $db;
+
+    if ($year == null) {
+      $year = date('Y');
+    }
+
+    // get this month's and previous months readings
+    $thisYearReading = $this->readingForYear($year);
+    $previousYearReading = $this->readingForYear($year - 1);
+
+    // check if there is actually a reading for this/previous month
+    if ($thisYearReading == 0 || $previousYearReading == 0) {
+      $difference = 0;
+    } else {
+      // the difference between the 2 readings is the consumption
+      $difference = $thisYearReading - $previousYearReading;
+    }
+
+    // check in case the difference is a negative value (it shouldn't be!)
+    if ($difference < 0) {
+      $difference = 0;
+    }
+
+    return $difference;
+  }
+
+  public function readingForMonth($date = null) {
+    global $db;
+
+    if ($date == null) {
+      $date = date('Y-m-d');
+    }
+
+    $sql  = "SELECT reading1 FROM readings";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " AND YEAR(date) = '" . date('Y', strtotime($date)) . "'";
+    $sql .= " AND MONTH(date) = '" . date('m', strtotime($date)) . "'";
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 1";
+
+    $lastReading = $db->query($sql)->fetchAll()[0];
+    $lastReading = $lastReading['reading1'];
+
+    // check for no value at all (in which case, default to 0)
+    if (isset($lastReading)) {
+      $return = $lastReading;
+    } else {
+      $return = 0;
+    }
+
+    return $return;
+  }
+
+  public function readingForYear($year = null) {
+    global $db;
+
+    if ($year == null) {
+      $year = date('Y');
+    }
+
+    $sql  = "SELECT reading1 FROM readings";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " AND YEAR(date) = '" . $year . "'";
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 1";
+
+    $lastReading = $db->query($sql)->fetchAll()[0];
+    $lastReading = $lastReading['reading1'];
+
+    // check for no value at all (in which case, default to 0)
+    if (isset($lastReading)) {
+      $return = $lastReading;
+    } else {
+      $return = 0;
+    }
+
+    return $return;
+  }
+
+  public function consumptionBetweenTwoDates($dateFrom = null, $dateTo = null) {
+    global $db;
+
+    $dateFromSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) >= '" . $dateFrom . "' ORDER BY date ASC LIMIT 1";
+    $dateFromReading = $db->query($dateFromSQL)->fetchAll()[0]['reading1'];
+
+    $dateToSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) <= '" . $dateTo . "' ORDER BY date DESC LIMIT 1";
+    $dateToReading = $db->query($dateToSQL)->fetchAll()[0]['reading1'];
+
+    $difference = $dateToReading - $dateFromReading;
+
+    if ($difference < 0) {
+      $difference = 0;
+    }
+
+    return $difference;
+  }
+
+  public function consumptionBetweenDatesByMonth($dateFrom = null, $dateTo = null) {
+    global $db;
+
+    if ($dateFrom == null || $dateTo == null) {
+      $dateFrom = date('Y-m-d', strtotime('1 year ago'));
+      $dateTo = date('Y-m-d');
+    }
+
+    if (strtotime($dateFrom) > strtotime($dateTo)) {
+      echo "Error: DateTo cannot be larger than DateFrom";
+      quit();
+    }
+
+    $i = 0;
+    do {
+      $lookupDate = date('Y-m', strtotime($dateTo . "-" . $i . " months"));
+
+      $consumption[$lookupDate] = $this->consumptionForMonth($lookupDate);
+      $i++;
+
+    } while (strtotime($lookupDate) > strtotime($dateFrom));
+
+    return $consumption;
+  }
+
+  public function consumptionBetweenDatesByYear($dateFrom = null, $dateTo = null) {
+    global $db;
+
+    if ($dateFrom == null || $dateTo == null) {
+      $dateFrom = date('Y', strtotime('5 years ago'));
+      $dateTo = date('Y');
+    }
+
+    if (strtotime($dateFrom) > strtotime($dateTo)) {
+      echo "Error: DateTo cannot be larger than DateFrom";
+      quit();
+    }
+
+    $i = 0;
+    do {
+      $lookupDate = $dateTo - $i;
+
+      $consumption[$lookupDate] = $this->consumptionForYear($lookupDate);
+      $i++;
+
+    } while (strtotime($lookupDate) > strtotime($dateFrom));
+
+    return $consumption;
+  }
+
+  public function projectedConsumptionForRemainderOfYear() {
+    global $db;
+
+    $metersFirstReading = $this->getFirstReading()['reading1'];
+    $metersLastReading = $this->getMostRecentReading()['reading1'];
+    $metersTotalConsumption = $metersLastReading - $metersFirstReading;
+
+    $daysLeftInYear = 365 - date('z');
+
+    $metersFirstDate = date('Y-m-d', strtotime($this->getFirstReading()['date']));
+    $metersLastDate = date('Y-m-d', strtotime($this->getMostRecentReading()['date']));
+    $metersDurationSeconds = abs(strtotime($metersLastDate) - strtotime($metersFirstDate));
+    $metersDurationDays = round($metersDurationSeconds / (60 * 60 * 24));
+    $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
+
+    $projectedConsumption = $metersAverageConsumptionDaily * $daysLeftInYear;
+    //$projectedAdditionalConsumption = $projectedConsumption - $this->consumptionByYear()[date('Y')];
+
+    return $projectedConsumption;
+  }
+
+  public function displaySerialNumber() {
+    if ($_SESSION['logon'] == true) {
+      $serial = $this->serial;
+    } else {
+      $serial = "*******";
+    }
+
+    return $serial;
+  }
+
+  public function displayMPRNNumber() {
+    if ($_SESSION['logon'] == true) {
+      $mprn = $this->mprn;
+    } else {
+      $mprn = "";
+    }
+
+    return $mprn;
+  }
+
   public function meterTypeBadge() {
     if ($this->type == "Gas") {
   		$class = "bg-primary";
@@ -59,68 +298,6 @@ class meter {
     }
 
     return $output;
-  }
-
-  public function geoLocation() {
-    global $settingsClass;
-
-    if (isset($this->geo) && !empty($this->geo)) {
-      $geoReturn = $this->geo;
-    } else {
-      $geoReturn = $settingsClass->value('site_geolocation');
-    }
-
-    return $geoReturn;
-  }
-
-  public function deleteImage() {
-    global $logsClass;
-
-    if (isset($this->photograph)) {
-      $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $this->photograph;
-
-      if (file_exists($file)) {
-        unlink($file);
-
-        $logArray['category'] = "file";
-    		$logArray['type'] = "success";
-    		$logArray['value'] = $file . " file deleted successfully from [meterUID:" . $this->uid . "]";
-    		$logsClass->create($logArray);
-      } else {
-        $logArray['category'] = "file";
-    		$logArray['type'] = "error";
-    		$logArray['value'] = $file . " file did not exist to delete from [meterUID:" . $this->uid . "]";
-    		$logsClass->create($logArray);
-      }
-    }
-  }
-
-  public function current_reading() {
-    global $db;
-
-    $sql  = "SELECT reading1 FROM readings";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
-    $sql .= " ORDER BY date DESC";
-    $sql .= " LIMIT 1";
-
-    $lastReading = $db->query($sql)->fetchAll()[0];
-    $lastReading = $lastReading['reading1'];
-
-    if (isset($lastReading)) {
-      $return = $lastReading;
-    } else {
-      return "Unknown";
-    }
-
-    return $return;
-  }
-
-  public function mostRecentReadingDate() {
-    return $this->getMostRecentReading()['date'];
-  }
-
-  public function mostRecentReadingValue() {
-    return $this->getMostRecentReading()['reading1'];
   }
 
   public function update($array = null) {
@@ -175,6 +352,66 @@ class meter {
     return $deleteMeter;
   }
 
+  public function geoLocation() {
+    global $settingsClass;
+
+    if (isset($this->geo) && !empty($this->geo)) {
+      $geoReturn = $this->geo;
+    } else {
+      $geoReturn = $settingsClass->value('site_geolocation');
+    }
+
+    return $geoReturn;
+  }
+
+  public function deleteImage() {
+    global $logsClass;
+
+    if (isset($this->photograph)) {
+      $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $this->photograph;
+
+      if (file_exists($file)) {
+        unlink($file);
+
+        $logArray['category'] = "file";
+    		$logArray['type'] = "success";
+    		$logArray['value'] = $file . " file deleted successfully from [meterUID:" . $this->uid . "]";
+    		$logsClass->create($logArray);
+      } else {
+        $logArray['category'] = "file";
+    		$logArray['type'] = "error";
+    		$logArray['value'] = $file . " file did not exist to delete from [meterUID:" . $this->uid . "]";
+    		$logsClass->create($logArray);
+      }
+    }
+  }
+
+
+
+
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //
+  // everything below this line needs going over
+  //
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
+  public function mostRecentReadingDate() {
+    return $this->getMostRecentReading()['date'];
+  }
+
+  public function mostRecentReadingValue() {
+    return $this->getMostRecentReading()['reading1'];
+  }
+
+
+
 
 
 
@@ -217,44 +454,6 @@ class meter {
     return $readingsArray;
   }
 
-  public function consumptionBetweenDates($dateFrom = null, $dateTo = null) {
-    global $db;
-
-    $dateFromSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) >= '" . $dateFrom . "' ORDER BY date ASC LIMIT 1";
-    $dateFromReading = $db->query($dateFromSQL)->fetchAll()[0]['reading1'];
-
-    $dateToSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) <= '" . $dateTo . "' ORDER BY date DESC LIMIT 1";
-    $dateToReading = $db->query($dateToSQL)->fetchAll()[0]['reading1'];
-
-    $difference = $dateToReading - $dateFromReading;
-
-    if ($difference < 0) {
-      $difference = 0;
-    }
-
-    return $difference;
-  }
-
-  public function consumptionByMonth() {
-    global $db;
-
-    $highestReadingsByMonth = $this->highestReadingsByMonth();
-
-    foreach ($highestReadingsByMonth AS $date => $value) {
-      $previousMonth = date('Y-m', strtotime($date . " -1 month"));
-
-
-      if ($value > 0 && $highestReadingsByMonth[$previousMonth] > 0) {
-        $readingsArray[$date] = $value - $highestReadingsByMonth[$previousMonth];
-      } else {
-        $readingsArray[$date] = 0;
-      }
-    }
-
-    $readingsArray = array_reverse($readingsArray, true);
-
-    return $readingsArray;
-  }
 
   public function highestReadingForYear($date = null) {
     global $db;
@@ -334,46 +533,9 @@ class meter {
     return $recentReading;
   }
 
-  public function getProjectedConsumptionForRemainderOfYear() {
-    global $db;
 
-    $metersFirstReading = $this->getFirstReading()['reading1'];
-    $metersLastReading = $this->getMostRecentReading()['reading1'];
-    $metersTotalConsumption = $metersLastReading - $metersFirstReading;
 
-    $daysLeftInYear = 365 - date('z');
 
-    $metersFirstDate = date('Y-m-d', strtotime($this->getFirstReading()['date']));
-    $metersLastDate = date('Y-m-d', strtotime($this->getMostRecentReading()['date']));
-    $metersDurationSeconds = abs(strtotime($metersLastDate) - strtotime($metersFirstDate));
-    $metersDurationDays = round($metersDurationSeconds / (60 * 60 * 24));
-    $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
-
-    $projectedConsumption = $metersAverageConsumptionDaily * $daysLeftInYear;
-    //$projectedAdditionalConsumption = $projectedConsumption - $this->consumptionByYear()[date('Y')];
-
-    return $projectedConsumption;
-  }
-
-  public function displaySerialNumber() {
-    if ($_SESSION['logon'] == true) {
-      $serial = $this->serial;
-    } else {
-      $serial = "*******";
-    }
-
-    return $serial;
-  }
-
-  public function displayMPRNNumber() {
-    if ($_SESSION['logon'] == true) {
-      $mprn = $this->mprn;
-    } else {
-      $mprn = "";
-    }
-
-    return $mprn;
-  }
 
 
 

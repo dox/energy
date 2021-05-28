@@ -151,22 +151,29 @@ function readingDelete(this_id) {
 
 <?php
 // CONSUMPTION BY MONTH
-foreach ($meter->consumptionByMonth() AS $month => $value) {
-  $chartLabelsMonthly[] = "'" . date('M', strtotime($month)) . "'";
-  $chartDataMonthly[] = "'" . $value . "'";
-}
+$monthsToShow = $settingsClass->value('node_graph_monthly_display');
+$dateFrom = date('Y-m-d', strtotime($monthsToShow . ' months ago'));
+$dateTo = date('Y-m-d');
+
+$monthlyConsumption = array_reverse($meter->consumptionBetweenDatesByMonth($dateFrom, $dateTo), true);
+$monthlyConsumptionLabels = "'" . implode("','", array_keys($monthlyConsumption)) . "'";
+
+
 
 // CONSUMPTION BY YEAR
-foreach ($meter->consumptionByYear() AS $month => $value) {
-  $chartLabelsYearly[] = "'" . $month . "'";
-  $chartDataYearly[] = "'" . $value . "'";
+$yearsToShow = $settingsClass->value('node_graph_yearly_display');
+$dateFrom = date('Y') - $yearsToShow;
+$dateTo = date('Y');
 
-  if ($month == date('Y-m')) {
-    $chartDataYearlyProjection[] = "'" . $meter->getProjectedConsumptionForRemainderOfYear() . "'";
-  } else {
-    $chartDataYearlyProjection[] = "'0'";
-  }
-}
+$yearlyConsumption = array_reverse($meter->consumptionBetweenDatesByYear($dateFrom, $dateTo), true);
+$yearlyConsumptionLabels = "'" . implode("','", array_keys($yearlyConsumption)) . "'";
+
+$i = 0;
+do {
+  $yearlyConsumptionProjected[] = 0;
+  $i++;
+} while ($i < count($yearlyConsumption)-1);
+$yearlyConsumptionProjected[] = $meter->projectedConsumptionForRemainderOfYear();
 
 // READINGS (CHEATING, I KONW - THIS NEEDS TO COME FROM THE JSON!)
 foreach ($meter->fetchReadingsAll() AS $reading) {
@@ -178,13 +185,13 @@ var timeFormat = 'YYYY/MM/DD';
 var config_meter_consumption_monthly = {
 	type: 'bar',
 	data: {
-	   labels: [ <?php echo implode(",", $chartLabelsMonthly); ?> ],
+	   labels: [ <?php echo $monthlyConsumptionLabels; ?> ],
      datasets: [{
       label: 'Monthly Consumption',
       backgroundColor: "#3CB44B30",
       borderColor: "#3CB44B",
       fill: true,
-      data: [<?php echo implode(",", $chartDataMonthly); ?>]
+      data: [<?php echo implode(",", $monthlyConsumption); ?>]
     }]
 	},
 	options: {
@@ -216,17 +223,17 @@ var config_meter_consumption_monthly = {
 var config_meter_consumption_yearly = {
 	type: 'bar',
   data: {
-      labels: [<?php echo implode(",", $chartLabelsYearly); ?>],
+      labels: [<?php echo $yearlyConsumptionLabels; ?>],
       datasets: [{
           label: 'Consumption by Year',
           backgroundColor: 'rgb(255, 99, 132, 0.6)',
           borderColor: 'rgb(255, 99, 132)',
-          data: [<?php echo implode(",", $chartDataYearly); ?>]
+          data: [<?php echo implode(",", $yearlyConsumption); ?>]
       },{
           label: 'Projected Consumption',
           backgroundColor: 'rgb(255, 99, 132, 0.3)',
           borderColor: 'rgb(255, 99, 132)',
-          data: [<?php echo implode(",", $chartDataYearlyProjection); ?>]
+          data: [<?php echo implode(",", $yearlyConsumptionProjected); ?>]
       }]
   },
 	options: {
@@ -411,7 +418,7 @@ window.onload = function() {
         $metersDurationDays = round($metersDurationSeconds / (60 * 60 * 24));
         $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
 
-        $projectedAdditionalConsumption = $meter->getProjectedConsumptionForRemainderOfYear();
+        $projectedAdditionalConsumption = $meter->projectedConsumptionForRemainderOfYear();
         $projectedYearlyConsumption = $projectedAdditionalConsumption + $meter->consumptionByYear()[date('Y')];
         ?>
         <p>Projected consumption is calculated based on the difference between the meter's first and last reading (the actual total consumption for the meter), divided by the difference in these 2 readings (in days), multiplied by the remaining days in the year.</p>

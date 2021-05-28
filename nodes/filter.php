@@ -21,6 +21,8 @@ foreach ($_POST['locations'] AS $locationUID) {
   foreach ($nodesByLocation AS $node) {
     $nodes[] = $node;
   }
+
+  $nodeUnit = $node['unit'];
 }
 ?>
 
@@ -111,8 +113,6 @@ foreach ($_POST['locations'] AS $locationUID) {
 
 <hr />
 
-<h3><?php echo count($nodes); ?> Nodes</h3>
-
 <div class="row">
   <div class="col-md-8 col-12">
     <canvas id="lineChartMonthlyUsage" width="100%"></canvas>
@@ -123,24 +123,79 @@ foreach ($_POST['locations'] AS $locationUID) {
 </div>
 
 <hr />
+<div class="row row-deck row-cards mb-3">
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          Total Usage
+        </div>
+        <div class="h1 mb-3">
+          <?php
+          $totalConsumption = 0;
+          foreach ($nodes AS $node) {
+            $node = new meter($node['uid']);
+            $totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
+          }
+          echo number_format($totalConsumption) . " " . $nodeUnit;
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          ~Cost Per Unit
+        </div>
+        <div class="h1 mb-3">
+          <?php
+          $settingName = "unit_cost_" . $_POST['nodes'][0];
+
+          $unitCost = $settingsClass->value($settingName);
+          echo "£" . number_format($unitCost, 2);
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          ~Total Cost
+        </div>
+        <div class="h1 mb-3">
+          <?php
+          $totalCost = $totalConsumption * $unitCost;
+
+          echo "~£" . number_format($totalCost);
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          Nodes
+        </div>
+        <div class="h1 mb-3">
+          <?php echo count($nodes); ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr />
 
 <?php
 
 echo $metersClass->meterTable($nodes);
 
 ?>
-
-
-<?php
-
-foreach ($_POST['nodes'] AS $nodeType) {
-  $output  = "<p>graph for " . $nodeType . "</p>";
-
-  //echo $output;
-}
-
-
-//printArray($nodes); ?>
 
 <script>
 <?php
@@ -172,57 +227,57 @@ var date_to = flatpickr("#date_to", {
 
 
 <!-- Pie Chart showing type usage per location -->
-<script>
 <?php
 foreach ($nodes AS $node) {
   $node = new meter($node['uid']);
   $location = new location($node->location);
 
-  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenDates($_POST['date_from'], $_POST['date_to']);
+  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
 }
 
 $labels = "'" . implode("','", array_keys($data)) . "'";
 ?>
+<script>
 var ctx = document.getElementById('pieChartSiteUsage').getContext('2d');
 var myChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: [<?php echo $labels; ?>],
-        datasets: [{
-            label: '# of Votes',
-            data: [<?php echo implode(",", $data); ?>],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-              ticks: {
-                display: false
-              },
-              grid: {
-                display: false
-              },
-                beginAtZero: true
-            }
-        }
+  type: 'pie',
+  data: {
+    labels: [<?php echo $labels; ?>],
+    datasets: [{
+      label: '# of Votes',
+      data: [<?php echo implode(",", $data); ?>],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        ticks: {
+          display: false
+        },
+        grid: {
+          display: false
+        },
+        beginAtZero: true
+      }
     }
+  }
 });
 </script>
 
@@ -230,68 +285,54 @@ var myChart = new Chart(ctx, {
 <!-- CONSUMPTION BY MONTH GRAPH -->
 <?php
 // CONSUMPTION BY MONTH
-$data = null;
-$data2 = null;
+$data = array();
 foreach ($nodes AS $node) {
   $node = new meter($node['uid']);
 
-  //$data[$node->type] = $data[$node->type] + $node->consumptionBetweenDates($_POST['date_from'], $_POST['date_to']);
+  $nodeData = $node->consumptionBetweenDatesByMonth($_POST['date_from'], $_POST['date_to']);
 
-  $startingDate = $_POST['date_to'];
-
-  $i = 0;
-  do {
-    $lookupDate = date('Y-m-d', strtotime($i . " months ago"));
-    $startOfMonth = date('Y-m-01', strtotime($i . " months ago"));
-    $endOfMonth = date('Y-m-t', strtotime($i . " months ago"));
-
-    $data2[$startOfMonth] = $data2[$startOfMonth] + $node->consumptionBetweenDates($endOfMonth, $startOfMonth);
-
-    $i++;
-  } while ($lookupDate > date('Y-m', strtotime($_POST['date_from'])));
-
-  //printArray($data2);
-
-  foreach ($node->consumptionByMonth() AS $month => $value) {
-    $yearMonth = date('M Y', strtotime($month));
-
-    //$chartLabelsMonthly[] = "'" . $yearMonth . "'";
-    $data[$yearMonth] = $data[$yearMonth] + $value;
+  foreach ($nodeData AS $monthData => $value) {
+    $monthlyData[$monthData] = $monthlyData[$monthData] + $value;
   }
-}
 
-$labels = "'" . implode("','", array_keys($data)) . "'";
-//printArray($chartDataMonthly);
+}
+$monthlyData = array_reverse($monthlyData);
+$monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
 ?>
 
 <script>
 var ctx2 = document.getElementById('lineChartMonthlyUsage').getContext('2d');
 var myChart = new Chart(ctx2, {
-    type: 'bar',
-    data: {
-        labels: [<?php echo $labels; ?>],
-        datasets: [{
-            label: 'Consumption over last 12 months',
-            data: [<?php echo implode(',', $data); ?>],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)'
-            ],
-            borderWidth: 1
-        }]
+  type: 'bar',
+  data: {
+    labels: [<?php echo $monthlylabels; ?>],
+    datasets: [{
+      label: 'Consumption Per Month',
+      data: [<?php echo implode(',', $monthlyData); ?>],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {
+        display: false
+      }
     },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-        					display: true,
-        					text: '<?php echo $node->unit; ?>'
-        				}
-            }
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: '<?php echo $node->unit; ?>'
         }
+      }
     }
+  }
 });
 </script>

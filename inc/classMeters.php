@@ -96,7 +96,7 @@ class meters extends meter {
       $output .= "<tr class=\"" . $rowClass . "\">";
       $output .= "<th scope=\"row\"><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
-      $output .= "<td>" . displayReading($meter->current_reading()) . " " . $meter->unit . "</td>";
+      $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
       $output .= "<td>" . howLongAgo(strtotime($meter->mostRecentReadingDate())) . "</td>";
       $output .= "<td>" . $meter->displaySerialNumber() . "</td>";
       $output .= "<td>" . $meter->displayMPRNNumber() . "</td>";
