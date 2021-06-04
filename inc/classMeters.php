@@ -23,6 +23,22 @@ class meters extends meter {
     return $meters;
   }
 
+  public function recentlyUpdated() {
+    global $db;
+
+    $readingsSQL  = "SELECT meter FROM readings ";
+    $readingsSQL .= " WHERE date BETWEEN NOW() - INTERVAL 30 DAY AND NOW()";
+    $readingsSQL .= " ORDER BY date DESC";
+
+    $sql  = "SELECT * FROM meters ";
+    $sql .= " WHERE uid IN (" . $readingsSQL . ")";
+    $sql .= " LIMIT 50";
+
+    $meters = $db->query($sql)->fetchAll();
+
+    return $meters;
+  }
+
   public function allByLocation($locationUID = null, $enabledDisabled = "enabled") {
     global $db;
 

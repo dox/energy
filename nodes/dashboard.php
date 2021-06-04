@@ -1,8 +1,7 @@
 <?php
 $metersClass = new meters();
 
-$readingsClass = new readings();
-$readings_recent = $readingsClass->getRecentReadings();
+$meters = $metersClass->recentlyUpdated();
 ?>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#home"/></svg> Dashboard</h1>
@@ -24,35 +23,9 @@ $readings_recent = $readingsClass->getRecentReadings();
 <hr />
 
 <h2>Recent Updates</h2>
-<div class="table-responsive">
-  <table class="table table-striped table-sm">
-    <thead>
-      <tr>
-        <th>Node</th>
-        <th>Date</th>
-        <th>Reading</th>
-        <th>Username</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      foreach ($readings_recent AS $reading) {
-        $node = new meter($reading['meter']);
-
-        $output  = "<tr>";
-        $output .= "<td><a href=\"index.php?n=node&meterUID=" . $node->uid . "\">" . $node->name . "</a></td>";
-        $output .= "<td>" . dateDisplay($reading['date']) . "</td>";
-        $output .= "<td>" . displayReading($reading['reading1']) . " " . $node->unit . "</td>";
-        $output .= "<td>" . $reading['username'] . "</td>";
-        $output .= "</tr>";
-
-        echo $output;
-      }
-      ?>
-    </tbody>
-  </table>
-</div>
-
+<?php
+  echo $metersClass->meterTable($meters);
+?>
 
 <script>
 var map = L.map('map').setView([<?php echo $settingsClass->value('site_geolocation'); ?>], 18);
