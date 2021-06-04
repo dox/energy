@@ -1,10 +1,10 @@
 <?php
 include_once("../inc/include.php");
+admin_gatekeeper();
 
 $readingsClass = new readings();
-//$meter = new meter($_GET['meterUID']);
 
-printArray($_POST);
+//printArray($_POST);
 
 if (isset($_POST['readingUID']) && $_SESSION['logon'] == true) {
   $readingsClass->delete($_POST['readingUID']);

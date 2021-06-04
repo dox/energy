@@ -1,5 +1,6 @@
 <?php
 include_once("../inc/include.php");
+admin_gatekeeper();
 
 $logArray['category'] = "admin";
 $logArray['type'] = "warning";

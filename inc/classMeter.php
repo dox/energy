@@ -355,12 +355,12 @@ class meter {
   public function geoLocation() {
     global $settingsClass;
 
-    if (isset($this->geo) && !empty($this->geo)) {
+    if (isset($this->geo) && !empty($this->geo) && $this->geo != null) {
       $geoReturn = $this->geo;
     } else {
       $geoReturn = $settingsClass->value('site_geolocation');
     }
-
+    
     return $geoReturn;
   }
 

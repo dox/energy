@@ -410,7 +410,7 @@ window.onload = function() {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link link-secondary mr-auto" data-bs-dismiss="modal">Close</button>
-        <a href="index.php?n=meter_edit&deleteMeterUID=<?php echo $meter->uid; ?>" role="button" class="btn btn-danger"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete</a>
+        <button type="button" class="btn btn-danger" onclick="nodeDelete(this)" id="<?php echo $meter->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete</button>
       </div>
     </div>
   </div>

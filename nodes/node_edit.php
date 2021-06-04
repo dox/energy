@@ -4,31 +4,27 @@ admin_gatekeeper();
 $locationsClass = new locations();
 $metersClass = new meters();
 $readingsClass = new readings();
-$meter = new meter($_GET['nodeUID']);
-$location = new location($meter->location);
 
-if (isset($_POST['uid'])) {
-  if (!isset($_POST['billed'])) {
-    $_POST['billed'] = 0;
-  }
-  if (!isset($_POST['enabled'])) {
-    $_POST['enabled'] = 0;
-  }
+//check if we're editing, or adding new
+if (isset($_GET['nodeUID'])) {
+  // editing an existing node
+  $pageTitle = "Edit";
+  $submitButtonAction = "nodeEdit()";
 
-  $meter->update($_POST);
-  $meter = new meter($_POST['uid']);
-}
+  $meter = new meter($_GET['nodeUID']);
+  $location = new location($meter->location);
 
-if (isset($_GET['deleteMeterUID'])) {
-  $meter = new meter($_GET['deleteMeterUID']);
-  $meter->delete();
-  echo "Meter and corresponding readings deleted";
-  exit();
+} else {
+  // we're adding a new node
+  $pageTitle = "Add New";
+  $submitButtonAction = "nodeAdd()";
+
+  $meter = new meter();
 }
 ?>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Node: Edit</h1>
+  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Node: <?php echo $pageTitle; ?></h1>
 </div>
 
 <form method="post" id="meterUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
@@ -126,11 +122,14 @@ if (isset($_GET['deleteMeterUID'])) {
 		<label for="billed" class="form-check-label">Enabled</label>
 	</div>
 
-  <input type="hidden" id="geo" name="geo" value="<?php echo $meter->geoLocation(); ?>">
+  <input type="hidden" id="geo" name="geo" value="<?php $meter->geoLocation(); ?>">
   <div id="map" style="width: 100%; height: 500px"></div>
 
   <div class="mb-3">
-    <button type="submit" class="btn btn-primary w-100">Submit</button>
+    <?php
+
+    ?>
+    <button type="button" onclick="<?php echo $submitButtonAction; ?>" class="btn btn-primary w-100">Submit</button>
     <input type="hidden" id="uid" name="uid" value="<?php echo $meter->uid; ?>">
   </div>
 
