@@ -60,25 +60,30 @@ function dateDisplay($date = null, $longFormat = false) {
 	return $returnDate;
 }
 
-function howLongAgo($time) {
-	$periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-	$lengths = array("60","60","24","7","4.35","12","10");
+function howLongAgo($time = false) {
+	if ($time != false) {
+		$periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+		$lengths = array("60","60","24","7","4.35","12","10");
 
-	$now = time();
+		$now = time();
 
-	$difference			= $now - $time;
-	$tense					= "ago";
+		$difference			= $now - strtotime($time);
+		$tense					= "ago";
 
-	for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
-		$difference /= $lengths[$j];
+		for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+			$difference /= $lengths[$j];
+		}
+
+		$difference = round($difference);
+
+		if($difference != 1) {
+			$periods[$j].= "s";
+		}
+
+		$return = "$difference $periods[$j] ago";
+	} else {
+		return "No readings";
 	}
-
-	$difference = round($difference);
-
-	if($difference != 1) {
-		$periods[$j].= "s";
-	}
-
-	return "$difference $periods[$j] ago";
+	return $return;
 }
 ?>

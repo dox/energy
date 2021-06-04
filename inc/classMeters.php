@@ -97,9 +97,9 @@ class meters extends meter {
       $output .= "<th scope=\"row\"><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
-      $output .= "<td>" . howLongAgo(strtotime($meter->mostRecentReadingDate())) . "</td>";
-      $output .= "<td>" . $meter->displaySerialNumber() . "</td>";
-      $output .= "<td>" . $meter->displayMPRNNumber() . "</td>";
+      $output .= "<td>" . howLongAgo($meter->mostRecentReadingDate()) . "</td>";
+      $output .= "<td>" . $meter->displaySecurely('serial') . "</td>";
+      $output .= "<td>" . $meter->displaySecurely('mprn') . "</td>";
       $output .= "</tr>";
     }
 
@@ -127,6 +127,22 @@ class meters extends meter {
     $logsClass->create($logArray);
 
     return $create;
+  }
+
+  public function suppliers() {
+    global $db;
+
+    $sql  = "SELECT supplier FROM " . self::$table_name;
+    $sql .= " GROUP BY supplier";
+    $sql .= " ORDER BY supplier ASC";
+
+    $suppliers = $db->query($sql)->fetchAll();
+
+    foreach ($suppliers AS $supplier) {
+      $supplierArray[] = $supplier['supplier'];
+    }
+
+    return $supplierArray;
   }
 }
 ?>

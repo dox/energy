@@ -77,6 +77,8 @@ function nodeAdd() {
   var retention_days = document.getElementById('retention_days').value;
   var enabled = document.getElementById('enabled').checked;
   var geo = document.getElementById('geo').value;
+  var supplier = document.getElementById('supplier').value;
+  var account_no = document.getElementById('account_no').value;
 
   var formData = new FormData();
 
@@ -90,6 +92,8 @@ function nodeAdd() {
   formData.append("retention_days", retention_days);
   formData.append("enabled", enabled);
   formData.append("geo", geo);
+  formData.append("supplier", supplier);
+  formData.append("account_no", account_no);
 
   var request = new XMLHttpRequest();
 
@@ -127,6 +131,8 @@ function nodeEdit() {
   var retention_days = document.getElementById('retention_days').value;
   var enabled = document.getElementById('enabled').checked;
   var geo = document.getElementById('geo').value;
+  var supplier = document.getElementById('supplier').value;
+  var account_no = document.getElementById('account_no').value;
 
   var formData = new FormData();
 
@@ -141,6 +147,8 @@ function nodeEdit() {
   formData.append("retention_days", retention_days);
   formData.append("enabled", enabled);
   formData.append("geo", geo);
+  formData.append("supplier", supplier);
+  formData.append("account_no", account_no);
 
   var request = new XMLHttpRequest();
 

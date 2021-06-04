@@ -13,6 +13,9 @@ class meter {
   public $billed;
   public $enabled;
   public $geo;
+  public $address;
+  public $supplier;
+  public $account_no;
 
   function __construct($meterUID = null) {
 
@@ -244,24 +247,14 @@ class meter {
     return $projectedConsumption;
   }
 
-  public function displaySerialNumber() {
+  public function displaySecurely($field = null) {
     if ($_SESSION['logon'] == true) {
-      $serial = $this->serial;
+      $return = $this->$field;
     } else {
-      $serial = "*******";
+      $return = "*******";
     }
 
-    return $serial;
-  }
-
-  public function displayMPRNNumber() {
-    if ($_SESSION['logon'] == true) {
-      $mprn = $this->mprn;
-    } else {
-      $mprn = "";
-    }
-
-    return $mprn;
+    return $return;
   }
 
   public function meterTypeBadge() {
@@ -360,7 +353,7 @@ class meter {
     } else {
       $geoReturn = $settingsClass->value('site_geolocation');
     }
-    
+
     return $geoReturn;
   }
 
@@ -386,9 +379,31 @@ class meter {
     }
   }
 
+  public function getMostRecentReading() {
+    global $db;
 
+    $sql  = "SELECT * FROM readings ";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 1";
 
+    $recentReading = $db->query($sql)->fetchAll()[0];
 
+    return $recentReading;
+  }
+
+  public function mostRecentReadingDate() {
+    $date = $this->getMostRecentReading()['date'];
+    if (isset($date)) {
+      return $date;
+    } else {
+      return false;
+    }
+  }
+
+  public function mostRecentReadingValue() {
+    return $this->getMostRecentReading()['reading1'];
+  }
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   //
@@ -402,13 +417,7 @@ class meter {
 
 
 
-  public function mostRecentReadingDate() {
-    return $this->getMostRecentReading()['date'];
-  }
 
-  public function mostRecentReadingValue() {
-    return $this->getMostRecentReading()['reading1'];
-  }
 
 
 
@@ -506,18 +515,7 @@ class meter {
     return $readingsArray;
   }
 
-  public function getMostRecentReading() {
-    global $db;
 
-    $sql  = "SELECT * FROM readings ";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
-    $sql .= " ORDER BY date DESC";
-    $sql .= " LIMIT 1";
-
-    $recentReading = $db->query($sql)->fetchAll()[0];
-
-    return $recentReading;
-  }
 
   public function getFirstReading() {
     global $db;

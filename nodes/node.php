@@ -29,8 +29,9 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <h3 class="text-center float-end"><?php echo $meter->meterTypeBadge();?></h3>
 
     <p>Location: <a href="index.php?n=location&locationUID=<?php echo $location->uid; ?>"><?php echo $location->name; ?></a></p>
-    <p>Serial Number: <?php echo $meter->displaySerialNumber(); ?></p>
-    <p>MPRN: <?php echo $meter->displayMPRNNumber(); ?></p>
+    <p>Supplier: <?php echo $meter->displaySecurely('supplier'); ?> / Account #: <?php echo $meter->displaySecurely('account_no'); ?></p>
+    <p>Serial Number: <?php echo $meter->displaySecurely('serial'); ?></p>
+    <p>MPRN: <?php echo $meter->displaySecurely('mprn'); ?></p>
 
     <?php
     if ($_SESSION['logon'] == true) {
@@ -400,12 +401,17 @@ window.onload = function() {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Meter</h5>
+        <h5 class="modal-title">Delete Node</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete this meter?  This will also delete all readings for this meter (affecting past statistics).</p>
-        <p>Are you sure you wouldn't rather just mark it as 'disabled'?</p>
+        <p>Are you sure you want to delete this node?  This will also delete <strong>all</strong> recorded readings for this node.</p>
+
+        <?php
+        if ($meter->enabled == 1) {
+          echo "<p>Are you sure you wouldn't rather just mark it as 'disabled'?</p>";
+        }
+        ?>
         <p class="text-danger"><strong>WARNING!</strong> This action cannot be undone!</p>
       </div>
       <div class="modal-footer">

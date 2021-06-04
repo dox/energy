@@ -10,14 +10,22 @@ if (isset($_GET['nodeUID'])) {
   // editing an existing node
   $pageTitle = "Edit";
   $submitButtonAction = "nodeEdit()";
-
+  
   $meter = new meter($_GET['nodeUID']);
+
+  if ($meter->enabled == "1") {
+    $meterEnabledStatus = " checked";
+  } else {
+    $meterEnabledStatus = "";
+  }
+
   $location = new location($meter->location);
 
 } else {
   // we're adding a new node
   $pageTitle = "Add New";
   $submitButtonAction = "nodeAdd()";
+  $meterEnabledStatus = " checked";
 
   $meter = new meter();
 }
@@ -48,7 +56,7 @@ if (isset($_GET['nodeUID'])) {
 		</select>
 	</div>
   <div class="row">
-    <div class="col-6">
+    <div class="col-lg-3 col-6">
       <div class="mb-3">
     		<label for="type">Type</label>
     		<select class="form-select" id="type" name="type">
@@ -65,7 +73,7 @@ if (isset($_GET['nodeUID'])) {
     		</select>
     	</div>
     </div>
-    <div class="col-6">
+    <div class="col-lg-3 col-6">
       <div class="mb-3">
         <label for="unit">Unit</label>
         <select class="form-select" id="unit" name="unit">
@@ -80,6 +88,18 @@ if (isset($_GET['nodeUID'])) {
           }
           ?>
         </select>
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="mb-3">
+        <label for="supplier">Supplier</label>
+        <input class="form-control" id="supplier" name="supplier" list="suppliers" value="<?php echo $meter->supplier; ?>" />
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="mb-3">
+        <label for="account_no">Account #</label>
+        <input class="form-control" id="account_no" name="account_no" value="<?php echo $meter->account_no; ?>" />
       </div>
     </div>
   </div>
@@ -118,12 +138,12 @@ if (isset($_GET['nodeUID'])) {
   </div>
 
   <div class="form-check mb-3">
-		<input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" <?php if ($meter->enabled == "1") { echo " checked";} ?>>
+		<input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" <?php echo $meterEnabledStatus; ?>>
 		<label for="billed" class="form-check-label">Enabled</label>
 	</div>
 
   <input type="hidden" id="geo" name="geo" value="<?php $meter->geoLocation(); ?>">
-  <div id="map" style="width: 100%; height: 500px"></div>
+  <div id="map" class="mb-3" style="width: 100%; height: 500px"></div>
 
   <div class="mb-3">
     <?php
@@ -165,3 +185,12 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 </script>
+
+
+<datalist id="suppliers">
+  <?php
+  foreach ($metersClass->suppliers() AS $supplier) {
+    echo "<option value=\"" . $supplier . "\">";
+  }
+  ?>
+</datalist>
