@@ -1,6 +1,7 @@
 <?php
 $readingsClass = new readings();
 $meter = new meter($_GET['meterUID']);
+$location = new location($meter->location);
 
 if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
   $readingsClass->create($meter->uid, $_POST['reading1']);
@@ -27,6 +28,7 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
   <div class="col-lg-8">
     <h3 class="text-center float-end"><?php echo $meter->meterTypeBadge();?></h3>
 
+    <p>Location: <a href="index.php?n=location&locationUID=<?php echo $location->uid; ?>"><?php echo $location->name; ?></a></p>
     <p>Serial Number: <?php echo $meter->displaySerialNumber(); ?></p>
     <p>MPRN: <?php echo $meter->displayMPRNNumber(); ?></p>
 
