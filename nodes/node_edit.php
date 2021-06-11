@@ -10,7 +10,7 @@ if (isset($_GET['nodeUID'])) {
   // editing an existing node
   $pageTitle = "Edit";
   $submitButtonAction = "nodeEdit()";
-  
+
   $meter = new meter($_GET['nodeUID']);
 
   if ($meter->enabled == "1") {
@@ -110,10 +110,6 @@ if (isset($_GET['nodeUID'])) {
     		<label for="serial">Serial</label>
     		<input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo $meter->serial; ?>">
     	</div>
-      <div class="form-check mb-3">
-    		<input type="checkbox" class="form-check-input" id="billed" name="billed" value="1" <?php if ($meter->billed == "1") { echo " checked";} ?>>
-    		<label for="billed" class="form-check-label">Billed to tenant</label>
-    	</div>
     </div>
     <div class="col-6">
       <div class="mb-3">
@@ -123,18 +119,37 @@ if (isset($_GET['nodeUID'])) {
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-6">
+      <div class="mb-3">
+    		<label for="address">Address</label>
+    		<textarea class="form-control" id="address" name="address" rows="4" placeholder="Address"><?php echo $meter->address; ?></textarea>
+    	</div>
+    </div>
+    <div class="col-6">
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="billed" name="billed" value="1" <?php if ($meter->billed == "1") { echo " checked";} ?>>
+        <label for="billed" class="form-check-label">Billed to tenant</label>
+      </div>
+
+      <label for="retention_days">Retention Policy</label>
+      <select class="form-select" id="retention_days" name="retention_days">
+        <option value="0" <?php if ($meter->retention_days == 0) { echo " selected"; } ?>>Forever (do not delete readings)</option>
+        <option value="1" <?php if ($meter->retention_days == 1) { echo " selected"; } ?>>1 day</option>
+        <option value="7" <?php if ($meter->retention_days == 7) { echo " selected"; } ?>>1 week</option>
+        <option value="31" <?php if ($meter->retention_days == 31) { echo " selected"; } ?>>1 month</option>
+        <option value="365" <?php if ($meter->retention_days == 365) { echo " selected"; } ?>>1 year</option>
+        <option value="1825" <?php if ($meter->retention_days == 1825) { echo " selected"; } ?>>5 years</option>
+        <option value="3650" <?php if ($meter->retention_days == 3650) { echo " selected"; } ?>>10 years</option>
+      </select>
+      <div id="retention_daysHelp" class="form-text">Readings older than this duration will be automatically deleted.</div>
+    </div>
+  </div>
+
+
+
   <div class="mb-3">
-    <label for="retention_days">Retention Policy</label>
-    <select class="form-select" id="retention_days" name="retention_days">
-      <option value="0" <?php if ($meter->retention_days == 0) { echo " selected"; } ?>>Forever (do not delete readings)</option>
-      <option value="1" <?php if ($meter->retention_days == 1) { echo " selected"; } ?>>1 day</option>
-      <option value="7" <?php if ($meter->retention_days == 7) { echo " selected"; } ?>>1 week</option>
-      <option value="31" <?php if ($meter->retention_days == 31) { echo " selected"; } ?>>1 month</option>
-      <option value="365" <?php if ($meter->retention_days == 365) { echo " selected"; } ?>>1 year</option>
-      <option value="1825" <?php if ($meter->retention_days == 1825) { echo " selected"; } ?>>5 years</option>
-      <option value="3650" <?php if ($meter->retention_days == 3650) { echo " selected"; } ?>>10 years</option>
-    </select>
-    <div id="retention_daysHelp" class="form-text">Readings older than this duration will be automatically deleted.</div>
+
   </div>
 
   <div class="form-check mb-3">

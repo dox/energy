@@ -32,6 +32,7 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <p>Supplier: <?php echo $meter->displaySecurely('supplier'); ?> / Account #: <?php echo $meter->displaySecurely('account_no'); ?></p>
     <p>Serial Number: <?php echo $meter->displaySecurely('serial'); ?></p>
     <p>MPRN: <?php echo $meter->displaySecurely('mprn'); ?></p>
+    <p><?php echo $meter->displayAddress(); ?></p>
 
     <?php
     if ($_SESSION['logon'] == true) {

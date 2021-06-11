@@ -79,6 +79,7 @@ function nodeAdd() {
   var geo = document.getElementById('geo').value;
   var supplier = document.getElementById('supplier').value;
   var account_no = document.getElementById('account_no').value;
+  var address = document.getElementById('address').value;
 
   var formData = new FormData();
 
@@ -94,6 +95,7 @@ function nodeAdd() {
   formData.append("geo", geo);
   formData.append("supplier", supplier);
   formData.append("account_no", account_no);
+  formData.append("address", address);
 
   var request = new XMLHttpRequest();
 
@@ -133,7 +135,8 @@ function nodeEdit() {
   var geo = document.getElementById('geo').value;
   var supplier = document.getElementById('supplier').value;
   var account_no = document.getElementById('account_no').value;
-
+  var address = document.getElementById('address').value;
+  
   var formData = new FormData();
 
   formData.append("uid", uid);
@@ -149,6 +152,7 @@ function nodeEdit() {
   formData.append("geo", geo);
   formData.append("supplier", supplier);
   formData.append("account_no", account_no);
+  formData.append("address", address);
 
   var request = new XMLHttpRequest();
 

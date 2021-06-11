@@ -293,6 +293,14 @@ class meter {
     return $output;
   }
 
+  public function displayAddress() {
+    $address = $this->address;
+
+    $address = nl2br($address);
+
+    return $address;
+  }
+
   public function update($array = null) {
     global $db, $logsClass;
 
@@ -410,15 +418,6 @@ class meter {
   // everything below this line needs going over
   //
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
-
-
-
 
 
 
