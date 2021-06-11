@@ -2,11 +2,11 @@
   <div class="position-sticky pt-3">
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="index.php?n=dashboard">
+        <a class="nav-link active" aria-current="page" href="index.php?n=home">
           <svg width="1em" height="1em">
             <use xlink:href="inc/icons.svg#home"/>
           </svg>
-          Dashboard
+          Home
         </a>
       </li>
       <li class="nav-item">
@@ -78,6 +78,14 @@
             <use xlink:href="inc/icons.svg#usage"/>
           </svg>
           Usage Summary
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="nodes/dashboard1.php" target="_blank">
+          <svg width="1em" height="1em" class="text-muted">
+            <use xlink:href="inc/icons.svg#usage"/>
+          </svg>
+          Dashboard
         </a>
       </li>
     </ul>

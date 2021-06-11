@@ -33,7 +33,7 @@ class location {
   public function highestReadingsByMonth($type = null) {
     global $db;
 
-    $meters = meters::allByLocationAndType($this->uid, $type);
+    $meters = $this->allNodesByType($type);
 
     foreach ($meters AS $meter) {
       $meter = new meter($meter['uid']);
@@ -69,6 +69,32 @@ class location {
     return $readingsArray;
   }
 
+  public function consumptionForMonth($date = null, $type = null) {
+    global $db;
+
+    if ($date == null) {
+      $date = date('Y-m-d');
+    }
+
+    $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
+
+    // get this month's and previous months readings
+    $meters = $this->allNodesByType($type);
+
+    $totalConsumption = 0;
+    foreach ($meters AS $meter) {
+      $meter = new meter($meter['uid']);
+      $totalConsumption = $meter->consumptionForMonth($date);
+    }
+
+    // check in case the difference is a negative value (it shouldn't be!)
+    if ($totalConsumption < 0) {
+      $totalConsumption = 0;
+    }
+
+    return $totalConsumption;
+  }
+
   public function update($array = null) {
     global $db, $logsClass;
 
@@ -93,6 +119,45 @@ class location {
     $logsClass->create($logArray);
 
     return $update;
+  }
+
+  public function allNodes($enabledDisabled = "enabled") {
+    global $db;
+
+    if ($enabledDisabled == "all") {
+      $sqlEnabled = "";
+    } else {
+      $sqlEnabled = " AND enabled = '1' ";
+    }
+
+    $sql  = "SELECT * FROM meters";
+    $sql .= " WHERE location = '" . $this->uid . "' ";
+    $sql .= $sqlEnabled;
+    $sql .= " ORDER BY uid DESC";
+
+    $meters = $db->query($sql)->fetchAll();
+
+    return $meters;
+  }
+
+  public function allNodesByType($type = null, $enabledDisabled = "enabled") {
+    global $db;
+
+    if ($enabledDisabled == "all") {
+      $sqlEnabled = "";
+    } else {
+      $sqlEnabled = " AND enabled = '1' ";
+    }
+
+    $sql  = "SELECT * FROM meters";
+    $sql .= " WHERE location = '" . $this->uid . "' ";
+    $sql .= " AND type = '" . $type . "' ";
+    $sql .= $sqlEnabled;
+    $sql .= " ORDER BY uid DESC";
+
+    $meters = $db->query($sql)->fetchAll();
+
+    return $meters;
   }
 }
 ?>

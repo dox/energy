@@ -98,7 +98,7 @@
   				$node = "nodes/404.php";
   			}
   		} elseif (!isset($_GET['n'])) {
-  			$node = "nodes/dashboard.php";
+  			$node = "nodes/home.php";
   		} else {
   			$node = "nodes/404.php";
   		}

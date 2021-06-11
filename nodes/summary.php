@@ -31,10 +31,12 @@ foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
 
   foreach ($locations AS $location) {
     $metersClass = new meters;
-    $meters = $metersClass->allByLocationAndType($location['uid'], $type);
+    $location = new location($location['uid']);
+
+    $meters = $location->allNodesByType($type);
     $output .= "<tr>";
 
-    $output .= "<th scope=\"row\">" . $location['name'] . "</th>";
+    $output .= "<th scope=\"row\">" . $location->name . "</th>";
 
     $i = 5;
     do {

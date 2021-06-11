@@ -4,7 +4,7 @@ $metersClass = new meters();
 $meters = $metersClass->recentlyUpdated();
 ?>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#home"/></svg> Dashboard</h1>
+  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#home"/></svg> Home</h1>
 
   <div class="btn-toolbar mb-2 mb-md-0">
     <div class="btn-toolbar mb-2 mb-md-0">

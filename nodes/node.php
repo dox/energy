@@ -85,6 +85,70 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 </div>
 
 <hr />
+<div class="row row-deck row-cards mb-3">
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          Usage in last 12 months
+        </div>
+        <div class="h1 mb-3">
+          <?php
+          $totalConsumption = $meter->consumptionBetweenTwoDates(date('Y-m-d', strtotime('1 year ago')), date('Y-m-d'));
+
+          echo number_format($totalConsumption) . " " . $meter->unit;
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          ~Cost Per Unit
+        </div>
+        <div class="h1 mb-3">
+          <?php
+          $settingName = "unit_cost_" . $meter->type;
+
+          $unitCost = $settingsClass->value($settingName);
+          echo "£" . number_format($unitCost, 2);
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          ~Total Cost
+        </div>
+        <div class="h1 mb-3">
+          <?php
+          $totalCost = $totalConsumption * $unitCost;
+
+          echo "~£" . number_format($totalCost);
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-sm-6 col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="subheader">
+          Readings
+        </div>
+        <div class="h1 mb-3">
+          <?php echo count($meter->fetchReadingsAll()); ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr />
 
 
 

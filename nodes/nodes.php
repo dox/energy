@@ -27,9 +27,11 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
 
 <?php
 foreach ($locationsClass->all() AS $location) {
-  $meters = $metersClass->allByLocation($location['uid'], "all");
+  $location = new location($location['uid']);
 
-  $output  = "<h3><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a></h3>";
+  $meters = $location->allNodes("all");
+
+  $output  = "<h3><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->name . "</a></h3>";
   $output .= $metersClass->meterTable($meters);
 
   foreach ($meters AS $meter) {

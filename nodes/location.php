@@ -2,7 +2,7 @@
 $location = new location($_GET['locationUID']);
 $readingsClass = new readings();
 $metersClass = new meters();
-$meters = $metersClass->allByLocation($location->uid);
+$meters = $location->allnodes("all");
 
 
 $icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#add\"/></svg> Add Meter", "value" => "onclick=\"location.href='index.php?n=meter_add'\"");
