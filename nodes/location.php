@@ -26,6 +26,24 @@ $icons[] = array("class" => "btn-primary", "name" => "<svg width=\"1em\" height=
   </div>
 </div>
 
+<div id="map" style="width: 100%; height: 500px"></div>
+
 <?php
 echo $metersClass->meterTable($meters);
 ?>
+
+<script>
+var map = L.map('map').setView([<?php echo $location->geoLocation(); ?>], 18);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+<?php
+foreach ($meters AS $meter) {
+  $meter = new meter($meter['uid']);
+
+  echo $meter->geoMarker();
+}
+?>
+</script>

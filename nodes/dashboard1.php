@@ -44,7 +44,7 @@ include_once("../inc/include.php");
 	<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1"></script>
 
-  <link href="css/application.css" rel="stylesheet">
+  <link href="../css/application.css" rel="stylesheet">
 
   <style>
   .container {
@@ -132,7 +132,7 @@ include_once("../inc/include.php");
   </div>
 
   <?php
-  $utilities = array("electricity", "gas", "water");
+  $utilities = array("electric", "gas", "water");
 
   $locations = array("1", "2", "3", "4");
 
@@ -142,7 +142,10 @@ include_once("../inc/include.php");
     $output  = "<h3 class=\"display-6 fw-normal text-center\">" . $location->name . "</h3>";
     $output .= "<div class=\"d-md-flex flex-md-equal w-100 my-md-3 ps-md-3\">";
 
+		$jsGraphs = null;
     foreach ($utilities AS $utility) {
+			$chartID = "x_" . rand(0, 100000);
+
       $consumptionThisMonth = $location->consumptionForMonth(date('Y-m-d'), $utility);
       $consumptionPreviousMonth = $location->consumptionForMonth(date('Y-m-d', strtotime('1 month ago')), $utility);
       $consumptionDelta = $consumptionThisMonth - $consumptionPreviousMonth;
@@ -151,33 +154,43 @@ include_once("../inc/include.php");
         $bgClass = "bg-warning";
         $textClass = "bg-light text-dark";
         $subtitle = $consumptionDelta . " more units consumed than previous month";
+				$icon = "graph-up";
       } elseif ($consumptionDelta == 0) {
         $bgClass = "bg-primary";
         $textClass = "bg-light text-dark";
         $subtitle = "Same units consumed as previous month";
+				$icon = "graph-down";
       } elseif ($consumptionDelta < 0) {
         $bgClass = "bg-success";
         $textClass = "bg-light text-dark";
         $subtitle = $consumptionDelta . " fewer units consumed than previous month";
+				$icon = "graph-down";
       } else {
         $bgClass = "bg-dark";
         $textClass = "bg-light text-dark";
         $subtitle = $consumptionDelta . " units consumed";
+				$icon = "graph-down";
       }
+
+			$iconOutput = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"../inc/icons.svg#" . $icon . "\"/></svg>";
 
       $output .= "<div class=\"" . $bgClass . " me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden\">";
       $output .= "<div class=\"my-3 py-3\">";
-      $output .= "<h2 class=\"display-5\">" . ucwords($utility) . "</h2>";
+      $output .= "<h2 class=\"display-5\">" . ucwords($utility) . " " . $iconOutput . "</h2>";
       $output .= "<p class=\"lead\">" . $subtitle . "</p>";
       $output .= "</div>";
       $output .= "<div class=\"" . $textClass . " shadow-sm mx-auto\" style=\"width: 100%; height: 300px; border-radius: 21px 21px 0 0;\">";
-      $output .= "(there will be a graph here)";
+			$output .= displayGraph($chartID);
       $output .= "</div>";
       $output .= "</div>";
+
+			$jsGraphs .= displayGraphJC($chartID, $location->consumptionByMonth($utility));
     }
     $output .= "</div>";
 
     echo $output;
+
+		echo $jsGraphs;
   }
 
   include_once("../views/footer.php");
@@ -185,3 +198,59 @@ include_once("../inc/include.php");
 
 </body>
 </html>
+
+<?php
+
+function displayGraph($chartID = null) {
+	$graphOutput  = "<canvas id=\"" . $chartID . "\" width=\"370\" height=\"230\"></canvas>";
+	$graphOutput .= "";
+
+	return $graphOutput;
+}
+
+function displayGraphJC($chartID = null, $data = null) {
+	foreach($data AS $date => $value) {
+		$dataArray["'" . $date . "'"] = $value;
+	}
+
+	echo $datum;
+	$jsOutput  = "<script>";
+	$jsOutput .= "var ctx = document.getElementById('" . $chartID . "').getContext('2d');";
+	$jsOutput .= "var " . $chartID . " = new Chart(ctx, {";
+	$jsOutput .= "type: 'bar',";
+	$jsOutput .= "data: {";
+	$jsOutput .= "labels: [" . implode(",", array_keys($dataArray)) . "],";
+	$jsOutput .= "datasets: [{";
+	$jsOutput .= "label: 'Consumption',";
+	$jsOutput .= "data: [" . implode(",", $dataArray) . "],";
+	$jsOutput .= "backgroundColor: [";
+	$jsOutput .= "'rgba(153, 102, 255, 0.2)'";
+	$jsOutput .= "],";
+	$jsOutput .= "borderColor: [";
+	$jsOutput .= "'rgba(153, 102, 255, 1)'";
+	$jsOutput .= "],";
+	$jsOutput .= "borderWidth: 1";
+	$jsOutput .= "}]";
+	$jsOutput .= "},";
+	$jsOutput .= "options: {";
+	$jsOutput .= "plugins: {";
+	$jsOutput .= "legend: {";
+	$jsOutput .= "display: false";
+	$jsOutput .= "}";
+	$jsOutput .= "},";
+
+	$jsOutput .= "scales: {";
+	$jsOutput .= "y: {";
+	$jsOutput .= "beginAtZero: true";
+	$jsOutput .= "}";
+	$jsOutput .= "}";
+	$jsOutput .= "}";
+	$jsOutput .= "});";
+	$jsOutput .= "</script>";
+
+
+	return $jsOutput;
+}
+
+
+?>

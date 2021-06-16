@@ -365,6 +365,21 @@ class meter {
     return $geoReturn;
   }
 
+  public function geoMarker() {
+    if (isset($this->geo)) {
+      $rand = "x_" . rand(0, 999999) . "_m";
+      $name = "<a href=\"index.php?n=node&meterUID=" . $this->uid . "\">" . escape($this->name) . "</a>";
+      $output  = "var " . $rand . " = L.marker([" . $this->geoLocation() . "]).addTo(map).bindPopup('" . $name . "');";
+
+      //$name = "<a href=\"index.php?n=node&meterUID=" . $this->uid . "\">" . escape($this->name) . "</a>";
+      //$output  = "L.marker([" . $this->geoLocation() . "]).addTo(map)";
+      //$output .= ".bindPopup('" . $name . "')";
+      //$output .= ".openPopup();";
+    }
+
+    return $output;
+  }
+
   public function deleteImage() {
     global $logsClass;
 
@@ -412,6 +427,8 @@ class meter {
   public function mostRecentReadingValue() {
     return $this->getMostRecentReading()['reading1'];
   }
+
+
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   //

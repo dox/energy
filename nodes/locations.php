@@ -16,8 +16,27 @@ $locations = $locationsClass->all();
   </div>
 </div>
 
+<div id="map" style="width: 100%; height: 500px"></div>
+
 <?php
 foreach ($locations AS $location) {
   echo "<h3><a href=\"index.php?n=location&locationUID=" . $location['uid'] . "\">" . $location['name'] . "</a> <small class=\"text-muted\">" . $location['description'] . "</small></h3>";
 }
 ?>
+
+<script>
+var map = L.map('map').setView([<?php echo $settingsClass->value('site_geolocation'); ?>], 14);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+<?php
+foreach ($locations AS $location) {
+  $location = new location($location['uid']);
+  
+  echo $location->geoMarker();
+}
+
+?>
+</script>

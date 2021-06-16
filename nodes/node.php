@@ -540,13 +540,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 <?php
-if (isset($meter->geo)) {
-  $output  = "L.marker([" . $meter->geoLocation() . "]).addTo(map)";
-  $output .= ".bindPopup('" . escape($meter->name) . "')";
-  $output .= ".openPopup();";
-
-  echo $output;
-}
+  echo $meter->geoMarker();
 ?>
 </script>
 

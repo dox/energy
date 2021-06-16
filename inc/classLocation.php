@@ -30,6 +30,17 @@ class location {
     return $geoReturn;
   }
 
+  public function geoMarker() {
+    if (isset($this->geo)) {
+      $name = "<a href=\"index.php?n=location&locationUID=" . $this->uid . "\">" . escape($this->name) . "</a>";
+      $output  = "L.marker([" . $this->geoLocation() . "]).addTo(map)";
+      $output .= ".bindPopup('" . $name . "')";
+      $output .= ".openPopup();";
+    }
+
+    return $output;
+  }
+
   public function highestReadingsByMonth($type = null) {
     global $db;
 
