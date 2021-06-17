@@ -146,8 +146,8 @@ include_once("../inc/include.php");
     foreach ($utilities AS $utility) {
 			$chartID = "x_" . rand(0, 100000);
 
-      $consumptionThisMonth = $location->consumptionForMonth(date('Y-m-d'), $utility);
-      $consumptionPreviousMonth = $location->consumptionForMonth(date('Y-m-d', strtotime('1 month ago')), $utility);
+      $consumptionThisMonth = $location->consumptionForMonth($utility, date('Y-m-d'));
+      $consumptionPreviousMonth = $location->consumptionForMonth($utility, date('Y-m-d', strtotime('1 month ago')));
       $consumptionDelta = $consumptionThisMonth - $consumptionPreviousMonth;
 
       if ($consumptionDelta > 0) {
@@ -184,7 +184,10 @@ include_once("../inc/include.php");
       $output .= "</div>";
       $output .= "</div>";
 
-			$jsGraphs .= displayGraphJC($chartID, $location->consumptionByMonth($utility));
+			$from = date('Y-m-d', strtotime('1 year ago'));
+			$to = date('Y-m-d');
+
+			$jsGraphs .= displayGraphJC($chartID, $location->consumptionBetweenDatesByMonth($utility, $from, $to));
     }
     $output .= "</div>";
 

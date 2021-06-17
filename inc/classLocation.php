@@ -58,29 +58,33 @@ class location {
     return $maxReading;
   }
 
-
-  public function consumptionByMonth($type = null) {
+  public function consumptionBetweenDatesByMonth($type = null, $dateFrom = null, $dateTo = null) {
     global $db;
 
-    $highestReadingsByMonth = $this->highestReadingsByMonth($type);
-
-    foreach ($highestReadingsByMonth AS $date => $value) {
-      $previousMonth = date('Y-m', strtotime($date . " -1 month"));
-
-
-      if ($value > 0 && $highestReadingsByMonth[$previousMonth] > 0) {
-        $readingsArray[$date] = $value - $highestReadingsByMonth[$previousMonth];
-      } else {
-        $readingsArray[$date] = 0;
-      }
+    if ($dateFrom == null || $dateTo == null) {
+      $dateFrom = date('Y-m-d', strtotime('1 year ago'));
+      $dateTo = date('Y-m-d');
     }
 
-    $readingsArray = array_reverse($readingsArray, true);
+    if (strtotime($dateFrom) > strtotime($dateTo)) {
+      echo "Error: DateTo cannot be larger than DateFrom";
+      quit();
+    }
 
-    return $readingsArray;
+    $i = 0;
+    do {
+      $lookupDate = date('Y-m', strtotime($dateTo . "-" . $i . " months"));
+
+      $consumption[$lookupDate] = $this->consumptionForMonth($type, $lookupDate);
+      $i++;
+
+    } while (strtotime($lookupDate) > strtotime($dateFrom));
+
+    $consumption = array_reverse($consumption);
+    return $consumption;
   }
 
-  public function consumptionForMonth($date = null, $type = null) {
+  public function consumptionForMonth($type = null, $date = null) {
     global $db;
 
     if ($date == null) {
@@ -95,7 +99,7 @@ class location {
     $totalConsumption = 0;
     foreach ($meters AS $meter) {
       $meter = new meter($meter['uid']);
-      $totalConsumption = $meter->consumptionForMonth($date);
+      $totalConsumption = $totalConsumption + $meter->consumptionForMonth($date);
     }
 
     // check in case the difference is a negative value (it shouldn't be!)
