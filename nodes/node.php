@@ -37,12 +37,13 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <?php
     if ($_SESSION['logon'] == true) {
     ?>
-    <form class="card mb-4 p-2" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
+    <form class="" method="post" id="readingSubmit" action="index.php?n=node&meterUID=<?php echo $meter->uid; ?>">
       <div class="input-group">
-        <input type="text" class="form-control" name="reading1" placeholder="New Reading">
+        <input type="number" class="form-control" name="reading1" placeholder="New Reading" min="<?php echo $meter->currentReading(); ?>">
         <button type="submit" class="btn btn-secondary" name="submit">Submit</button>
       </div>
     </form>
+    <div id="reading1Help" class="form-text">Previous reading: <?php echo number_format($meter->currentReading()) . " " . $meter->unit; ?></div>
     <?php } ?>
 
   </div>
