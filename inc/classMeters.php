@@ -29,16 +29,23 @@ class meters extends meter {
     $readingsSQL  = "SELECT meter FROM readings ";
     $readingsSQL .= " WHERE date BETWEEN NOW() - INTERVAL 30 DAY AND NOW()";
     $readingsSQL .= " ORDER BY date DESC";
+    $readingsSQL .= " LIMIT 30";
 
-    $sql  = "SELECT * FROM meters ";
-    $sql .= " WHERE uid IN (" . $readingsSQL . ")";
-    $sql .= " LIMIT 50";
+    $meterUIDS = $db->query($readingsSQL)->fetchAll();
 
-    $meters = $db->query($sql)->fetchAll();
+    foreach ($meterUIDS AS $meterUID) {
+      $sql  = "SELECT * FROM meters ";
+      $sql .= " WHERE uid = '" . $meterUID['meter'] . "'";
+      $sql .= " LIMIT 1";
 
-    return $meters;
+      $meter = $db->query($sql)->fetchArray();
+      
+      $metersArray[] = $meter;
+    }
+
+    return $metersArray;
   }
-  
+
   public function meterTable($meters = null) {
     $output .= "<table class=\"table\">";
     $output .= "<thead>";
