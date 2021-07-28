@@ -39,7 +39,7 @@ class meters extends meter {
       $sql .= " LIMIT 1";
 
       $meter = $db->query($sql)->fetchArray();
-      
+
       $metersArray[] = $meter;
     }
 
@@ -127,6 +127,18 @@ class meters extends meter {
     }
 
     return $supplierArray;
+  }
+
+  public function geoMarkers() {
+    $meters = $this->allEnabled();
+
+    foreach ($meters AS $meter) {
+      $meter = new meter($meter['uid']);
+      $array[] = "['" . $meter->cleanName() . "', " . $meter->geoMarker() . "]";
+
+    }
+
+    return $array;
   }
 }
 ?>

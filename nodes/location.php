@@ -35,15 +35,15 @@ echo $metersClass->meterTable($meters);
 <script>
 var map = L.map('map').setView([<?php echo $location->geoLocation(); ?>], 18);
 
+var locations = [<?php echo implode(",", $location->geoMarkersOfNodes()); ?>];
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-<?php
-foreach ($meters AS $meter) {
-  $meter = new meter($meter['uid']);
-
-  echo $meter->geoMarker();
+for (var i = 0; i < locations.length; i++) {
+  L.marker([locations[i][1], locations[i][2]]).addTo(map)
+    .bindPopup(locations[i][0], {closeOnClick: false, autoClose: false})
+    .openPopup()
 }
-?>
 </script>

@@ -10,7 +10,17 @@ class locations extends location {
 
     return $locations;
   }
+
+  public function geoMarkers() {
+    $locations = $this->all();
+
+    foreach ($locations AS $location) {
+      $location = new location($location['uid']);
+      $array[] = "['" . $location->cleanName() . "', " . $location->geoLocation() . "]";
+
+    }
+
+    return $array;
+  }
 }
-
-
 ?>

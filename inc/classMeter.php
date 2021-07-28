@@ -28,6 +28,12 @@ class meter {
 		}
   }
 
+  public function cleanName() {
+    $cleanName = str_replace("'", "\'", $this->name);
+
+    return $cleanName;
+  }
+
   public function currentReading() {
     global $db;
 
@@ -366,18 +372,9 @@ class meter {
   }
 
   public function geoMarker() {
-    if (isset($this->geo)) {
-      $rand = "x_" . rand(0, 999999) . "_m";
-      $name = "<a href=\"index.php?n=node&meterUID=" . $this->uid . "\">" . escape($this->name) . "</a>";
-      $output  = "var " . $rand . " = L.marker([" . $this->geoLocation() . "]).addTo(map).bindPopup('" . $name . "');";
+    $array[] = "['" . $this->cleanName() . "', " . $this->geoLocation() . "]";
 
-      //$name = "<a href=\"index.php?n=node&meterUID=" . $this->uid . "\">" . escape($this->name) . "</a>";
-      //$output  = "L.marker([" . $this->geoLocation() . "]).addTo(map)";
-      //$output .= ".bindPopup('" . $name . "')";
-      //$output .= ".openPopup();";
-    }
-
-    return $output;
+    return $array;
   }
 
   public function deleteImage() {

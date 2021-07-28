@@ -18,6 +18,12 @@ class location {
 		}
   }
 
+  public function cleanName() {
+    $cleanName = str_replace("'", "\'", $this->name);
+
+    return $cleanName;
+  }
+
   public function geoLocation() {
     global $settingsClass;
 
@@ -31,14 +37,21 @@ class location {
   }
 
   public function geoMarker() {
-    if (isset($this->geo)) {
-      $name = "<a href=\"index.php?n=location&locationUID=" . $this->uid . "\">" . escape($this->name) . "</a>";
-      $output  = "L.marker([" . $this->geoLocation() . "]).addTo(map)";
-      $output .= ".bindPopup('" . $name . "')";
-      $output .= ".openPopup();";
+    $array[] = "['" . $this->cleanName() . "', " . $this->geoLocation() . "]";
+
+    return $array;
+  }
+
+  public function geoMarkersOfNodes() {
+    $nodes = $this->allNodes();
+
+    foreach ($nodes AS $node) {
+      $node = new meter($node['uid']);
+      $array[] = "['" . $node->cleanName() . "', " . $node->geoLocation() . "]";
+
     }
 
-    return $output;
+    return $array;
   }
 
   public function highestReadingsByMonth($type = null) {

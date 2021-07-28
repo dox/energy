@@ -533,16 +533,24 @@ window.onload = function() {
 </div>
 
 
+
+<?php
+  echo $meter->geoMarker();
+?>
 <script>
 var map = L.map('map').setView([<?php echo $meter->geoLocation(); ?>], 18);
+
+var locations = [<?php echo implode(",", $meter->geoMarker()); ?>];
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-<?php
-  echo $meter->geoMarker();
-?>
+for (var i = 0; i < locations.length; i++) {
+  L.marker([locations[i][1], locations[i][2]]).addTo(map)
+    .bindPopup(locations[i][0], {closeOnClick: false, autoClose: false})
+    .openPopup()
+}
 </script>
 
 <!--Download charts to images -->

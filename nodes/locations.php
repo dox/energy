@@ -25,18 +25,17 @@ foreach ($locations AS $location) {
 ?>
 
 <script>
-var map = L.map('map').setView([<?php echo $settingsClass->value('site_geolocation'); ?>], 14);
+var map = L.map('map').setView([<?php echo $settingsClass->value('site_geolocation'); ?>], 18);
+
+var locations = [<?php echo implode(",", $locationsClass->geoMarkers()); ?>];
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-<?php
-foreach ($locations AS $location) {
-  $location = new location($location['uid']);
-  
-  echo $location->geoMarker();
+for (var i = 0; i < locations.length; i++) {
+  L.marker([locations[i][1], locations[i][2]]).addTo(map)
+    .bindPopup(locations[i][0], {closeOnClick: false, autoClose: false})
+    .openPopup()
 }
-
-?>
 </script>

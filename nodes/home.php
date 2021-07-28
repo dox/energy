@@ -1,5 +1,6 @@
 <?php
 $metersClass = new meters();
+$locationsClass = new locations();
 
 $meters = $metersClass->recentlyUpdated();
 ?>
@@ -30,18 +31,15 @@ $meters = $metersClass->recentlyUpdated();
 <script>
 var map = L.map('map').setView([<?php echo $settingsClass->value('site_geolocation'); ?>], 18);
 
+var locations = [<?php echo implode(",", $locationsClass->geoMarkers()); ?>];
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-<?php
-foreach ($metersClass->allEnabled() AS $meter) {
-  if (isset($meter['geo'])) {
-    $output  = "L.marker([" . $meter['geo'] . "]).addTo(map)";
-    $output .= ".bindPopup('<a href=\'index.php?n=node&meterUID=" . $meter['uid'] . "\'>" . escape($meter['name']) . "</a>');";
-
-    echo $output;
-  }
+for (var i = 0; i < locations.length; i++) {
+  L.marker([locations[i][1], locations[i][2]]).addTo(map)
+    .bindPopup(locations[i][0], {closeOnClick: false, autoClose: false})
+    .openPopup()
 }
-?>
 </script>
