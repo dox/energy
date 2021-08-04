@@ -47,15 +47,17 @@ class meters extends meter {
   }
 
   public function meterTable($meters = null) {
-    $output .= "<table class=\"table\">";
+    $tableID = "table_" . rand(0, 1000);
+
+    $output .= "<table class=\"table\" id=\"" . $tableID . "\">";
     $output .= "<thead>";
     $output .= "<tr>";
-    $output .= "<th scope=\"col\" style=\"width: 30%\">Name</th>";
-    $output .= "<th scope=\"col\" style=\"width: 10%\">Type</th>";
-    $output .= "<th scope=\"col\" style=\"width: 15%\">Current Value</th>";
-    $output .= "<th scope=\"col\" style=\"width: 15%\">Last Reading</th>";
-    $output .= "<th scope=\"col\" style=\"width: 15%\">Serial</th>";
-    $output .= "<th scope=\"col\" style=\"width: 15%\">MPRN</th>";
+    $output .= "<th scope=\"col\" style=\"width: 30%\" onclick=\"sortTable(0, '" . $tableID . "')\">Name</th>";
+    $output .= "<th scope=\"col\" style=\"width: 10%\" onclick=\"sortTable(1, '" . $tableID . "')\">Type</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\" onclick=\"sortTable(2, '" . $tableID . "')\">Current Value</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\" onclick=\"sortTable(3, '" . $tableID . "')\">Last Reading</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\" onclick=\"sortTable(4, '" . $tableID . "')\">Serial</th>";
+    $output .= "<th scope=\"col\" style=\"width: 15%\" onclick=\"sortTable(5, '" . $tableID . "')\"MPRN</th>";
     $output .= "</tr>";
     $output .= "</thead>";
 
@@ -73,12 +75,12 @@ class meters extends meter {
       $meter = new meter($meterUnique['uid']);
 
       if ($meter->enabled == 1) {
-        $rowClass = "";
+        $rowClass = " ";
       } else {
         $rowClass = "table-secondary d-none";
       }
       $output .= "<tr class=\"" . $rowClass . "\">";
-      $output .= "<th scope=\"row\"><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></th>";
+      $output .= "<td><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
       $output .= "<td>" . howLongAgo($meter->mostRecentReadingDate()) . "</td>";

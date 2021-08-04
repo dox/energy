@@ -163,12 +163,12 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <canvas id="meterReadings"></canvas>
 
     <div class="table-responsive">
-      <table class="table table-striped table-sm">
+      <table class="table table-striped table-sm" id="table_readings">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Reading</th>
-            <th>Username</th>
+            <th onclick="sortTable(0, 'table_readings')">Date</th>
+            <th onclick="sortTable(1, 'table_readings')">Reading</th>
+            <th onclick="sortTable(2, 'table_readings')">Username</th>
           </tr>
         </thead>
         <tbody>
@@ -185,7 +185,7 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
             $output  = "<tr>";
             $output .= "<td>" . date('Y-m-d H:i', strtotime($reading['date'])) . "</td>";
             $output .= "<td>" . displayReading($reading['reading1']) . " " . $meter->unit . "</td>";
-            $output .= "<td>" . "Recorded By: " . $reading['username'] . $deleteIcon . "</td>";
+            $output .= "<td>" . $reading['username'] . $deleteIcon . "</td>";
             $output .= "</tr>";
 
             echo $output;
@@ -532,11 +532,6 @@ window.onload = function() {
   </div>
 </div>
 
-
-
-<?php
-  echo $meter->geoMarker();
-?>
 <script>
 var map = L.map('map').setView([<?php echo $meter->geoLocation(); ?>], 18);
 

@@ -87,7 +87,6 @@ function howLongAgo($time = false) {
 	return $return;
 }
 
-
 function displayGraph($chartID = null) {
 	$graphOutput  = "<canvas id=\"" . $chartID . "\" width=\"100\" height=\"30\"></canvas>";
 	$graphOutput .= "";
@@ -100,7 +99,6 @@ function displayGraphJC($chartID = null, $data = null) {
 		$dataArray["'" . $date . "'"] = $value;
 	}
 
-	echo $datum;
 	$jsOutput  = "<script>";
 	$jsOutput .= "var ctx = document.getElementById('" . $chartID . "').getContext('2d');";
 	$jsOutput .= "var " . $chartID . " = new Chart(ctx, {";
