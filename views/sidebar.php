@@ -88,6 +88,14 @@
           Dashboard
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="nodes/node_list.php" target="_blank">
+          <svg width="1em" height="1em" class="text-muted">
+            <use xlink:href="inc/icons.svg#graph-up"/>
+          </svg>
+          Node List
+        </a>
+      </li>
     </ul>
   </div>
 </nav>
