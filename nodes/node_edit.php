@@ -134,7 +134,7 @@ if (isset($_GET['nodeUID'])) {
 
       <label for="retention_days">Retention Policy</label>
       <select class="form-select" id="retention_days" name="retention_days">
-        <option value="0" <?php if ($meter->retention_days == 0) { echo " selected"; } ?>>Forever (do not delete readings)</option>
+        <option value="0" <?php if ($meter->retention_days == 9999999) { echo " selected"; } ?>>Forever (do not delete readings)</option>
         <option value="1" <?php if ($meter->retention_days == 1) { echo " selected"; } ?>>1 day</option>
         <option value="7" <?php if ($meter->retention_days == 7) { echo " selected"; } ?>>1 week</option>
         <option value="31" <?php if ($meter->retention_days == 31) { echo " selected"; } ?>>1 month</option>
