@@ -36,7 +36,11 @@ foreach ($nodes AS $node) {
 	$nodeRow['supplier'] = $node->supplier;
 	$nodeRow['account_no'] = $node->account_no;
 	$nodeRow['retention_days'] = $node->retention_days;
-	
+	$nodeRow['reading_current_date'] = $node->mostRecentReadingDate();
+	$nodeRow['reading_current_value'] = $node->mostRecentReadingValue();
+	$nodeRow['reading_previous_date'] = $node->previousReadingDate();
+	$nodeRow['reading_previous_value'] = $node->previousReadingValue();
+
 	$nodeArray[] = $nodeRow;
 }
 

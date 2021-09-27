@@ -424,6 +424,32 @@ class meter {
   public function mostRecentReadingValue() {
     return $this->getMostRecentReading()['reading1'];
   }
+  
+  public function getPreviousReading() {
+    global $db;
+
+    $sql  = "SELECT * FROM readings ";
+    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " ORDER BY date DESC";
+    $sql .= " LIMIT 1, 1";
+
+    $recentReading = $db->query($sql)->fetchAll()[0];
+
+    return $recentReading;
+  }
+
+  public function previousReadingDate() {
+    $date = $this->getPreviousReading()['date'];
+    if (isset($date)) {
+      return $date;
+    } else {
+      return false;
+    }
+  }
+
+  public function previousReadingValue() {
+    return $this->getPreviousReading()['reading1'];
+  }
 
 
 
