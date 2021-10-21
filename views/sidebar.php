@@ -77,7 +77,15 @@
           <svg width="1em" height="1em" class="text-muted">
             <use xlink:href="inc/icons.svg#graph-up"/>
           </svg>
-          Usage Summary
+          Usage Summary (By Year)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="index.php?n=summary_by_month">
+          <svg width="1em" height="1em" class="text-muted">
+            <use xlink:href="inc/icons.svg#graph-up"/>
+          </svg>
+          Usage Summary (By Month)
         </a>
       </li>
       <li class="nav-item">
