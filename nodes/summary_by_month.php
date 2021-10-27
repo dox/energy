@@ -8,7 +8,7 @@ foreach ($locations AS $location) {
   
   $tableOutput .= "<table class=\"table\">";
   
-  $tableColumns = $location->consumptionBetweenDatesByMonth("BLANK", "2020-01-01", date("Y-m-d"));
+  $tableColumns = $location->consumptionBetweenDatesByMonth("BLANK", "2012-04-01", date("Y-m-d"));
   
   $tableOutput .= "<thead>";
   $tableOutput .= "<tr>";
@@ -23,7 +23,7 @@ foreach ($locations AS $location) {
   
   
   foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
-    $tableData = $location->consumptionBetweenDatesByMonth($type, "2020-01-01", date("Y-m-d"));
+    $tableData = $location->consumptionBetweenDatesByMonth($type, "2012-04-01", date("Y-m-d"));
     
     $tableOutput .= "<tr>";
     $tableOutput .= "<td>" . $type . "</td>";
