@@ -73,7 +73,7 @@ foreach ($_POST['locations'] AS $locationUID) {
       $output  = "<div class=\"form-check\">";
       $output .= "<input class=\"form-check-input\" type=\"radio\" value=\"" . $nodeType . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
       $output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
-      $output .= $nodeType;
+      $output .= $nodeType . " (" . unitByType($nodeType) . ")";
       $output .= "</label>";
       $output .= "</div>";
 

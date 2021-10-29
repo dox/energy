@@ -136,4 +136,20 @@ function displayGraphJC($chartID = null, $data = null) {
 
 	return $jsOutput;
 }
+
+function unitByType($type = null) {
+	if ($type == "Gas") {
+		$unitName = "m³";
+	} elseif ($type == "Water") {
+		$unitName = "m³";
+	} elseif ($type == "Electric") {
+		$unitName = "kWh";
+	} elseif ($type == "Refuse") {
+		$unitName = "m³";
+	} else {
+		$unitName = "Unknown";
+	}
+	
+	return $unitName;
+}
 ?>

@@ -26,7 +26,7 @@ foreach ($locations AS $location) {
     $tableData = $location->consumptionBetweenDatesByMonth($type, "2012-04-01", date("Y-m-d"));
     
     $tableOutput .= "<tr>";
-    $tableOutput .= "<td>" . $type . "</td>";
+    $tableOutput .= "<td>" . $type . " (" . unitByType($type) . ")</td>";
     
     foreach ($tableData AS $date => $value) {
         $tableOutput .= "<td>" . $value . "</td>";
