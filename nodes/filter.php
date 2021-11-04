@@ -198,10 +198,15 @@ foreach ($_POST['locations'] AS $locationUID) {
     <div class="card">
       <div class="card-body">
         <div class="subheader">
-          Nodes
+          CO2e
         </div>
         <div class="h1 mb-3">
-          <?php echo count($nodes); ?>
+          <?php
+          $settingName = "unit_co2e_" . $_POST['nodes'][0];
+
+          $co2eUnit = $settingsClass->value($settingName);
+          echo number_format($totalConsumption * $co2eUnit, 0) . " kg";
+          ?>
         </div>
       </div>
     </div>
