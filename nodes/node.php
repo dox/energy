@@ -108,7 +108,7 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <div class="card">
       <div class="card-body">
         <div class="subheader">
-          ~Cost Per Unit
+          Cost Per Unit
         </div>
         <div class="h1 mb-3">
           <?php
@@ -125,13 +125,13 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <div class="card">
       <div class="card-body">
         <div class="subheader">
-          ~Total Cost
+          Total Cost
         </div>
         <div class="h1 mb-3">
           <?php
           $totalCost = $totalConsumption * $unitCost;
 
-          echo "~£" . number_format($totalCost);
+          echo "£" . number_format($totalCost);
           ?>
         </div>
       </div>
@@ -141,10 +141,15 @@ $readings = $readingsClass->meter_all_readings($meter->uid);
     <div class="card">
       <div class="card-body">
         <div class="subheader">
-          Readings
+          CO2e
         </div>
         <div class="h1 mb-3">
-          <?php echo count($meter->fetchReadingsAll()); ?>
+          <?php
+          $settingName = "unit_co2e_" . $meter->type;
+
+          $co2eUnit = $settingsClass->value($settingName);
+          echo number_format($totalConsumption * $co2eUnit, 0) . " kg";
+          ?>
         </div>
       </div>
     </div>
