@@ -68,6 +68,7 @@ $settings = $settingsClass->all();
 <?php
 $iconsArray = array(
   "logo" => "Logo",
+  "dashboard" => "Dashboard",
   "home" => "Home",
   "nodes" => "Nodes",
   "locations" => "Locations",
@@ -87,7 +88,8 @@ $iconsArray = array(
   "delete" => "Delete",
   "logs" => "logs",
   "report" => "Report",
-  "download" => "Download"
+  "download" => "Download",
+  "github" => "GitHub"
 );
 
 

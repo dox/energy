@@ -8,23 +8,31 @@ class readings {
   public $reading1;
   public $username;
 
-  public function all() {
+  public function all($limit = 0) {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " ORDER BY date DESC";
+    
+    if ($limit > 0) {
+      $sql .= " LIMIT " . $limit;
+    }
 
     $meters = $db->query($sql)->fetchAll();
 
     return $meters;
   }
 
-  public function meter_all_readings($meterUID = null) {
+  public function meter_all_readings($meterUID = null, $limit = 0) {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE meter = '" . $meterUID . "' ";
     $sql .= " ORDER BY date DESC";
+    
+    if ($limit > 0) {
+      $sql .= " LIMIT " . $limit;
+    }
 
     $readings = $db->query($sql)->fetchAll();
 
