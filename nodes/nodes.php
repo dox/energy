@@ -2,46 +2,83 @@
 $locationsClass = new locations();
 $readingsClass = new readings();
 $metersClass = new meters();
-
-if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
-  $readingsClass->create($meter->uid, $_POST['reading1']);
-}
-
-$readings = $readingsClass->meter_all_readings($meter->uid);
 ?>
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Nodes</h1>
-  <div class="btn-toolbar mb-2 mb-md-0">
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="dropdown">
-        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="title_dropdown" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-        <ul class="dropdown-menu" aria-labelledby="title_dropdown">
-          <li><a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_edit"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Add Node</a></li>
-          <li><a class="dropdown-item" href="javascript:toggleHiddenMeters();"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg> Show Hidden Nodes</a></li>
-        </ul>
+<div class="container px-4 py-5">
+  <h1 class="d-flex justify-content-between align-items-center">Nodes
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
+      <div class="dropdown-menu dashboard-dropdown">
+        <a class="dropdown-item me-2" href="#">
+          <span class="sidebar-icon">
+            <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
+          </span> Add New Node
+        </a>
+        <a class="dropdown-item me-2" href="#">
+          <span class="sidebar-icon">
+            <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg>
+          </span> Show Hidden Nodes<!--javascript:toggleHiddenMeters();-->
+        </a>
+        <a class="dropdown-item" href="export.php?type=readings&filter=all" target="_blank">
+          <span class="sidebar-icon">
+            <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
+          </span> Export Data
+        </a>
       </div>
     </div>
-  </div>
-</div>
-
-<?php
-foreach ($locationsClass->all() AS $location) {
-  $location = new location($location['uid']);
-
-  $meters = $location->allNodes("all");
-
-  $output  = "<h3><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->name . "</a></h3>";
-  $output .= $metersClass->meterTable($meters);
-
-  foreach ($meters AS $meter) {
+  </h1>
+  
+  <?php
+  foreach ($locationsClass->all() AS $location) {
+    $location = new location($location['uid']);
+  
+    $meters = $location->allNodes();
+    
+    $output  = "<div class=\"card mb-4 shadow\">";
+    $output .= "<div class=\"card-header\">";
+    $output .= "<h2 class=\"mb-0\"><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->name . "</a></h2>";
+    $output .= "</div>"; //card-header
+    $output .= "<div class=\"table-responsive\">";
+    $output .= "<table class=\"table table-hover table-flush table-nowrap mb-0\">";
+    $output .= "<thead class=\"thead-light\">";
+    $output .= "<tr>";
+    $output .= "<th class=\"border-0\" style=\"width:20%\">Type</th>";
+    $output .= "<th class=\"border-0\" style=\"width:40%\">Name</th>";
+    $output .= "<th class=\"border-0\">Current Reading</th>";
+    $output .= "</tr>";
+    $output .= "</thead>";
+    
+    $output .= "<tbody>";
+    
+    foreach ($meters AS $meter) {
+      $meter = new meter($meter['uid']);
+      
+      $output .= "<tr>";
+      $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
+      $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
+      $output .= "</tr>";
+    }
+    
+    $output .= "</tbody>";
+    
+    $output .= "</table>";
+    $output .= "</div>"; //table-responsive
+    
+    
+    $output .= "</div>"; //card
+    
+    //$output .= $metersClass->meterTable($meters);
+  
+    foreach ($meters AS $meter) {
     if ($meter['enabled'] == 1) {
     //  $output .= $metersClass->displayMeterCard($meter['uid']);
     }
+    }
+  
+    //$output .= "</div>";
+  
+    echo $output;
   }
-
-  //$output .= "</div>";
-
-  echo $output;
-}
-?>
+  ?>
+</div>

@@ -1,4 +1,4 @@
-<main class="form-signin">
+<div class="container px-4 py-5 form-signin">
   <form method="post" id="loginSubmit" action="index.php">
     <div class="mb-4 text-center">
       <svg width="4em" height="4em">
@@ -14,7 +14,7 @@
     <button class="btn btn-lg btn-primary w-100" type="submit">Sign in</button>
     <p class="mt-5 mb-3 text-muted text-center"><a href="<?php echo reset_url; ?>">Forgot your password?</a></p>
   </form>
-</main>
+</div>
 
 <style>
 .form-signin {

@@ -265,20 +265,20 @@ class meter {
 
   public function meterTypeBadge() {
     if ($this->type == "Gas") {
-  		$class = "bg-primary";
+  		$class = "bg-warning";
       $iconSymbol = "gas";
       //$icon = "<img src=\"/inc/icons/bootstrap.svg\" alt=\"\" width=\"32\" height=\"32\" title=\"Bootstrap\">";
   	} elseif ($this->type == "Electric") {
-  		$class = "bg-warning";
+  		$class = "bg-danger";
       $iconSymbol = "electric";
   	} elseif ($this->type == "Water") {
   		$class = "bg-info";
       $iconSymbol = "water";
   	} elseif ($this->type == "Refuse") {
-      $class = "bg-dark";
+      $class = "bg-primary";
       $iconSymbol = "refuse";
     } elseif ($this->type == "Temperature") {
-      $class = "bg-danger";
+      $class = "bg-secondary";
       $iconSymbol = "temperature";
     } else {
   		$class = "bg-light";

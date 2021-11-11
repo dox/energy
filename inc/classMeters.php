@@ -80,7 +80,7 @@ class meters extends meter {
         $rowClass = "table-secondary d-none";
       }
       $output .= "<tr class=\"" . $rowClass . "\">";
-      $output .= "<td><a href=\"index.php?n=node&meterUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
       $output .= "<td>" . howLongAgo($meter->mostRecentReadingDate()) . "</td>";

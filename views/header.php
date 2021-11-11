@@ -1,34 +1,55 @@
-<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="index.php"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#logo"/></svg> <?php echo site_name; ?></a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-100" type="text" oninput='onInput()' id='input' list='dlist' placeholder="Search" aria-label="Search">
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-			<?php
-			if (isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
-				echo "<a class=\"nav-link\" href=\"index.php?logout=true\">Sign out</a>";
-			} else {
-				echo "<a class=\"nav-link\" href=\"index.php?n=logon\">Sign in</a>";
-			}
-			?>
+<header class="p-3 bg-dark text-white shadow">
+  <div class="container">
+  <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+    <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+    <svg class="bi me-2" width="40" height="40" role="img" aria-label="<?php echo site_name; ?>"><use xlink:href="inc/icons.svg#logo"></use></svg>
+    </a>
 
-    </li>
-  </ul>
+    
+    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-small">
+      <li>
+      <a href="index.php" class="nav-link text-secondary">
+        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#dashboard"></use></svg>
+        Home
+      </a>
+      </li>
+      <li>
+      <a href="index.php?n=nodes" class="nav-link text-white">
+        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#nodes"></use></svg>
+        Nodes
+      </a>
+      </li>
+      <li>
+      <a href="index.php?n=map" class="nav-link text-white">
+        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#locations"></use></svg></svg>
+        Map
+      </a>
+      </li>
+      <li>
+        <a href="index.php?n=reports" class="nav-link text-white">
+        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#report"></use></svg>
+        Reports
+        </a>
+      </li>
+      <li>
+        <a href="index.php?n=settings" class="nav-link text-white">
+          <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#settings"></use></svg>
+          Settings
+        </a>
+        </li>
+    </ul>
+
+    <div class="text-end">
+    <!--<button type="button" class="btn btn-outline-light me-2">Login</button>-->
+      <?php
+      if (isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
+        echo "<a href=\"index.php?logout=true\" class=\"btn btn-warning\">Log Off</a>";
+      } else {
+        echo "<a href=\"index.php?n=logon\" class=\"btn btn-outline-warning\">Log In</a>";
+      }
+      ?>
+    
+    </div>
+  </div>
+  </div>
 </header>
-
-<datalist id='dlist'>
-  <?php
-  $metersClass = new meters();
-  //printArray($metersClass->all());
-
-  foreach ($metersClass->all() AS $meter) {
-    $output = "<option id=\"" . $meter['uid'] . "\" value=\"" . escape($meter['name']) . "\">";
-
-    //$output .= "</div>";
-
-    echo $output;
-  }
-  ?>
-</datalist>

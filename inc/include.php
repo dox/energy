@@ -42,6 +42,7 @@ try {
 require_once($root . '/inc/globalFunctions.php');
 require_once($root . '/inc/database.php');
 require_once($root . '/inc/classSettings.php');
+require_once($root . '/inc/classSite.php');
 require_once($root . '/inc/classLogs.php');
 require_once($root . '/inc/classLocation.php');
 require_once($root . '/inc/classLocations.php');
