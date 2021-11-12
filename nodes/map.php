@@ -41,7 +41,7 @@ $locations = $locationsClass->all();
 					$location = new location($location['uid']);
 					
 					$output  = "<tr>";
-					$output .= "<th class=\"text-gray-900\" scope=\"row\"><a href=\"index2.php?n=location&locationUID=" . $location->uid . "\">" . $location->name. "</th>";
+					$output .= "<th class=\"text-gray-900\" scope=\"row\"><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->name. "</th>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . $location->geo . "</td>";
 					$output .= "</tr>";
 					

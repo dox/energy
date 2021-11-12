@@ -1,3 +1,55 @@
+<?php
+$navbarArray['nodes'] = array(
+    "title" => "Nodes",
+    "icon" => "nodes",
+    "link" => "index.php?n=nodes",
+    "pages" => array("node", "node_edit", "readings")
+);
+$navbarArray['map'] = array(
+      "title" => "Map",
+      "icon" => "locations",
+      "link" => "index.php?n=map",
+      "pages" => array("locations", "location", "location_edit")
+);
+$navbarArray['reports'] = array(
+      "title" => "Reports",
+      "icon" => "report",
+      "link" => "index.php?n=reports",
+      "pages" => array()
+);
+$navbarArray['settings'] = array(
+      "title" => "Settings",
+      "icon" => "settings",
+      "link" => "index.php?n=settings",
+      "pages" => array()
+);
+/*
+$navbarArray['persons_all'] = array(
+  "title" => "Persons",
+  "icon" => "person",
+  "sublinks" => array(
+    array(
+      "title" => "Suspended",
+      "link" => "./index.php?n=persons_all&filter=suspended"
+    ),
+    array(
+      "title" => "Students",
+      "link" => "./index.php?n=persons_all&filter=students"
+    ),
+    array(
+      "title" => "Staff",
+      "link" => "./index.php?n=persons_all&filter=staff"
+    ),
+    array(
+      "title" => "All",
+      "link" => "./index.php?n=persons_all&filter=all"
+    )
+  )
+);
+*/
+
+?>
+
 <header class="p-3 bg-dark text-white shadow">
   <div class="container">
   <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -7,36 +59,30 @@
 
     
     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-small">
-      <li>
-      <a href="index.php" class="nav-link text-secondary">
-        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#dashboard"></use></svg>
-        Home
-      </a>
-      </li>
-      <li>
-      <a href="index.php?n=nodes" class="nav-link text-white">
-        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#nodes"></use></svg>
-        Nodes
-      </a>
-      </li>
-      <li>
-      <a href="index.php?n=map" class="nav-link text-white">
-        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#locations"></use></svg></svg>
-        Map
-      </a>
-      </li>
-      <li>
-        <a href="index.php?n=reports" class="nav-link text-white">
-        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#report"></use></svg>
-        Reports
-        </a>
-      </li>
-      <li>
-        <a href="index.php?n=settings" class="nav-link text-white">
-          <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="inc/icons.svg#settings"></use></svg>
-          Settings
-        </a>
-        </li>
+      <?php
+      foreach ($navbarArray AS $key => $navBarLink) {
+        $icon = "<svg class=\"bi d-block mx-auto mb-1\" width=\"24\" height=\"24\"><use xlink:href=\"inc/icons.svg#" . $navBarLink['icon'] . "\"></use></svg>";
+      
+        if ($key == $_GET['n']) {
+          $active = " text-white";
+        } else {
+          if (in_array($_GET['n'], $navBarLink['pages'])) {
+            $active = " text-white";
+          } else {
+            $active = "text-secondary";
+          }
+        }
+      
+        $output  = "<li>";
+        $output .= "<a class=\"nav-link " . $active . "\" href=\"" . $navBarLink['link'] . "\" >";
+        $output .= $icon;
+        $output .= $navBarLink['title'];
+        $output .= "</a>";
+        $output .= "</li>";
+        
+        echo $output;
+      }
+      ?>
     </ul>
 
     <div class="text-end">
