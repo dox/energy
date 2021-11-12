@@ -21,13 +21,13 @@ $totalCO2Water = array_sum($monthlyConsumptionElectric) * $settingsClass->value(
 $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 ?>
 <div class="container px-4 py-5">
-	<h1><?php echo site_name; ?></h1>
+	<h1 class="mb-5"><?php echo site_name; ?></h1>
 	
 	<div class="col-12 mb-3">
 		<div class="card bg-yellow-100 border-0 shadow">
 			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
 				<div class="d-block mb-3 mb-sm-0">
-					<div class="fs-5 fw-normal mb-2">CO2 Emissions from Energy Usage</div>
+					<div class="fs-5 fw-normal mb-2">CO&#8322; Emissions from Energy Usage</div>
 					<h2 class="fs-3 fw-extrabold"><?php echo $totalCO2 . " kg"; ?></h2>
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
@@ -60,7 +60,7 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Electricity</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($monthlyConsumptionElectric), 0) . " KWh"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($monthlyConsumptionElectric), 0) . " kWh"; ?></h4>
 						</div>
 					</div>
 					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg"; ?></span> CO2

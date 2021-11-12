@@ -32,7 +32,7 @@ if (isset($_GET['nodeUID'])) {
 ?>
 
 <div class="container px-4 py-5">
-  <h1><?php echo $pageTitle . $node->name; ?></h1>
+  <h1 class="mb-5"><?php echo $pageTitle . $node->name; ?></h1>
 
   <form method="post" id="meterUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
     <div class="mb-3">

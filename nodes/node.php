@@ -41,7 +41,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 ?>
 
 <div class="container px-4 py-5">
-	<h1 class="d-flex justify-content-between align-items-center"><?php echo $node->name; ?>
+	<h1 class="d-flex mb-5 justify-content-between align-items-center"><?php echo $node->name; ?>
 		<div class="dropdown">
 			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
 			<div class="dropdown-menu dashboard-dropdown">
@@ -136,7 +136,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 							</div>
 						</div>
 						<div class="col-9">
-							<h3 class="mb-1">CO2e</h3>
+							<h3 class="mb-1">CO&#8322;e</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal * $co2eUnit, 0) . " kg"; ?></h4>
 						</div>
 					</div>

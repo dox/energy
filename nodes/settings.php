@@ -15,7 +15,7 @@ $settings = $settingsClass->all();
 ?>
 
 <div class="container px-4 py-5">
-  <h1 class="d-flex justify-content-between align-items-center">Admin Settings
+  <h1 class="d-flex mb-5 justify-content-between align-items-center">Admin Settings
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
       <div class="dropdown-menu dashboard-dropdown">
