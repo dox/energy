@@ -6,6 +6,21 @@ function toggleHiddenMeters() {
 }
 
 
+document.getElementById("download-monthly").addEventListener('click', function(){
+     /*Get image of canvas element*/
+     var url_base64jp = document.getElementById("monthlyConsumption").toDataURL("image/jpg");
+     /*get download button (tag: <a></a>) */
+     var a =  document.getElementById("download-monthly");
+     /*insert chart image url to download button (tag: <a></a>) */
+     a.href = url_base64jp;
+});
+
+
+
+
+// below this line needs checking for v2
+
+
 function onInput() {
   var val = document.getElementById("input").value;
   var opts = document.getElementById('dlist').childNodes;

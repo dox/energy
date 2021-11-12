@@ -14,10 +14,10 @@ $metersClass = new meters();
             <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
           </span> Add New Node
         </a>
-        <a class="dropdown-item me-2" href="#">
+        <a class="dropdown-item me-2" href="javascript:toggleHiddenMeters();">
           <span class="sidebar-icon">
             <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg>
-          </span> Show Hidden Nodes<!--javascript:toggleHiddenMeters();-->
+          </span> Show Hidden Nodes
         </a>
         <a class="dropdown-item" href="export.php?type=readings&filter=all" target="_blank">
           <span class="sidebar-icon">
@@ -32,7 +32,7 @@ $metersClass = new meters();
   foreach ($locationsClass->all() AS $location) {
     $location = new location($location['uid']);
   
-    $meters = $location->allNodes();
+    $meters = $location->allNodes("all");
     
     $output  = "<div class=\"card mb-4 shadow\">";
     $output .= "<div class=\"card-header\">";
@@ -53,7 +53,13 @@ $metersClass = new meters();
     foreach ($meters AS $meter) {
       $meter = new meter($meter['uid']);
       
-      $output .= "<tr>";
+      if ($meter->enabled == 0) {
+        $enabledClass = " table-secondary d-none";
+      } else {
+        $enabledClass = "";
+      }
+      
+      $output .= "<tr class=\"" . $enabledClass . "\">";
       $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
       $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
       $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";

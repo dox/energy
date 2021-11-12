@@ -130,28 +130,10 @@ foreach ($_POST['locations'] AS $locationUID) {
 		
 		<div class="row">
 		  <div class="col-md-8 col-12">
-			<canvas id="lineChartMonthlyUsage" width="100%"></canvas>
-			<a id="download-line"
-				download="monthlyData.jpg"
-				href=""
-				class="btn btn-text float-end"
-				title="Line Graph Download">
-				<svg width="1em" height="1em">
-				  <use xlink:href="inc/icons.svg#download"/>
-				</svg>
-			  </a>
+			  <div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
 		  </div>
 		  <div class="col-md-4 col-12">
-			<canvas id="pieChartSiteUsage" width="100%"></canvas>
-			  <a id="download-pie"
-				  download="pieChart.jpg"
-				  href=""
-				  class="btn btn-text float-end"
-				  title="Pie Chart Download">
-				  <svg width="1em" height="1em">
-					<use xlink:href="inc/icons.svg#download"/>
-				  </svg>
-				</a>
+			<div class="ct-chart-location ct-double-octave ct-series-g"></div>
 		  </div>
 		</div>
 		
@@ -283,49 +265,6 @@ foreach ($nodes AS $node) {
 
 $labels = "'" . implode("','", array_keys($data)) . "'";
 ?>
-<script>
-var ctx = document.getElementById('pieChartSiteUsage').getContext('2d');
-var myChart = new Chart(ctx, {
-  type: 'pie',
-  data: {
-	labels: [<?php echo $labels; ?>],
-	datasets: [{
-	  label: '# of Votes',
-	  data: [<?php echo implode(",", $data); ?>],
-	  backgroundColor: [
-		'rgba(255, 99, 132, 0.2)',
-		'rgba(54, 162, 235, 0.2)',
-		'rgba(255, 206, 86, 0.2)',
-		'rgba(75, 192, 192, 0.2)',
-		'rgba(153, 102, 255, 0.2)',
-		'rgba(255, 159, 64, 0.2)'
-	  ],
-	  borderColor: [
-		'rgba(255, 99, 132, 1)',
-		'rgba(54, 162, 235, 1)',
-		'rgba(255, 206, 86, 1)',
-		'rgba(75, 192, 192, 1)',
-		'rgba(153, 102, 255, 1)',
-		'rgba(255, 159, 64, 1)'
-	  ],
-	  borderWidth: 1
-	}]
-  },
-  options: {
-	scales: {
-	  y: {
-		ticks: {
-		  display: false
-		},
-		grid: {
-		  display: false
-		},
-		beginAtZero: true
-	  }
-	}
-  }
-});
-</script>
 
 
 <!-- CONSUMPTION BY MONTH GRAPH -->
@@ -346,62 +285,80 @@ $monthlyData = array_reverse($monthlyData);
 $monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
 ?>
 
+
+
+
+
 <script>
-var ctx2 = document.getElementById('lineChartMonthlyUsage').getContext('2d');
-var myChart = new Chart(ctx2, {
-  type: 'bar',
-  data: {
-	labels: [<?php echo $monthlylabels; ?>],
-	datasets: [{
-	  label: 'Consumption Per Month',
-	  data: [<?php echo implode(',', $monthlyData); ?>],
-	  backgroundColor: [
-		'rgba(255, 99, 132, 0.2)'
-	  ],
-	  borderColor: [
-		'rgba(255, 99, 132, 1)'
-	  ],
-	  borderWidth: 1
-	}]
-  },
-  options: {
-	plugins: {
-	  legend: {
-		display: false
-	  }
+// LINE CHART
+var data = {
+	// A labels array that can contain any sort of values
+	labels: ['<?php echo implode("','", array_keys($monthlyData)); ?>'],
+	// Our series array that contains series objects or in this case series data arrays
+	series: [
+		[<?php echo implode(",", $monthlyData); ?>]
+	]
+};
+
+new Chartist.Line('.ct-chart-sales-value', data, {
+	low: 0,
+	showArea: true,
+	fullWidth: true,
+	plugins: [
+		//Chartist.plugins.tooltip()
+	],
+	axisX: {
+		// On the x-axis start means top and end means bottom
+		position: 'end',
+		showGrid: true
 	},
-	scales: {
-	  y: {
-		beginAtZero: true,
-		title: {
-		  display: true,
-		  text: '<?php echo $node->unit; ?>'
-		}
-	  }
+	axisY: {
+		// On the y-axis start means left and end means right
+		showGrid: false,
+		showLabel: true
 	}
-  }
 });
+
+
+
+<!-- Pie Chart showing type usage per location -->
+<?php
+foreach ($nodes AS $node) {
+  $node = new meter($node['uid']);
+  $location = new location($node->location);
+
+  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
+}
+
+?>
+// PIE CHART
+var data = {
+	// A labels array that can contain any sort of values
+	labels: ['<?php echo implode("','", array_keys($data)); ?>'],
+	// Our series array that contains series objects or in this case series data arrays
+	series: [<?php echo implode(",", $data); ?>]
+};
+
+var options = {
+	labelInterpolationFnc: function(value) {
+		return value[0]
+	}
+};
+
+var responsiveOptions = [
+	  ['screen and (min-width: 640px)', {
+		chartPadding: 10,
+		labelOffset: 30,
+		labelDirection: 'explode',
+		labelInterpolationFnc: function(value) {
+		  return value;
+		}
+	  }],
+	  ['screen and (min-width: 1024px)', {
+		labelOffset: 20,
+		chartPadding: 0
+	  }]
+	];
+
+new Chartist.Pie('.ct-chart-location', data, options, responsiveOptions);
 </script>
-
-
-<!--Download charts to images -->
-<script>
-document.getElementById("download-line").addEventListener('click', function(){
-  /*Get image of canvas element*/
-  var url_base64jp = document.getElementById("lineChartMonthlyUsage").toDataURL("image/jpg");
-  /*get download button (tag: <a></a>) */
-  var a =  document.getElementById("download-line");
-  /*insert chart image url to download button (tag: <a></a>) */
-  a.href = url_base64jp;
-});
-
-document.getElementById("download-pie").addEventListener('click', function(){
-  /*Get image of canvas element*/
-  var url_base64jp = document.getElementById("pieChartSiteUsage").toDataURL("image/jpg");
-  /*get download button (tag: <a></a>) */
-  var a =  document.getElementById("download-pie");
-  /*insert chart image url to download button (tag: <a></a>) */
-  a.href = url_base64jp;
-});
-</script>
-

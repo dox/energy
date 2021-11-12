@@ -37,11 +37,12 @@ function autoPluralise ($singular, $plural, $count = 1) {
 
 function admin_gatekeeper() {
 	if ($_SESSION['logon'] != true) {
-		$_SESSION['last_node_access'] = $_GET['n'];
+		//$_SESSION['last_node_access'] = $_GET['n'];
 		//global $logsClass;
 		//$logsClass->create("view_fail", "Page view for " . $_SERVER['REQUEST_URI'] . " failed");
 
 		include_once("nodes/logon.php");
+		include_once("views/footer.php");
 	  exit;
 	}
 }

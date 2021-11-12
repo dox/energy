@@ -57,7 +57,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 					</span> Delete This Node
 				</a>
 				
-				<a class="dropdown-item" href="export.php?type=node&filter=<?php echo $node->uid; ?>" target="_blank">
+				<a class="dropdown-item" id="test" href="export.php?type=node&filter=<?php echo $node->uid; ?>" target="_blank">
 					<span class="sidebar-icon">
 						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
 					</span> Export Data
@@ -78,8 +78,9 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 					</div>
 				</div>
 				<div class="d-flex ms-auto">
-					<a href="#" class="btn btn-secondary text-dark btn-sm me-2">Month</a>
-					<a href="#" class="btn btn-dark btn-sm me-3">Year</a>
+					<!--<a href="javascript:DownloadAsImage();" class="btn btn-sm text-muted me-3">
+						<svg class="bi" width="24" height="24" role="img"><use xlink:href="inc/icons.svg#download"></use></svg>
+					</a>-->
 				</div>
 			</div>
 			<div class="card-body p-2">
