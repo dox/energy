@@ -29,185 +29,184 @@ foreach ($_POST['locations'] AS $locationUID) {
 <div class="container px-4 py-5">
 	<h1 class="d-flex mb-5 justify-content-between align-items-center">Reports
 		<div class="dropdown">
-		  <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-		  <div class="dropdown-menu dashboard-dropdown">
-			<a class="dropdown-item me-2" href="#">
-			  <span class="sidebar-icon">
-				<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
-			  </span> Saved Reports (coming soon)
-			</a>
-			<a class="dropdown-item" href="export.php?type=readings&filter=special" target="_blank">
-			  <span class="sidebar-icon">
-				<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
-			  </span> Export Data
-			</a>
-		  </div>
+			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
+			<div class="dropdown-menu dashboard-dropdown">
+				<a class="dropdown-item me-2" href="#">
+					<span class="sidebar-icon">
+						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
+					</span> Saved Reports (coming soon)
+				</a>
+				<a class="dropdown-item" href="export.php?type=readings&filter=special" target="_blank">
+					<span class="sidebar-icon">
+						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
+					</span> Export Data
+				</a>
+			</div>
 		</div>
-	  </h1>
-	  
-	  <form method="post" id="termUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>" class="needs-validation" novalidate>
-		  <div class="row">
-			<div class="col-4">
-			  <h4>Sites</h4>
-			  <?php
-			  foreach ($locationsClass->all() AS $location) {
-				$elementName = "locations[]";
-		  
-				if (in_array($location['uid'], $_POST['locations'])) {
-				  $checked = " checked ";
-				} else {
-				  $checked = "";
-				}
-		  
-				$output  = "<div class=\"form-check\">";
-				$output .= "<input class=\"form-check-input\" type=\"checkbox\" value=\"" . $location['uid'] . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
-				$output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
-				$output .= $location['name'];
-				$output .= "</label>";
-				$output .= "</div>";
-		  
-				echo $output;
-			  }
-			  ?>
+	</h1>
+	
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<form method="post" id="termUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>" class="needs-validation" novalidate>
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">Filter: </a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Locations</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<?php
+							foreach ($locationsClass->all() AS $location) {
+								$elementName = "locations[]";
+								
+								$checked = "";
+								if (in_array($location['uid'], $_POST['locations'])) {
+									$checked = " checked ";
+								}
+								
+								$output  = "<li><a class=\"dropdown-item\" href=\"#\"><input class=\"form-check-input\" type=\"checkbox\" value=\"" . $location['uid'] . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
+								$output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
+								$output .= $location['name'];
+								$output .= "</label>";
+								$output .= "</a></li>";
+								
+								echo $output;
+							}
+							?>
+							
+							<li><hr class="dropdown-divider"></li>
+							
+							<li><a class="dropdown-item" href="#">Select All (coming soon)</a></li>
+							<li><input class="form-check-input" type="checkbox" value="1" <?php if (isset($_POST['nodes_includeHidden']) && $_POST['nodes_includeHidden'] == "1") { echo " checked"; } ?> id="nodes_includeHidden" name="nodes_includeHidden">
+							<label class="form-check-label" for="flexCheckDefault">Include Hidden Nodes</label>
+							</li>
+						</ul>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Types</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<?php
+							foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
+								$elementName = "nodes[]";
+								
+								$checked = "";
+								if (in_array($nodeType, $_POST['nodes'])) {
+									$checked = " checked ";
+								}
+								
+								$output  = "<li><a class=\"dropdown-item\" href=\"#\"><input class=\"form-check-input\" type=\"radio\" value=\"" . $nodeType . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
+								$output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
+								$output .= $nodeType . " (" . unitByType($nodeType) . ")";
+								$output .= "</label>";
+								$output .= "</a></li>";
+								
+								echo $output;
+							}
+							?>
+						</ul>
+					</li>
+				</ul>
+				<div class="d-flex">
+							<input type="text" class="form-control me-2" name="date_from" id="date_from" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_from-addon" required>
+						<input type="text" class="form-control me-2" name="date_to" id="date_to" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_to-addon" required>
+				</div>
+				<form class="d-flex">
+					<button class="btn btn-outline-success " type="submit">Filter</button>
+				</form>
 			</div>
-			<div class="col-4">
-			  <h4>Node Types</h4>
-			  <?php
-			  foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
-				$elementName = "nodes[]";
-		  
-				if (in_array($nodeType, $_POST['nodes'])) {
-				  $checked = " checked ";
-				} else {
-				  $checked = "";
-				}
-		  
-				if (isset($_POST['nodes_includeHidden']) && $_POST['nodes_includeHidden'] == "1") {
-		  
-				}
-				$output  = "<div class=\"form-check\">";
-				$output .= "<input class=\"form-check-input\" type=\"radio\" value=\"" . $nodeType . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
-				$output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
-				$output .= $nodeType . " (" . unitByType($nodeType) . ")";
-				$output .= "</label>";
-				$output .= "</div>";
-		  
-				echo $output;
-			  }
-			  ?>
-			  <hr />
-		  
-			  <div class="form-check">
-			  <input class="form-check-input" type="checkbox" value="1" <?php if (isset($_POST['nodes_includeHidden']) && $_POST['nodes_includeHidden'] == "1") { echo " checked"; } ?> id="nodes_includeHidden" name="nodes_includeHidden">
-			  <label class="form-check-label" for="flexCheckDefault">
-			  Include Hidden Nodes
-			  </label>
-			  </div>
-			</div>
-			<div class="col-4">
-			  <h4>Dates</h4>
-			  <label for="date_from" class="form-label">Date From:</label>
-			  <div class="input-group">
-				<span class="input-group-text" id="date_from-addon"><svg width="1em" height="1em" class="text-muted"><use xlink:href="inc/icons.svg#report"/></svg></span>
-				<input type="text" class="form-control" name="date_from" id="date_from" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_from-addon" required>
-			  </div>
-		  
-			  <label for="date_to" class="form-label">Date To:</label>
-			  <div class="input-group">
-				<span class="input-group-text" id="date_to-addon"><svg width="1em" height="1em" class="text-muted"><use xlink:href="inc/icons.svg#report"/></svg></span>
-				<input type="text" class="form-control" name="date_to" id="date_to" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_to-addon" required>
-			  </div>
-			</div>
-		  </div>
-		  
-		  <div class="d-grid gap-2">
-			<button class="btn btn-primary" type="submit">Quick Filter</button>
-		  </div>
-		  
-		  </form>
-		
-		<hr />
-		
-		<div class="row">
-		  <div class="col-md-8 col-12">
-			  <div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
-		  </div>
-		  <div class="col-md-4 col-12">
+		</div>
+	</form>
+	</nav>
+	
+	<hr />
+	
+	<div class="row">
+		<div class="col-md-8 col-12">
+			<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
+		</div>
+		<div class="col-md-4 col-12">
 			<div class="ct-chart-location ct-double-octave ct-series-g"></div>
-		  </div>
 		</div>
-		
-		<hr />
-		<div class="row row-deck row-cards mb-3">
-		  <div class="col-6 col-sm-6 col-lg-3 mb-3">
-			<div class="card">
-			  <div class="card-body">
-				<div class="subheader">
-				  Total Usage
+	</div>
+	
+	<hr />
+	
+	<div class="row">
+			<div class="col-lg-4 col-12 mb-3">
+				<div class="card shadow">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="feature-icon bg-danger bg-gradient">
+									<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo strtolower($_POST['nodes'][0]); ?>"/></svg>
+								</div>
+							</div>
+							<div class="col-9">
+								<?php
+								  $totalConsumption = 0;
+								  foreach ($nodes AS $node) {
+									$node = new meter($node['uid']);
+									$totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
+								  }
+								  ?>
+								<h3 class="mb-1"><?php echo $node->type; ?></h3>
+								<h4 class="fw-extrabold mb-1"><?php echo number_format($totalConsumption, 0) . " " . $nodeUnit; ?></h4>
+							</div>
+							&nbsp;
+						</div>
+						<?php echo $deltaConsumptionText; ?>
+					</div>
 				</div>
-				<div class="h1 mb-3">
-				  <?php
-				  $totalConsumption = 0;
-				  foreach ($nodes AS $node) {
-					$node = new meter($node['uid']);
-					$totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
-				  }
-				  echo number_format($totalConsumption) . " " . $nodeUnit;
-				  ?>
-				</div>
-			  </div>
 			</div>
-		  </div>
-		  <div class="col-6 col-sm-6 col-lg-3 mb-3">
-			<div class="card">
-			  <div class="card-body">
-				<div class="subheader">
-				  ~Cost Per Unit
+			<div class="col-lg-4 col-12 mb-3">
+				<div class="card shadow">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="feature-icon bg-info bg-gradient">
+									£
+								</div>
+							</div>
+							<div class="col-9">
+								<?php
+								  $settingName = "unit_cost_" . $_POST['nodes'][0];
+								
+								  $unitCost = $settingsClass->value($settingName);
+								  $totalCost = $totalConsumption * $unitCost;
+								 ?>
+								<h3 class="mb-1">Cost</h3>
+								<h4 class="fw-extrabold mb-1"><?php echo "£" . number_format($totalCost, 0); ?></h4>
+							</div>
+						</div>
+						<?php echo "Calculated at £" . number_format($unitCost, 2) . " per " . $node->unit; ?>
+					</div>
 				</div>
-				<div class="h1 mb-3">
-				  <?php
-				  $settingName = "unit_cost_" . $_POST['nodes'][0];
-		
-				  $unitCost = $settingsClass->value($settingName);
-				  echo "£" . number_format($unitCost, 2);
-				  ?>
-				</div>
-			  </div>
 			</div>
-		  </div>
-		  <div class="col-6 col-sm-6 col-lg-3 mb-3">
-			<div class="card">
-			  <div class="card-body">
-				<div class="subheader">
-				  ~Total Cost
+			<div class="col-lg-4 col-12 mb-3">
+				<div class="card shadow">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="feature-icon bg-success bg-gradient">
+									<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#co2"/></svg>
+								</div>
+							</div>
+							<div class="col-9">
+								<?php
+								  $settingName = "unit_co2e_" . $_POST['nodes'][0];
+								
+								  $co2eUnit = $settingsClass->value($settingName);
+								  ?>
+								<h3 class="mb-1">CO&#8322;e</h3>
+								<h4 class="fw-extrabold mb-1"><?php echo number_format($totalConsumption * $co2eUnit, 0) . " kg"; ?></h4>
+							</div>
+						</div>
+						<?php echo "Calculated at " . number_format($co2eUnit, 2) . " kg per " . $node->unit; ?>
+					</div>
 				</div>
-				<div class="h1 mb-3">
-				  <?php
-				  $totalCost = $totalConsumption * $unitCost;
-		
-				  echo "~£" . number_format($totalCost);
-				  ?>
-				</div>
-			  </div>
 			</div>
-		  </div>
-		  <div class="col-6 col-sm-6 col-lg-3 mb-3">
-			<div class="card">
-			  <div class="card-body">
-				<div class="subheader">
-				  CO&#8322;e
-				</div>
-				<div class="h1 mb-3">
-				  <?php
-				  $settingName = "unit_co2e_" . $_POST['nodes'][0];
-		
-				  $co2eUnit = $settingsClass->value($settingName);
-				  echo number_format($totalConsumption * $co2eUnit, 0) . " kg";
-				  ?>
-				</div>
-			  </div>
-			</div>
-		  </div>
 		</div>
 </div>
 
