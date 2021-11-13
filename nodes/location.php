@@ -8,7 +8,7 @@ $totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("electri
 $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $settingsClass->value("unit_co2e_gas");
 $totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
 
-$totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
+$totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 ?>
 
 <div class="container px-4 py-5">
@@ -37,7 +37,6 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 						<h2 class="fs-3 fw-extrabold"><?php echo number_format($totalCO2, 0) . " kg"; ?></h2>
 						<div class="small mt-2">
 							<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
-							<span class="fas fa-angle-up text-success"></span>
 							<span class="text-success fw-bold">0%</span>
 						</div>
 					</div>
@@ -69,7 +68,7 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("electric")), 0) . " kWh"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1">22%</span> Since last month
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg"; ?></span> CO2
 				</div>
 			</div>
 		</div>
@@ -87,7 +86,7 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("gas")), 0) . " m&#179;"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1">22%</span> Since last month
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg"; ?></span> CO2
 				</div>
 			</div>
 		</div>
@@ -105,7 +104,7 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("water")), 0) . " m&#179;"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1">22%</span> Since last month
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg"; ?></span> CO2
 				</div>
 			</div>
 		</div>
@@ -166,9 +165,9 @@ for (var i = 0; i < locations.length; i++) {
 		axisY: {
 			// On the y-axis start means left and end means right
 			showGrid: false,
-			showLabel: false,
+			showLabel: true,
 			labelInterpolationFnc: function(value) {
-				return '$' + (value / 1) + 'k';
+				return (value) + 'kg';
 			}
 		}
 	});

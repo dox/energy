@@ -80,32 +80,6 @@ class site {
 	return $totalConsumption;
   }
 
-  public function update($array = null) {
-	global $db, $logsClass;
-
-	$sql  = "UPDATE " . self::$table_name;
-
-	foreach ($array AS $updateItem => $value) {
-	  if ($updateItem != 'uid') {
-		$value = str_replace("'", "\'", $value);
-		$sqlUpdate[] = $updateItem ." = '" . $value . "' ";
-	  }
-	}
-
-	$sql .= " SET " . implode(", ", $sqlUpdate);
-	$sql .= " WHERE uid = '" . $this->uid . "' ";
-	$sql .= " LIMIT 1";
-
-	$update = $db->query($sql);
-
-	$logArray['category'] = "location";
-	$logArray['type'] = "success";
-	$logArray['value'] = "[locationUID:" . $this->uid . "] updated successfully";
-	$logsClass->create($logArray);
-
-	return $update;
-  }
-
   public function allNodes($enabledDisabled = "enabled") {
 	global $db;
 
@@ -141,6 +115,34 @@ class site {
 	$meters = $db->query($sql)->fetchAll();
 
 	return $meters;
+  }
+  
+  public function co2BetweenDatesByMonth($dateFrom = null, $dateTo = null) {
+	  global $db, $settingsClass;
+	  
+	  if ($dateFrom == null || $dateTo == null) {
+			$dateFrom = date('Y-m-d', strtotime('1 year ago'));
+			$dateTo = date('Y-m-d');
+		}
+	  
+	  $totalCO2 = array();
+	  
+	  foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
+		  $co2PerUnit = $settingsClass->value("unit_co2e_" . $nodeType);
+		  
+		  $consumptionForType = $this->consumptionBetweenDatesByMonth($nodeType, $dateFrom, $dateTo);
+		  
+		  foreach ($consumptionForType AS $month => $value) {
+			  $consumptionForType[$month] = $value * $co2PerUnit;
+		  }
+		  
+		  foreach ($consumptionForType AS $month => $value) {
+				$totalCO2[$month] = $totalCO2[$month] + $value;
+			}
+		  
+	  }
+	  
+	  return $totalCO2;
   }
 }
 ?>

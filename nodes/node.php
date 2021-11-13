@@ -264,7 +264,10 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 	axisY: {
 		// On the y-axis start means left and end means right
 		showGrid: false,
-		showLabel: true
+		showLabel: true,
+		labelInterpolationFnc: function(value) {
+			return (value) + '<?php echo $node->unit; ?>';
+		}
 	}
 });
 </script>
@@ -294,7 +297,10 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 		axisY: {
 			// On the y-axis start means left and end means right
 			showGrid: false,
-			showLabel: true
+			showLabel: true,
+			labelInterpolationFnc: function(value) {
+				return (value) + '<?php echo $node->unit; ?>';
+			}
 		}
 	});
 </script>

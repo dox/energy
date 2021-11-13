@@ -12,13 +12,12 @@ $monthlyConsumptionElectric = array_reverse($site->consumptionBetweenDatesByMont
 $monthlyConsumptionGas = array_reverse($site->consumptionBetweenDatesByMonth("gas"), true);
 $monthlyConsumptionWater = array_reverse($site->consumptionBetweenDatesByMonth("water"), true);
 
+$monthlyCO2 = $site->co2BetweenDatesByMonth();
 $co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
 $totalCO2Electric = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_electric");
-$totalCO2Gas = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_gas");
-$totalCO2Water = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_water");
-
-$totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
+$totalCO2Gas = array_sum($monthlyConsumptionGas) * $settingsClass->value("unit_co2e_gas");
+$totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("unit_co2e_water");
 ?>
 <div class="container px-4 py-5">
 	<h1 class="mb-5"><?php echo site_name; ?></h1>
@@ -28,7 +27,7 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
 				<div class="d-block mb-3 mb-sm-0">
 					<div class="fs-5 fw-normal mb-2">CO&#8322; Emissions from Energy Usage</div>
-					<h2 class="fs-3 fw-extrabold"><?php echo $totalCO2 . " kg"; ?></h2>
+					<h2 class="fs-3 fw-extrabold"><?php echo number_format(array_sum($monthlyCO2), 0) . " kg"; ?></h2>
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
 						<span class="fas fa-angle-up text-success"></span>
@@ -164,10 +163,10 @@ $totalCO2 = number_format($totalCO2Electric + $totalCO2Gas + $totalCO2Water, 0);
 <script>
 var data = {
 	// A labels array that can contain any sort of values
-	labels: ['<?php echo implode("','", array_keys($monthlyConsumptionElectric)); ?>'],
+	labels: ['<?php echo implode("','", array_keys($monthlyCO2)); ?>'],
 	// Our series array that contains series objects or in this case series data arrays
 	series: [
-		[<?php echo implode(",", $monthlyConsumptionElectric); ?>]
+		[<?php echo implode(",", $monthlyCO2); ?>]
 	]
 };
 
@@ -186,9 +185,9 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 	axisY: {
 		// On the y-axis start means left and end means right
 		showGrid: false,
-		showLabel: false,
+		showLabel: true,
 		labelInterpolationFnc: function(value) {
-			return '$' + (value / 1) + 'k';
+			return (value / 1000) + 't';
 		}
 	}
 });
