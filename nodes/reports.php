@@ -45,16 +45,16 @@ foreach ($_POST['locations'] AS $locationUID) {
 		</div>
 	</h1>
 	
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<form method="post" id="termUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>" class="needs-validation" novalidate>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="#">Filter: </a>
+			<a class="navbar-brand" href="#">Filter:</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item dropdown">
+			  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Locations</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<?php
@@ -84,7 +84,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 							</li>
 						</ul>
 					</li>
-					<li class="nav-item dropdown">
+				<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Types</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<?php
@@ -107,18 +107,18 @@ foreach ($_POST['locations'] AS $locationUID) {
 							?>
 						</ul>
 					</li>
-				</ul>
 				<div class="d-flex">
-							<input type="text" class="form-control me-2" name="date_from" id="date_from" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_from-addon" required>
-						<input type="text" class="form-control me-2" name="date_to" id="date_to" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_to-addon" required>
-				</div>
-				<form class="d-flex">
-					<button class="btn btn-outline-success " type="submit">Filter</button>
-				</form>
+								<input type="text" class="form-control me-2" name="date_from" id="date_from" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_from-addon" required>
+							<input type="text" class="form-control me-2" name="date_to" id="date_to" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_to-addon" required>
+					</div>
+			  </ul>
+			  <form class="d-flex">
+				<button class="btn btn-outline-success" type="submit">Apply</button>
+			  </form>
 			</div>
-		</div>
+		  </div>
+		</nav>
 	</form>
-	</nav>
 	
 	<hr />
 	

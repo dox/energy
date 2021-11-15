@@ -167,17 +167,6 @@ if ($_SESSION['logon'] == true) {
 
 <div class="container px-4 py-5">
 	<div class="row">
-		<div class="col-6">
-			graph
-		</div>
-		<div class="col-6">
-			<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
-		</div>
-	</div>
-</div>
-
-<div class="container px-4 py-5">
-	<div class="row">
 		<div class="col-lg-6 col-12 mb-3">
 			<div class="card border-0 shadow">
 				<div class="card-header">
@@ -218,6 +207,8 @@ if ($_SESSION['logon'] == true) {
 			</div>
 		</div>
 		<div class="col-lg-6 col-12">
+			<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
+			
 			<div class="card border-0 shadow">
 				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
 					<h2 class="fs-5 fw-bold mb-0">Node Details</h2>
@@ -282,8 +273,8 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 		]
 	};
 	
-	new Chartist.Line('.ct-chart-yearly', data, {
-		low: 0,
+	new Chartist.Bar('.ct-chart-yearly', data, {
+		low: <?php echo min($yearlyConsumption); ?>,
 		showArea: true,
 		fullWidth: true,
 		plugins: [
