@@ -1,8 +1,8 @@
 <?php
 $location = new location($_GET['locationUID']);
 $readingsClass = new readings();
-$metersClass = new meters();
-$meters = $location->allnodes("all");
+$nodesClass = new nodes();
+$nodes = $location->allnodes("all");
 
 $totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("electric")) * $settingsClass->value("unit_co2e_electric");
 $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $settingsClass->value("unit_co2e_gas");
@@ -16,10 +16,9 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 		<div class="dropdown">
 			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
 			<div class="dropdown-menu dashboard-dropdown">
-				<a class="dropdown-item me-2 <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_edit"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Add Node</a>
-				<a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=location_edit&locationUID=<?php echo $location->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Location</a>
-				<a class="dropdown-item me-2<?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="#" data-bs-toggle="modal" data-bs-target="#deleteMeterModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#refuse"/></svg> Delete Location</a>
-				
+				<a class="dropdown-item me-2 <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_add&locationUID=<?php echo $location->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Add Node</a>
+				<a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=location_edit"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Location</a>
+								
 				<a class="dropdown-item me-2" href="export.php?type=location&filter=<?php echo $location->uid; ?>" target="_blank">
 					<span class="sidebar-icon">
 						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
@@ -115,11 +114,14 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 
 <div class="container px-4 py-5">
 	<?php
-	echo $metersClass->meterTable($meters);
+	echo $nodesClass->nodeTable($nodes);
 	?>
 </div>
 
-<div id="map" style="width: 100%; height: 500px"></div>
+<div class="container px-4 py-5">
+	<div id="map" style="width: 100%; height: 500px"></div>
+</div>
+		
 
 
 

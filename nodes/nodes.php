@@ -1,7 +1,11 @@
 <?php
 $locationsClass = new locations();
 $readingsClass = new readings();
-$metersClass = new meters();
+$nodesClass = new nodes();
+
+if (isset($_POST['name'])) {
+  $nodesClass->create($_POST);
+}
 ?>
 
 <div class="container px-4 py-5">
@@ -19,7 +23,7 @@ $metersClass = new meters();
             <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg>
           </span> Show Hidden Nodes
         </a>
-        <a class="dropdown-item" href="export.php?type=readings&filter=all" target="_blank">
+        <a class="dropdown-item" href="export.php?type=nodes&filter=all" target="_blank">
           <span class="sidebar-icon">
             <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
           </span> Export Data
@@ -32,7 +36,7 @@ $metersClass = new meters();
   foreach ($locationsClass->all() AS $location) {
     $location = new location($location['uid']);
   
-    $meters = $location->allNodes("all");
+    $nodes = $location->allNodes("all");
     
     $output  = "<div class=\"card mb-4 shadow\">";
     $output .= "<div class=\"card-header\">";
@@ -50,19 +54,19 @@ $metersClass = new meters();
     
     $output .= "<tbody>";
     
-    foreach ($meters AS $meter) {
-      $meter = new meter($meter['uid']);
+    foreach ($nodes AS $node) {
+      $node = new node($node['uid']);
       
-      if ($meter->enabled == 0) {
+      if ($node->enabled == 0) {
         $enabledClass = " table-secondary d-none";
       } else {
         $enabledClass = "";
       }
       
       $output .= "<tr class=\"" . $enabledClass . "\">";
-      $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
-      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
-      $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
+      $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
+      $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
       $output .= "</tr>";
     }
     
@@ -76,8 +80,8 @@ $metersClass = new meters();
     
     //$output .= $metersClass->meterTable($meters);
   
-    foreach ($meters AS $meter) {
-    if ($meter['enabled'] == 1) {
+    foreach ($nodes AS $node) {
+    if ($node['enabled'] == 1) {
     //  $output .= $metersClass->displayMeterCard($meter['uid']);
     }
     }

@@ -46,8 +46,8 @@ require_once($root . '/inc/classSite.php');
 require_once($root . '/inc/classLogs.php');
 require_once($root . '/inc/classLocation.php');
 require_once($root . '/inc/classLocations.php');
-require_once($root . '/inc/classMeter.php');
-require_once($root . '/inc/classMeters.php');
+require_once($root . '/inc/classNode.php');
+require_once($root . '/inc/classNodes.php');
 require_once($root . '/inc/classReadings.php');
 
 $db = new db(db_host, db_username, db_password, db_name);

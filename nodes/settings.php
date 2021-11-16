@@ -19,6 +19,7 @@ $settings = $settingsClass->all();
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
       <div class="dropdown-menu dashboard-dropdown">
+        <a class="dropdown-item me-3" href="index.php?n=logs"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#logs"/></svg> View Logs</a>
         <a class="dropdown-item me-3" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg> Add Setting</a>
         <a class="dropdown-item" href="#" onclick="purgeOldLogs()"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#delete"/></svg> Purge Old Readings</a>
       </div>
@@ -63,7 +64,7 @@ $settings = $settingsClass->all();
 <div class="b-example-divider"></div>
 
 <div class="container px-4 py-5">
-  <h2 class="m-3">Icons Availabe in <code>./inc/icons.svg</code></h2>
+  <h2 class="m-3">Icons Available in <code>./inc/icons.svg</code></h2>
   
   <?php
   $iconsArray = array(

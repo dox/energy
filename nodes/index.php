@@ -2,8 +2,6 @@
 $site = new site();
 $recentReadings = readings::all(5);
 
-$meter = new meter('69');
-
 $dateFrom = date('Y-m-d', strtotime('12 months ago'));
 $dateTo = date('Y-m-d');
 
@@ -13,7 +11,6 @@ $monthlyConsumptionGas = array_reverse($site->consumptionBetweenDatesByMonth("ga
 $monthlyConsumptionWater = array_reverse($site->consumptionBetweenDatesByMonth("water"), true);
 
 $monthlyCO2 = $site->co2BetweenDatesByMonth();
-$co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
 $totalCO2Electric = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_electric");
 $totalCO2Gas = array_sum($monthlyConsumptionGas) * $settingsClass->value("unit_co2e_gas");
@@ -136,12 +133,12 @@ $totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("un
 							<tbody>
 								<?php
 								foreach ($recentReadings AS $reading) {
-									$meter = new meter($reading['meter']);
-									$location = new location($meter->location);
+									$node = new node($reading['node']);
+									$location = new location($node->location);
 									
 									$output  = "<tr>";
 									$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
-									$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "(" . $location->name . ")</a></td>";
+									$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "(" . $location->name . ")</a></td>";
 									$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
 									$output .= "<td class=\"fw-bolder text-gray-500\">" . $reading['username'] . "</td>";
 									$output .= "";

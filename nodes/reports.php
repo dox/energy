@@ -3,7 +3,7 @@
 
 <?php
 $locationsClass = new locations();
-$metersClass = new meters();
+$nodesClass = new nodes();
 
 if (isset($_POST['nodes_includeHidden'])) {
   $enabled = "";
@@ -14,8 +14,8 @@ if (isset($_POST['nodes_includeHidden'])) {
 $nodes = null;
 //get each site
 foreach ($_POST['locations'] AS $locationUID) {
-  //get each meter in this site that matches types
-  $sql = "SELECT * FROM meters WHERE location = '" . $locationUID . "' " . $enabled . " AND type IN ('" . implode("','", $_POST['nodes']) . "');";
+  //get each node in this site that matches types
+  $sql = "SELECT * FROM nodes WHERE location = '" . $locationUID . "' " . $enabled . " AND type IN ('" . implode("','", $_POST['nodes']) . "');";
   $nodesByLocation = $db->query($sql)->fetchAll();
 
   foreach ($nodesByLocation AS $node) {
@@ -147,7 +147,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 								<?php
 								  $totalConsumption = 0;
 								  foreach ($nodes AS $node) {
-									$node = new meter($node['uid']);
+									$node = new node($node['uid']);
 									$totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
 								  }
 								  ?>
@@ -199,7 +199,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 								
 								  $co2eUnit = $settingsClass->value($settingName);
 								  ?>
-								<h3 class="mb-1">CO&#8322;e</h3>
+								<h3 class="mb-1">CO&#8322;</h3>
 								<h4 class="fw-extrabold mb-1"><?php echo number_format($totalConsumption * $co2eUnit, 0) . " kg"; ?></h4>
 							</div>
 						</div>
@@ -215,7 +215,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 <div class="container px-4 py-5">
 	<?php
 	
-	echo $metersClass->meterTable($nodes);
+	echo $nodesClass->nodeTable($nodes);
 	
 	?>
 </div>
@@ -256,7 +256,7 @@ var date_to = flatpickr("#date_to", {
 <!-- Pie Chart showing type usage per location -->
 <?php
 foreach ($nodes AS $node) {
-  $node = new meter($node['uid']);
+  $node = new node($node['uid']);
   $location = new location($node->location);
 
   $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
@@ -271,7 +271,7 @@ $labels = "'" . implode("','", array_keys($data)) . "'";
 // CONSUMPTION BY MONTH
 $data = array();
 foreach ($nodes AS $node) {
-  $node = new meter($node['uid']);
+  $node = new node($node['uid']);
 
   $nodeData = $node->consumptionBetweenDatesByMonth($_POST['date_from'], $_POST['date_to']);
 
@@ -323,7 +323,7 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 <!-- Pie Chart showing type usage per location -->
 <?php
 foreach ($nodes AS $node) {
-  $node = new meter($node['uid']);
+  $node = new node($node['uid']);
   $location = new location($node->location);
 
   $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);

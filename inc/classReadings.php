@@ -3,7 +3,7 @@ class readings {
   protected static $table_name = "readings";
 
   public $uid;
-  public $meter;
+  public $node;
   public $date;
   public $reading1;
   public $username;
@@ -18,16 +18,16 @@ class readings {
       $sql .= " LIMIT " . $limit;
     }
 
-    $meters = $db->query($sql)->fetchAll();
+    $nodes = $db->query($sql)->fetchAll();
 
-    return $meters;
+    return $nodes;
   }
 
-  public function meter_all_readings($meterUID = null, $limit = 0) {
+  public function node_all_readings($nodeUID = null, $limit = 0) {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
-    $sql .= " WHERE meter = '" . $meterUID . "' ";
+    $sql .= " WHERE node = '" . $nodeUID . "' ";
     $sql .= " ORDER BY date DESC";
     
     if ($limit > 0) {
@@ -39,11 +39,11 @@ class readings {
     return $readings;
   }
 
-  public function meter_all_readings_older_than($meterUID = null, $age = 0) {
+  public function node_all_readings_older_than($nodeUID = null, $age = 0) {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
-    $sql .= " WHERE meter = '" . $meterUID . "' ";
+    $sql .= " WHERE node = '" . $nodeUID . "' ";
     $sql .= " AND DATE(date) < '" . date('Y-m-d', strtotime('-' . $age . ' days')) . "'";
     $sql .= " ORDER BY date DESC";
 
@@ -65,7 +65,7 @@ class readings {
     //return $readings;
   }
 
-  public function create($meterUID = null, $reading1 = null) {
+  public function create($nodeUID = null, $reading1 = null) {
     global $db, $logsClass;
 
     if (isset($_SESSION['username'])) {
@@ -75,14 +75,14 @@ class readings {
     }
 
     $sql  = "INSERT INTO " . self::$table_name;
-    $sql .= " (meter, date, reading1, username) ";
-    $sql .= " VALUES('" . $meterUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $username . "')";
+    $sql .= " (node, date, reading1, username) ";
+    $sql .= " VALUES('" . $nodeUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $username . "')";
 
     $insert = $db->query($sql);
 
     $logArray['category'] = "reading";
     $logArray['type'] = "success";
-    $logArray['value'] = "[readingUID:" . $insert->lastInsertID() . "] for [meterUID:" . $meterUID . "] created successfully";
+    $logArray['value'] = "[readingUID:" . $insert->lastInsertID() . "] for [nodeUID:" . $nodeUID . "] created successfully";
     $logsClass->create($logArray);
 
     return $insert;
@@ -105,7 +105,7 @@ class readings {
     return $delete;
   }
 
-  public function meter_monthly_consumption($meterUID = null, $lookupYear = null) {
+  public function node_monthly_consumption($nodeUID = null, $lookupYear = null) {
     global $db;
 
     if ($lookupYear == null) {
@@ -116,7 +116,7 @@ class readings {
     do  {
       // this month
       $sql  = "SELECT * FROM readings_by_month ";
-      $sql .= " WHERE meter = '" . $meterUID . "' ";
+      $sql .= " WHERE node = '" . $nodeUID . "' ";
       $sql .= " AND year = '" . $lookupYear . "' ";
       $sql .= " AND month = '" . $lookupMonth . "' ";
       $sql .= " ORDER BY year DESC";
@@ -129,14 +129,14 @@ class readings {
       if ($lookupMonth == 1) {
         $lookupYear2 = $lookupYear - 1;
         $sql  = "SELECT * FROM readings_by_month ";
-        $sql .= " WHERE meter = '" . $meterUID . "' ";
+        $sql .= " WHERE node = '" . $nodeUID . "' ";
         $sql .= " AND year = '" . $lookupYear2 . "' ";
         $sql .= " AND month = '12' ";
         $sql .= " ORDER BY year DESC";
   		} else {
         $lookupMonth2 = $lookupMonth - 1;
         $sql  = "SELECT * FROM readings_by_month ";
-        $sql .= " WHERE meter = '" . $meterUID . "' ";
+        $sql .= " WHERE node = '" . $nodeUID . "' ";
         $sql .= " AND year = '" . $lookupYear . "' ";
         $sql .= " AND month = '" . $lookupMonth2 . "' ";
         $sql .= " ORDER BY year DESC";
@@ -168,7 +168,7 @@ class readings {
     return $readingsArray;
   }
 
-  public function meter_yearly_consumption($meterUID = null) {
+  public function node_yearly_consumption($nodeUID = null) {
     global $db;
 
     $i = 0;
@@ -178,7 +178,7 @@ class readings {
 
       // this years
       $sql  = "SELECT * FROM readings_by_month ";
-      $sql .= " WHERE meter = '" . $meterUID . "' ";
+      $sql .= " WHERE node = '" . $nodeUID . "' ";
       $sql .= " AND year = '" . $thisYear . "' ";
       $sql .= " ORDER BY reading1 DESC";
       $sql .= " LIMIT 1";
@@ -188,7 +188,7 @@ class readings {
 
       // previous years
       $sql  = "SELECT * FROM readings_by_month ";
-      $sql .= " WHERE meter = '" . $meterUID . "' ";
+      $sql .= " WHERE node = '" . $nodeUID . "' ";
       $sql .= " AND year = '" . $previousYear . "' ";
       $sql .= " ORDER BY reading1 DESC";
       $sql .= " LIMIT 1";
@@ -213,19 +213,19 @@ class readings {
   public function location_monthly_consumption($locationUID = null, $year = null, $utility = null) {
     global $db;
 
-    $metersClass = new meters();
-    $meters = $metersClass->allByLocation($locationUID);
+    $nodesClass = new nodes();
+    $nodes = $nodesClass->allByLocation($locationUID);
 
     $i = 0;
-    foreach ($meters AS $meter) {
-      if ($meter['type'] == $utility) {
+    foreach ($nodes AS $node) {
+      if ($node['type'] == $utility) {
         $lookupMonth = 1;
         do {
           $lookupYear = $year - $i;
 
           // this month
           $sql  = "SELECT * FROM readings_by_month ";
-          $sql .= " WHERE meter = '" . $meter['uid'] . "' ";
+          $sql .= " WHERE node = '" . $node['uid'] . "' ";
           $sql .= " AND year = '" . $lookupYear . "' ";
           $sql .= " AND month = '" . $lookupMonth . "' ";
 
@@ -237,13 +237,13 @@ class readings {
           if ($lookupMonth == 1) {
             $lookupYear2 = $lookupYear - 1;
             $sql  = "SELECT * FROM readings_by_month ";
-            $sql .= " WHERE meter = '" . $meter['uid'] . "' ";
+            $sql .= " WHERE node = '" . $node['uid'] . "' ";
             $sql .= " AND year = '" . $lookupYear2 . "' ";
             $sql .= " AND month = '12' ";
       		} else {
             $lookupMonth2 = $lookupMonth - 1;
             $sql  = "SELECT * FROM readings_by_month ";
-            $sql .= " WHERE meter = '" . $meter['uid'] . "' ";
+            $sql .= " WHERE node = '" . $node['uid'] . "' ";
             $sql .= " AND year = '" . $lookupYear . "' ";
             $sql .= " AND month = '" . $lookupMonth2 . "' ";
       		}

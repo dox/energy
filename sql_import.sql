@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 15, 2021 at 10:29 AM
+-- Generation Time: Nov 16, 2021 at 05:45 PM
 -- Server version: 8.0.26-0ubuntu0.21.04.3
 -- PHP Version: 7.4.16
 
@@ -54,10 +54,10 @@ CREATE TABLE `logs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `meters`
+-- Table structure for table `nodes`
 --
 
-CREATE TABLE `meters` (
+CREATE TABLE `nodes` (
   `uid` int NOT NULL,
   `name` varchar(255) NOT NULL,
   `location` int NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `meters` (
 
 CREATE TABLE `readings` (
   `uid` int NOT NULL,
-  `meter` int NOT NULL,
+  `node` int NOT NULL,
   `date` datetime NOT NULL,
   `reading1` decimal(10,2) NOT NULL DEFAULT '0.00',
   `username` varchar(255) DEFAULT NULL
@@ -112,13 +112,13 @@ INSERT INTO `settings` (`uid`, `name`, `description`, `value`) VALUES
 (34, 'node_units', 'Comma separated list of available node units', 'm³,kWh,KG,C'),
 (35, 'datetime_format_long', 'The format of long-form dates (2020-11-04 13:45:11).  Uses PHP datetime format [d-m-y]', 'Y-m-d H:i:s'),
 (36, 'datetime_format_short', 'The format of short-form dates (2020-11-04).  Uses PHP datetime format [d-m-y]', 'Y-m-d'),
-(37, 'site_geolocation', '', '51.752879, -1.249675'),
+(37, 'site_geolocation', 'lat, long of the default site location', '51.752879, -1.249675'),
 (38, 'node_graph_monthly_display', 'The number of months to display in the monthly consumption graph for each node', '12'),
 (39, 'node_graph_yearly_display', 'The number of years to display in the yearly consumption graph for each node', '5'),
 (40, 'unit_cost_gas', 'Cost per unit for 1m3 of gas', '0.358'),
 (41, 'unit_cost_water', 'Cost per unit for 1m3 of water', '0.9'),
 (42, 'unit_cost_electric', 'Cost per unit for 1kWh of electricity', '0.127'),
-(43, 'unit_co2e_gas', 'kgCO2e/m3 (natural gas) using gross calorific value as stated on most energy bills', '2.03473'),
+(43, 'unit_co2e_gas', 'kgCO2e/m3 Natural gas using gross calorific value as stated on most energy bills', '2.03473'),
 (44, 'unit_co2e_electric', 'kgCO2e/kWh using gross calorific value as stated on most energy bills', '0'),
 (45, 'unit_co2e_water', 'kgCO2e/m3 using gross calorific value as stated on most energy bills', '0');
 
@@ -139,9 +139,9 @@ ALTER TABLE `logs`
   ADD PRIMARY KEY (`uid`);
 
 --
--- Indexes for table `meters`
+-- Indexes for table `nodes`
 --
-ALTER TABLE `meters`
+ALTER TABLE `nodes`
   ADD PRIMARY KEY (`uid`);
 
 --
@@ -149,7 +149,7 @@ ALTER TABLE `meters`
 --
 ALTER TABLE `readings`
   ADD PRIMARY KEY (`uid`),
-  ADD KEY `meter` (`meter`);
+  ADD KEY `meter` (`node`);
 
 --
 -- Indexes for table `settings`
@@ -174,9 +174,9 @@ ALTER TABLE `logs`
   MODIFY `uid` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `meters`
+-- AUTO_INCREMENT for table `nodes`
 --
-ALTER TABLE `meters`
+ALTER TABLE `nodes`
   MODIFY `uid` int NOT NULL AUTO_INCREMENT;
 
 --

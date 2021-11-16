@@ -1,5 +1,5 @@
 <?php
-$node = new meter($_GET['nodeUID']);
+$node = new node($_GET['nodeUID']);
 $location = new location($node->location);
 
 $costUnit = $settingsClass->value("unit_cost_" . $node->type);
@@ -9,7 +9,7 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
 	readings::create($node->uid, $_POST['reading1']);
 }
 
-$recentReadings = readings::meter_all_readings($node->uid, 5);
+$recentReadings = readings::node_all_readings($node->uid, 5);
 
 $thisYearDateFrom = date('Y-m-d', strtotime('12 months ago'));
 $thisYearDateTo = date('Y-m-d');
@@ -51,11 +51,6 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 					</span> Edit Node
 				</a>
 				<div role="separator" class="dropdown-divider my-1"></div>
-				<a class="dropdown-item me-2 text-danger" href="#">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#delete"/></svg>
-					</span> Delete This Node
-				</a>
 				
 				<a class="dropdown-item" id="test" href="export.php?type=node&filter=<?php echo $node->uid; ?>" target="_blank">
 					<span class="sidebar-icon">
@@ -72,9 +67,9 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 				<div class="d-block mb-3 mb-sm-0">
 					<div class="fs-5 fw-normal mb-2"><?php echo $node->type; ?> Consumption (last 12 months)</div>
 					<div class="small mt-2">
-						<span class="fw-normal me-2">Yesterday</span>
+						<span class="fw-normal me-2"> </span>
 						<span class="fas fa-angle-up text-success"></span>
-						<span class="text-success fw-bold">10.57%</span>
+						<span class="text-success fw-bold"></span>
 					</div>
 				</div>
 				<div class="d-flex ms-auto">
@@ -136,7 +131,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 							</div>
 						</div>
 						<div class="col-9">
-							<h3 class="mb-1">CO&#8322;e</h3>
+							<h3 class="mb-1">CO&#8322;</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal * $co2eUnit, 0) . " kg"; ?></h4>
 						</div>
 					</div>
@@ -156,8 +151,8 @@ if ($_SESSION['logon'] == true) {
 <div class="container px-4 py-5">
 	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo $node->uid; ?>">
 		  <div class="input-group">
-			<input type="number" class="form-control" name="reading1" placeholder="New Reading" min="<?php echo $node->currentReading(); ?>">
-			<button type="submit" class="btn btn-secondary" name="submit">Submit</button>
+			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading" min="<?php echo $node->currentReading(); ?>">
+			<button type="submit" class="btn btn-lg btn-primary" name="submit">Submit</button>
 		  </div>
 		</form>
 		<div id="reading1Help" class="form-text">Previous reading: <?php echo number_format($node->currentReading()) . " " . $node->unit; ?></div>
@@ -230,6 +225,10 @@ if ($_SESSION['logon'] == true) {
 	</div>
 </div>
 
+<div class="container px-4 py-5">
+	<div id="map" style="width: 100%; height: 500px"></div>
+</div>
+
 <script>
 var data = {
 	// A labels array that can contain any sort of values
@@ -295,3 +294,33 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 		}
 	});
 </script>
+
+<script>
+	var map = L.map('map').setView([<?php echo $node->geoLocation(); ?>], 18);
+	
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		//attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+	
+	<?php
+	if (isset($location->geo)) {
+	  $output  = "L.marker([" . $node->geoLocation() . "]).addTo(map)";
+	  $output .= ".bindPopup('" . escape($node->name) . "')";
+	  $output .= ".openPopup();";
+	
+	  echo $output;
+	}
+	?>
+	var popup = L.popup();
+	
+	function onMapClick(e) {
+	  popup
+		.setLatLng(e.latlng)
+		.setContent("New Node Location: " + e.latlng.toString())
+		.openOn(map);
+	
+	  document.getElementById("geo").value = e.latlng.lat + ',' + e.latlng.lng;
+	}
+	
+	map.on('click', onMapClick);
+	</script>

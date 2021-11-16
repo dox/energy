@@ -1,14 +1,14 @@
 <?php
-class meters extends meter {
+class nodes extends node {
   public function all() {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " ORDER BY uid DESC";
 
-    $meters = $db->query($sql)->fetchAll();
+    $nodes = $db->query($sql)->fetchAll();
 
-    return $meters;
+    return $nodes;
   }
 
   public function allEnabled() {
@@ -18,35 +18,35 @@ class meters extends meter {
     $sql .= " WHERE enabled = 1";
     $sql .= " ORDER BY uid DESC";
 
-    $meters = $db->query($sql)->fetchAll();
+    $nodes = $db->query($sql)->fetchAll();
 
-    return $meters;
+    return $nodes;
   }
 
   public function recentlyUpdated() {
     global $db;
 
-    $readingsSQL  = "SELECT meter FROM readings ";
+    $readingsSQL  = "SELECT node FROM readings ";
     $readingsSQL .= " WHERE date BETWEEN NOW() - INTERVAL 30 DAY AND NOW()";
     $readingsSQL .= " ORDER BY date DESC";
     $readingsSQL .= " LIMIT 30";
 
-    $meterUIDS = $db->query($readingsSQL)->fetchAll();
+    $nodeUIDS = $db->query($readingsSQL)->fetchAll();
 
-    foreach ($meterUIDS AS $meterUID) {
-      $sql  = "SELECT * FROM meters ";
-      $sql .= " WHERE uid = '" . $meterUID['meter'] . "'";
+    foreach ($nodeUIDS AS $nodeUID) {
+      $sql  = "SELECT * FROM nodes ";
+      $sql .= " WHERE uid = '" . $nodeUID['node'] . "'";
       $sql .= " LIMIT 1";
 
-      $meter = $db->query($sql)->fetchArray();
+      $node = $db->query($sql)->fetchArray();
 
-      $metersArray[] = $meter;
+      $nodesArray[] = $node;
     }
 
-    return $metersArray;
+    return $nodesArray;
   }
 
-  public function meterTable($meters = null) {
+  public function nodeTable($nodes = null) {
     $tableID = "table_" . rand(0, 1000);
 
     $output .= "<table class=\"table\" id=\"" . $tableID . "\">";
@@ -62,7 +62,7 @@ class meters extends meter {
     $output .= "</thead>";
 
     $output .= "<tbody>";
-    $output .= $this->meterRow($meters);
+    $output .= $this->nodeRow($nodes);
     $output .= "</tbody>";
 
     $output .= "</table>";
@@ -70,22 +70,22 @@ class meters extends meter {
     return $output;
   }
 
-  private function meterRow($meters = null) {
-    foreach ($meters AS $meterUnique) {
-      $meter = new meter($meterUnique['uid']);
+  private function nodeRow($nodes = null) {
+    foreach ($nodes AS $nodeUnique) {
+      $node = new node($nodeUnique['uid']);
 
-      if ($meter->enabled == 1) {
+      if ($node->enabled == 1) {
         $rowClass = " ";
       } else {
         $rowClass = "table-secondary d-none";
       }
       $output .= "<tr class=\"" . $rowClass . "\">";
-      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
-      $output .= "<td>" . $meter->meterTypeBadge() . "</td>";
-      $output .= "<td>" . displayReading($meter->currentReading()) . " " . $meter->unit . "</td>";
-      $output .= "<td>" . howLongAgo($meter->mostRecentReadingDate()) . "</td>";
-      $output .= "<td>" . $meter->displaySecurely('serial') . "</td>";
-      $output .= "<td>" . $meter->displaySecurely('mprn') . "</td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
+      $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
+      $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
+      $output .= "<td>" . howLongAgo($node->mostRecentReadingDate()) . "</td>";
+      $output .= "<td>" . $node->displaySecurely('serial') . "</td>";
+      $output .= "<td>" . $node->displaySecurely('mprn') . "</td>";
       $output .= "</tr>";
     }
 
@@ -107,9 +107,9 @@ class meters extends meter {
 
     $create = $db->query($sql);
 
-    $logArray['category'] = "meter";
+    $logArray['category'] = "node";
     $logArray['type'] = "success";
-    $logArray['value'] = "[meterUID:" . $create->lastInsertID() . "] created successfully";
+    $logArray['value'] = "[nodeUID:" . $create->lastInsertID() . "] created successfully";
     $logsClass->create($logArray);
 
     return $create;
@@ -132,11 +132,11 @@ class meters extends meter {
   }
 
   public function geoMarkers() {
-    $meters = $this->allEnabled();
+    $nodes = $this->allEnabled();
 
-    foreach ($meters AS $meter) {
-      $meter = new meter($meter['uid']);
-      $array[] = "['" . $meter->cleanName() . "', " . $meter->geoMarker() . "]";
+    foreach ($nodes AS $node) {
+      $node = new node($node['uid']);
+      $array[] = "['" . $node->cleanName() . "', " . $node->geoMarker() . "]";
 
     }
 

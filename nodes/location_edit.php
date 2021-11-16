@@ -9,33 +9,32 @@ if (isset($_POST['uid'])) {
 }
 
 ?>
-
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2">Location: Edit</h1>
+<div class="container px-4 py-5">
+  <h1 class="mb-5">Location: Edit</h1>
+  
+  <form method="post" id="locationUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+      <div class="mb-3">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Location Name" value="<?php echo $location->name; ?>">
+      </div>
+    
+      <div class="mb-3">
+        <label for="serial">Description</label>
+        <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<?php echo $location->description; ?>">
+      </div>
+    
+      <input type="hidden" id="geo" name="geo">
+      <div id="map" style="width: 100%; height: 500px"></div>
+      <input type="hidden" id="uid" name="uid" value="<?php echo $location->uid; ?>">
+    
+      <div class="mb-3">
+        <button type="submit" class="btn btn-primary w-100">Submit</button>
+        <input type="hidden" id="uid" name="uid" value="<?php echo $location->uid; ?>">
+      </div>
+    
+      <div id="returnMessage"></div>
+    </form>
 </div>
-
-<form method="post" id="locationUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
-	<div class="mb-3">
-		<label for="name">Name</label>
-		<input type="text" class="form-control" id="name" name="name" placeholder="Location Name" value="<?php echo $location->name; ?>">
-	</div>
-
-	<div class="mb-3">
-		<label for="serial">Description</label>
-		<input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<?php echo $meter->description; ?>">
-	</div>
-
-  <input type="hidden" id="geo" name="geo">
-  <div id="map" style="width: 100%; height: 500px"></div>
-  <input type="hidden" id="uid" name="uid" value="<?php echo $location->uid; ?>">
-
-  <div class="mb-3">
-    <button type="submit" class="btn btn-primary w-100">Submit</button>
-    <input type="hidden" id="uid" name="uid" value="<?php echo $location->uid; ?>">
-  </div>
-
-  <div id="returnMessage"></div>
-</form>
 
 <script>
 var map = L.map('map').setView([<?php echo $location->geoLocation(); ?>], 18);

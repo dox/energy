@@ -22,5 +22,28 @@ class locations extends location {
 
     return $array;
   }
+  
+  public function create($array = null) {
+       global $db, $logsClass;
+    
+      $sql  = "INSERT INTO " . self::$table_name;
+    
+      foreach ($array AS $updateItem => $value) {
+        $sqlColumns[] = $updateItem;
+        $sqlValues[] = "'" . $value . "' ";
+      }
+    
+      $sql .= " (" . implode(",", $sqlColumns) . ") ";
+      $sql .= " VALUES (" . implode(",", $sqlValues) . ")";
+    
+      $create = $db->query($sql);
+    
+      $logArray['category'] = "location";
+      $logArray['type'] = "success";
+      $logArray['value'] = "[locationUID:" . $create->lastInsertID() . "] created successfully";
+      $logsClass->create($logArray);
+    
+      return $create;
+    }
 }
 ?>

@@ -1,9 +1,9 @@
 <?php
 if (isset($_GET['nodeUID'])) {
-	$node = new meter($_GET['nodeUID']);
+	$node = new node($_GET['nodeUID']);
 	$location = new location($node->location);
 	$pageTitle = "All readings for " . $location->name;
-	$readings = readings::meter_all_readings($node->uid);
+	$readings = readings::node_all_readings($node->uid);
 } else {
 	$pageTitle = "All readings";
 	$readings = readings::all(100);
@@ -45,14 +45,14 @@ if (isset($_GET['nodeUID'])) {
 			<tbody>
 				<?php
 				foreach ($readings AS $reading) {
-					$meter = new meter($reading['meter']);
-					$location = new location($meter->location);
+					$node = new node($reading['node']);
+					$location = new location($node->location);
 					
 					$output  = "<tr>";
 					$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
 					$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->name . "</a></td>";
-					$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=node&nodeUID=" . $meter->uid . "\">" . $meter->name . "</a></td>";
-					$output .= "<td class=\"fw-bolder text-gray-500\">" . $meter->type . "</td>";
+					$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
+					$output .= "<td class=\"fw-bolder text-gray-500\">" . $node->type . "</td>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . $reading['username'] . "</td>";
 					$output .= "";

@@ -69,7 +69,7 @@ class logs {
 	}
 
   private function displayCategoryBadge($category = null) {
-    if ($category == "meter") {
+    if ($category == "node") {
       $class = "bg-primary";
     } elseif ($category == "reading") {
       $class = "bg-success";
@@ -87,7 +87,7 @@ class logs {
   private function displayRow($array = null) {
     //$string = 'Some text [mealUID:123] here';
     $string = $log['description'];
-    $patternArray['/\[meterUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=node&meterUID=$1\" class=\"text-decoration-none\">[meterUID:$1]</a></code>";
+    $patternArray['/\[nodeUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=node&nodeUID=$1\" class=\"text-decoration-none\">[nodeUID:$1]</a></code>";
     $patternArray['/\[readingUID:([0-9]+)\]/'] = "<code>[readingUID:$1]</code>";
     //$patternArray['/\[bookingUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=booking&bookingUID=$1\" class=\"text-decoration-none\">[bookingUID:$1]</a></code>";
     $patternArray['/\[locationUID:([0-9]+)\]/'] = "<code><a href=\"index.php?n=location&locationUID=$1\" class=\"text-decoration-none\">[locationUID:$1]</a></code>";

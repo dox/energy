@@ -1,6 +1,6 @@
 <?php
-class meter {
-  protected static $table_name = "meters";
+class node {
+  protected static $table_name = "nodes";
 
   public $uid;
   public $name;
@@ -17,13 +17,13 @@ class meter {
   public $supplier;
   public $account_no;
 
-  function __construct($meterUID = null) {
+  function __construct($nodeUID = null) {
 
     global $db;
-		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . $meterUID . "'";
-		$meter = $db->query($sql)->fetchArray();
+		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . $nodeUID . "'";
+		$node = $db->query($sql)->fetchArray();
 
-		foreach ($meter AS $key => $value) {
+		foreach ($node AS $key => $value) {
 			$this->$key = $value;
 		}
   }
@@ -38,7 +38,7 @@ class meter {
     global $db;
 
     $sql  = "SELECT reading1 FROM readings";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
@@ -119,7 +119,7 @@ class meter {
     }
 
     $sql  = "SELECT reading1 FROM readings";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " AND YEAR(date) = '" . date('Y', strtotime($date)) . "'";
     $sql .= " AND MONTH(date) = '" . date('m', strtotime($date)) . "'";
     $sql .= " ORDER BY date DESC";
@@ -146,7 +146,7 @@ class meter {
     }
 
     $sql  = "SELECT reading1 FROM readings";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " AND YEAR(date) = '" . $year . "'";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
@@ -167,10 +167,10 @@ class meter {
   public function consumptionBetweenTwoDates($dateFrom = null, $dateTo = null) {
     global $db;
 
-    $dateFromSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) >= '" . $dateFrom . "' AND DATE(date) <= '" . $dateTo . "' ORDER BY date ASC LIMIT 1";
+    $dateFromSQL = "SELECT reading1 FROM readings WHERE node = '" . $this->uid . "' AND DATE(date) >= '" . $dateFrom . "' AND DATE(date) <= '" . $dateTo . "' ORDER BY date ASC LIMIT 1";
     $dateFromReading = $db->query($dateFromSQL)->fetchAll()[0]['reading1'];
 
-    $dateToSQL = "SELECT reading1 FROM readings WHERE meter = '" . $this->uid . "' AND DATE(date) <= '" . $dateTo . "' AND DATE(date) >= '" . $dateFrom . "' ORDER BY date DESC LIMIT 1";
+    $dateToSQL = "SELECT reading1 FROM readings WHERE node = '" . $this->uid . "' AND DATE(date) <= '" . $dateTo . "' AND DATE(date) >= '" . $dateFrom . "' ORDER BY date DESC LIMIT 1";
     $dateToReading = $db->query($dateToSQL)->fetchAll()[0]['reading1'];
 
     $difference = $dateToReading - $dateFromReading;
@@ -235,19 +235,19 @@ class meter {
   public function projectedConsumptionForRemainderOfYear() {
     global $db;
 
-    $metersFirstReading = $this->getFirstReading()['reading1'];
-    $metersLastReading = $this->getMostRecentReading()['reading1'];
-    $metersTotalConsumption = $metersLastReading - $metersFirstReading;
+    $nodesFirstReading = $this->getFirstReading()['reading1'];
+    $nodesLastReading = $this->getMostRecentReading()['reading1'];
+    $nodesTotalConsumption = $nodesLastReading - $nodesFirstReading;
 
     $daysLeftInYear = 365 - date('z');
 
-    $metersFirstDate = date('Y-m-d', strtotime($this->getFirstReading()['date']));
-    $metersLastDate = date('Y-m-d', strtotime($this->getMostRecentReading()['date']));
-    $metersDurationSeconds = abs(strtotime($metersLastDate) - strtotime($metersFirstDate));
-    $metersDurationDays = round($metersDurationSeconds / (60 * 60 * 24));
-    $metersAverageConsumptionDaily = round($metersTotalConsumption / $metersDurationDays, 2);
+    $nodesFirstDate = date('Y-m-d', strtotime($this->getFirstReading()['date']));
+    $nodesLastDate = date('Y-m-d', strtotime($this->getMostRecentReading()['date']));
+    $nodesDurationSeconds = abs(strtotime($nodesLastDate) - strtotime($nodesFirstDate));
+    $nodesDurationDays = round($nodesDurationSeconds / (60 * 60 * 24));
+    $nodesAverageConsumptionDaily = round($nodesTotalConsumption / $nodesDurationDays, 2);
 
-    $projectedConsumption = $metersAverageConsumptionDaily * $daysLeftInYear;
+    $projectedConsumption = $nodesAverageConsumptionDaily * $daysLeftInYear;
     //$projectedAdditionalConsumption = $projectedConsumption - $this->consumptionByYear()[date('Y')];
 
     return $projectedConsumption;
@@ -263,7 +263,7 @@ class meter {
     return $return;
   }
 
-  public function meterTypeBadge() {
+  public function nodeTypeBadge() {
     if ($this->type == "Gas") {
   		$class = "bg-warning";
       $iconSymbol = "gas";
@@ -291,7 +291,7 @@ class meter {
 
   public function displayImage() {
     if (isset($this->photograph)) {
-      $output = "<img src=\"uploads/" . $this->photograph . "\" class=\"rounded img-fluid w-100 mb-4\" alt=\"Image of utlity meter\">";
+      $output = "<img src=\"uploads/" . $this->photograph . "\" class=\"rounded img-fluid w-100 mb-4\" alt=\"Image of utlity node\">";
     } else {
       $output = "";
     }
@@ -325,9 +325,9 @@ class meter {
 
     $update = $db->query($sql);
 
-    $logArray['category'] = "meter";
+    $logArray['category'] = "node";
     $logArray['type'] = "success";
-    $logArray['value'] = "[meterUID:" . $this->uid . "] updated successfully";
+    $logArray['value'] = "[nodeUID:" . $this->uid . "] updated successfully";
     $logsClass->create($logArray);
 
     return $update;
@@ -339,7 +339,7 @@ class meter {
     $thisUID = $this->uid;
 
     $sql1  = "DELETE FROM readings";
-    $sql1 .= " WHERE meter = '" . $this->uid . "'";
+    $sql1 .= " WHERE node = '" . $this->uid . "'";
 
     $deleteReadings = $db->query($sql1);
 
@@ -349,14 +349,14 @@ class meter {
     $sql2 .= " WHERE uid = '" . $this->uid . "' ";
     $sql2 .= " LIMIT 1";
 
-    $deleteMeter = $db->query($sql2);
+    $deleteNode = $db->query($sql2);
 
-    $logArray['category'] = "meter";
+    $logArray['category'] = "node";
     $logArray['type'] = "warning";
-    $logArray['value'] = "[meterUID:" . $thisUID . "] deleted successfully";
+    $logArray['value'] = "[nodeUID:" . $thisUID . "] deleted successfully";
     $logsClass->create($logArray);
 
-    return $deleteMeter;
+    return $deleteNode;
   }
 
   public function geoLocation() {
@@ -388,12 +388,12 @@ class meter {
 
         $logArray['category'] = "file";
     		$logArray['type'] = "success";
-    		$logArray['value'] = $file . " file deleted successfully from [meterUID:" . $this->uid . "]";
+    		$logArray['value'] = $file . " file deleted successfully from [nodeUID:" . $this->uid . "]";
     		$logsClass->create($logArray);
       } else {
         $logArray['category'] = "file";
     		$logArray['type'] = "error";
-    		$logArray['value'] = $file . " file did not exist to delete from [meterUID:" . $this->uid . "]";
+    		$logArray['value'] = $file . " file did not exist to delete from [nodeUID:" . $this->uid . "]";
     		$logsClass->create($logArray);
       }
     }
@@ -403,7 +403,7 @@ class meter {
     global $db;
 
     $sql  = "SELECT * FROM readings ";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
@@ -429,7 +429,7 @@ class meter {
     global $db;
 
     $sql  = "SELECT * FROM readings ";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1, 1";
 
@@ -475,7 +475,7 @@ class meter {
     }
 
     $sql  = "SELECT * FROM readings ";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " AND YEAR(date) = '" . date('Y', strtotime($date)) . "' ";
     $sql .= " AND MONTH(date) = '" . date('m', strtotime($date)) . "' ";
     $sql .= " ORDER BY reading1 DESC";
@@ -507,7 +507,7 @@ class meter {
     global $db;
 
     $sql  = "SELECT * FROM readings ";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " AND YEAR(date) = '" . $date . "' ";
     $sql .= " ORDER BY reading1 DESC";
     $sql .= " LIMIT 1";
@@ -560,7 +560,7 @@ class meter {
     global $db;
 
     $sql  = "SELECT * FROM readings ";
-    $sql .= " WHERE meter = '" . $this->uid . "' ";
+    $sql .= " WHERE node = '" . $this->uid . "' ";
     //$sql .= " AND date > '" . date('Y-m-d', strtotime('3 years ago')) . "' ";
     $sql .= " ORDER BY date ASC";
     $sql .= " LIMIT 1";
@@ -580,7 +580,7 @@ class meter {
   public function fetchReadingsAll() {
     $readingsClass = new readings();
 
-    $readings = $readingsClass->meter_all_readings($this->uid);
+    $readings = $readingsClass->node_all_readings($this->uid);
 
     return $readings;
   }

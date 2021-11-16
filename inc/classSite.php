@@ -14,11 +14,11 @@ class site {
   public function highestReadingsByMonth($type = null) {
 	global $db;
 
-	$meters = $this->allNodesByType($type);
+	$nodes = $this->allNodesByType($type);
 
-	foreach ($meters AS $meter) {
-	  $meter = new meter($meter['uid']);
-	  $readingsByMonth = $meter->highestReadingsByMonth();
+	foreach ($nodes AS $node) {
+	  $node = new node($node['uid']);
+	  $readingsByMonth = $node->highestReadingsByMonth();
 
 	  foreach ($readingsByMonth AS $reading => $value) {
 		$maxReading[$reading] = $value;
@@ -64,12 +64,12 @@ class site {
 	$previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
 
 	// get this month's and previous months readings
-	$meters = $this->allNodesByType($type);
+	$nodes = $this->allNodesByType($type);
 
 	$totalConsumption = 0;
-	foreach ($meters AS $meter) {
-	  $meter = new meter($meter['uid']);
-	  $totalConsumption = $totalConsumption + $meter->consumptionForMonth($date);
+	foreach ($nodes AS $node) {
+	  $node = new node($node['uid']);
+	  $totalConsumption = $totalConsumption + $node->consumptionForMonth($date);
 	}
 
 	// check in case the difference is a negative value (it shouldn't be!)
@@ -89,13 +89,13 @@ class site {
 	  $sqlEnabled = " WHERE enabled = '1' ";
 	}
 
-	$sql  = "SELECT * FROM meters";
+	$sql  = "SELECT * FROM nodes";
 	$sql .= $sqlEnabled;
 	$sql .= " ORDER BY uid DESC";
 
-	$meters = $db->query($sql)->fetchAll();
+	$nodes = $db->query($sql)->fetchAll();
 
-	return $meters;
+	return $nodes;
   }
 
   public function allNodesByType($type = null, $enabledDisabled = "enabled") {
@@ -107,14 +107,14 @@ class site {
 	  $sqlEnabled = " AND enabled = '1' ";
 	}
 
-	$sql  = "SELECT * FROM meters";
+	$sql  = "SELECT * FROM nodes";
 	$sql .= " WHERE type = '" . $type . "' ";
 	$sql .= $sqlEnabled;
 	$sql .= " ORDER BY uid DESC";
 
-	$meters = $db->query($sql)->fetchAll();
+	$nodes = $db->query($sql)->fetchAll();
 
-	return $meters;
+	return $nodes;
   }
   
   public function co2BetweenDatesByMonth($dateFrom = null, $dateTo = null) {
@@ -143,6 +143,17 @@ class site {
 	  }
 	  
 	  return $totalCO2;
+  }
+  
+  public function geoMarkersOfNodes() {
+	  $nodes = nodes::all();
+	  
+	  foreach ($nodes AS $node) {
+		  $node = new node($node['uid']);
+		  $array[] = "['" . $node->cleanName() . "', " . $node->geoLocation() . "]";
+	  }
+	  
+	  return $array;
   }
 }
 ?>
