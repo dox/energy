@@ -215,14 +215,29 @@ if ($_SESSION['logon'] == true) {
 				</div>
 				<div class="card-body">
 					<ul class="list-group list-group-flush list my--3">
-						<li class="list-group-item px-0">Name, Location, Type, Unit, Photograph, Serial, MPRN, Retention, billed, enabled, geo, supplier, account_no, address</li>
+						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo $node->name;?></li>
+						<li class="list-group-item px-0"><strong>Location:</strong> <?php echo $node->location;?></li>
+						<li class="list-group-item px-0"><strong>Type:</strong> <?php echo $node->type . " / " . $node->unit;?></li>
+						<li class="list-group-item px-0"><strong>Photograph:</strong> <?php echo $node->photograph;?></li>
+						
+						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->retention_days;?></li>
+						
+						<li class="list-group-item px-0"><strong>Enabled:</strong> <?php echo $node->enabled;?></li>
+						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo $node->geo;?></li>
+						
+						<?php
+						if ($_SESSION['logon'] == true) {
+						?>
+						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo $node->serial;?></li>
+						<li class="list-group-item px-0"><strong>MPRN:</strong> <?php echo $node->mprn;?></li>
+						<li class="list-group-item px-0"><strong>Billed to Tennant:</strong> <?php echo $node->billed;?></li>
+						<li class="list-group-item px-0"><strong>Supplier:</strong> <?php echo $node->supplier;?></li>
+						<li class="list-group-item px-0"><strong>Account No:</strong> <?php echo $node->account_no;?></li>
+						<li class="list-group-item px-0"><strong>Address:</strong> <?php echo $node->address;?></li>
+						<?php
+						}
+						?>
 					</ul>
-					
-					<?php
-					if ($_SESSION['logon'] == true) {
-						printArray($node);
-					}
-					?>
 				</div>
 			</div>
 		</div>

@@ -16,6 +16,7 @@ class node {
   public $address;
   public $supplier;
   public $account_no;
+  public $retention_days;
 
   function __construct($nodeUID = null) {
 
