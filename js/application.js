@@ -5,19 +5,6 @@ function toggleHiddenMeters() {
   });
 }
 
-
-document.getElementById("download-monthly").addEventListener('click', function(){
-     /*Get image of canvas element*/
-     var url_base64jp = document.getElementById("monthlyConsumption").toDataURL("image/jpg");
-     /*get download button (tag: <a></a>) */
-     var a =  document.getElementById("download-monthly");
-     /*insert chart image url to download button (tag: <a></a>) */
-     a.href = url_base64jp;
-});
-
-
-
-
 // below this line needs checking for v2
 
 
@@ -79,117 +66,7 @@ function purgeOldLogs() {
   }
 }
 
-function nodeAdd() {
-  event.preventDefault();
 
-  var name = document.getElementById('name').value;
-  var location = document.getElementById('location').value;
-  var type = document.getElementById('type').value;
-  var unit = document.getElementById('unit').value;
-  var serial = document.getElementById('serial').value;
-  var mprn = document.getElementById('mprn').value;
-  var billed = document.getElementById('billed').checked;
-  var retention_days = document.getElementById('retention_days').value;
-  var enabled = document.getElementById('enabled').checked;
-  var geo = document.getElementById('geo').value;
-  var supplier = document.getElementById('supplier').value;
-  var account_no = document.getElementById('account_no').value;
-  var address = document.getElementById('address').value;
-
-  var formData = new FormData();
-
-  formData.append("name", name);
-  formData.append("location", location);
-  formData.append("type", type);
-  formData.append("unit", unit);
-  formData.append("serial", serial);
-  formData.append("mprn", mprn);
-  formData.append("billed", billed);
-  formData.append("retention_days", retention_days);
-  formData.append("enabled", enabled);
-  formData.append("geo", geo);
-  formData.append("supplier", supplier);
-  formData.append("account_no", account_no);
-  formData.append("address", address);
-
-  var request = new XMLHttpRequest();
-
-  request.open("POST", "../actions/node_add.php", true);
-  request.send(formData);
-
-  // 4. This will be called after the response is received
-  request.onload = function() {
-    if (request.status != 200) { // analyze HTTP status of the response
-      alert("Something went wrong.  Please refresh this page and try again.");
-      alert(`Error ${request.status}: ${request.statusText}`); // e.g. 404: Not Found
-    } else {
-      window.location.href = "index.php?n=nodes";
-    }
-  }
-
-  request.onerror = function() {
-    alert("Request failed");
-  };
-
-  return false;
-}
-
-function nodeEdit() {
-  event.preventDefault();
-
-  var uid = document.getElementById('uid').value;
-  var name = document.getElementById('name').value;
-  var location = document.getElementById('location').value;
-  var type = document.getElementById('type').value;
-  var unit = document.getElementById('unit').value;
-  var serial = document.getElementById('serial').value;
-  var mprn = document.getElementById('mprn').value;
-  var billed = document.getElementById('billed').checked;
-  var retention_days = document.getElementById('retention_days').value;
-  var enabled = document.getElementById('enabled').checked;
-  var geo = document.getElementById('geo').value;
-  var supplier = document.getElementById('supplier').value;
-  var account_no = document.getElementById('account_no').value;
-  var address = document.getElementById('address').value;
-
-  var formData = new FormData();
-
-  formData.append("uid", uid);
-  formData.append("name", name);
-  formData.append("location", location);
-  formData.append("type", type);
-  formData.append("unit", unit);
-  formData.append("serial", serial);
-  formData.append("mprn", mprn);
-  formData.append("billed", billed);
-  formData.append("retention_days", retention_days);
-  formData.append("enabled", enabled);
-  formData.append("geo", geo);
-  formData.append("supplier", supplier);
-  formData.append("account_no", account_no);
-  formData.append("address", address);
-
-  var request = new XMLHttpRequest();
-
-  request.open("POST", "../actions/node_edit.php", true);
-  request.send(formData);
-
-  // 4. This will be called after the response is received
-  request.onload = function() {
-    if (request.status != 200) { // analyze HTTP status of the response
-      alert("Something went wrong.  Please refresh this page and try again.");
-      alert(`Error ${request.status}: ${request.statusText}`); // e.g. 404: Not Found
-    } else {
-      window.location.href = "index.php?n=node_edit&nodeUID="+uid;
-    }
-  }
-
-  request.onerror = function() {
-    alert("Request failed");
-  };
-
-  return false;
-}
 
 function nodeDelete( elem ) {
   event.preventDefault();

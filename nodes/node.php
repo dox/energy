@@ -1,3 +1,5 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <?php
 $node = new node($_GET['nodeUID']);
 $location = new location($node->location);
@@ -200,6 +202,8 @@ if ($_SESSION['logon'] == true) {
 					</table>
 				</div>
 			</div>
+			
+			<div class="ct-chart-readings ct-double-octave ct-series-b"></div>
 		</div>
 		<div class="col-lg-6 col-12">
 			<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
@@ -294,6 +298,37 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 		}
 	});
 </script>
+<script>
+new Chartist.Line('.ct-chart-readings', {
+	series: [
+		{
+			name: 'series-1',
+			data: [
+				<?php
+				$readingsAll = array_reverse(readings::node_all_readings($node->uid, 1000), true);
+				
+				foreach ($readingsAll AS $reading) {
+					$date = date('U', strtotime($reading['date']));
+					$value = $reading['reading1'];
+					
+					$readingsArray[] = "{x: new Date(" . $date . "), y: " . $value . "}";
+				}
+				
+				echo implode(",", $readingsArray);
+				?>
+			]
+		}
+	],
+	fullWidth: true,
+	axisX: {
+		type: Chartist.FixedScaleAxis,
+		divisor: 50,
+		labelInterpolationFnc: function(value) {
+			return moment(value).format('MMM D');
+		}
+	}
+});
+</script>
 
 <script>
 	var map = L.map('map').setView([<?php echo $node->geoLocation(); ?>], 18);
@@ -323,4 +358,4 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 	}
 	
 	map.on('click', onMapClick);
-	</script>
+</script>
