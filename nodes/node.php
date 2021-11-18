@@ -292,7 +292,7 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 	};
 	
 	new Chartist.Bar('.ct-chart-yearly', data, {
-		low: <?php echo min($yearlyConsumption); ?>,
+		low: 0,
 		showArea: true,
 		fullWidth: true,
 		plugins: [

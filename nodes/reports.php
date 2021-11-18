@@ -5,10 +5,10 @@
 $locationsClass = new locations();
 $nodesClass = new nodes();
 
-if (isset($_POST['nodes_includeHidden'])) {
-  $enabled = "";
-} else {
+if ($_POST['nodes_includeHidden'] == 1) {
   $enabled = " AND enabled = '1'";
+} else {
+  $enabled = "";
 }
 
 $nodes = null;
@@ -17,7 +17,7 @@ foreach ($_POST['locations'] AS $locationUID) {
   //get each node in this site that matches types
   $sql = "SELECT * FROM nodes WHERE location = '" . $locationUID . "' " . $enabled . " AND type IN ('" . implode("','", $_POST['nodes']) . "');";
   $nodesByLocation = $db->query($sql)->fetchAll();
-
+  
   foreach ($nodesByLocation AS $node) {
 	$nodes[] = $node;
   }
@@ -57,20 +57,27 @@ foreach ($_POST['locations'] AS $locationUID) {
 				<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Locations</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li class="dropdown-item">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onClick="toggleCheckboxes(this)">
+									<label class="form-check-label" for="flexCheckDefault">Select All</label>
+								</div>
+							</li>
+							
+							<li><hr class="dropdown-divider"></li>
 							<?php
 							foreach ($locationsClass->all() AS $location) {
-								$elementName = "locations[]";
-								
 								$checked = "";
 								if (in_array($location['uid'], $_POST['locations'])) {
 									$checked = " checked ";
 								}
 								
-								$output  = "<li><a class=\"dropdown-item\" href=\"#\"><input class=\"form-check-input\" type=\"checkbox\" value=\"" . $location['uid'] . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
-								$output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
-								$output .= $location['name'];
-								$output .= "</label>";
-								$output .= "</a></li>";
+								$output  = "<li class=\"dropdown-item\">";
+								$output .= "<div class=\"form-check\">";
+								$output .= "<input class=\"form-check-input\" type=\"checkbox\" value=\"" . $location['uid'] . "\" name=\"locations[]\" id=\"loc-" . $location['uid'] . "\"" . $checked . ">";
+								$output .= "<label class=\"form-check-label\" for=\"loc-" . $location['uid'] . "\">" . $location['name'] . "</label>";
+								$output .= "</div>";
+								$output .= "</li>";
 								
 								echo $output;
 							}
@@ -78,9 +85,11 @@ foreach ($_POST['locations'] AS $locationUID) {
 							
 							<li><hr class="dropdown-divider"></li>
 							
-							<li><a class="dropdown-item" href="#">Select All (coming soon)</a></li>
-							<li><input class="form-check-input" type="checkbox" value="1" <?php if (isset($_POST['nodes_includeHidden']) && $_POST['nodes_includeHidden'] == "1") { echo " checked"; } ?> id="nodes_includeHidden" name="nodes_includeHidden">
-							<label class="form-check-label" for="flexCheckDefault">Include Hidden Nodes</label>
+							<li class="dropdown-item">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="1" <?php if (isset($_POST['nodes_includeHidden']) && $_POST['nodes_includeHidden'] == "1") { echo " checked"; } ?> id="nodes_includeHidden" name="nodes_includeHidden">
+									<label class="form-check-label" for="nodes_includeHidden">Include Hidden Nodes</label>
+								</div>
 							</li>
 						</ul>
 					</li>
@@ -88,22 +97,23 @@ foreach ($_POST['locations'] AS $locationUID) {
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Types</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<?php
+							
+							
 							foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
-								$elementName = "nodes[]";
-								
-								$checked = "";
-								if (in_array($nodeType, $_POST['nodes'])) {
-									$checked = " checked ";
+									$checked = "";
+									if (in_array($nodeType, $_POST['nodes'])) {
+										$checked = " checked ";
+									}
+									
+									$output  = "<li class=\"dropdown-item\">";
+									$output .= "<div class=\"form-check\">";
+									$output .= "<input class=\"form-check-input\" type=\"radio\" value=\"" . $nodeType . "\" name=\"nodes[]\" id=\"type-" . $nodeType . "\"" . $checked . ">";
+									$output .= "<label class=\"form-check-label\" for=\"type-" . $nodeType . "\">" . $nodeType . " (" . unitByType($nodeType) . ")</label>";
+									$output .= "</div>";
+									$output .= "</li>";
+									
+									echo $output;
 								}
-								
-								$output  = "<li><a class=\"dropdown-item\" href=\"#\"><input class=\"form-check-input\" type=\"radio\" value=\"" . $nodeType . "\" id=\"" . $elementName . "\" name=\"" . $elementName . "\"" . $checked . ">";
-								$output .= "<label class=\"form-check-label\" for=\"flexCheckDefault\">";
-								$output .= $nodeType . " (" . unitByType($nodeType) . ")";
-								$output .= "</label>";
-								$output .= "</a></li>";
-								
-								echo $output;
-							}
 							?>
 						</ul>
 					</li>
@@ -127,7 +137,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 			<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
 		</div>
 		<div class="col-md-4 col-12">
-			<div class="ct-chart-location ct-double-octave ct-series-g"></div>
+			<div class="ct-chart-location"></div>
 		</div>
 	</div>
 	
@@ -360,4 +370,13 @@ var responsiveOptions = [
 	];
 
 new Chartist.Pie('.ct-chart-location', data, options, responsiveOptions);
+
+
+
+function toggleCheckboxes(source) {
+	checkboxes = document.getElementsByName('locations[]');
+	for(var i=0, n=checkboxes.length;i<n;i++) {
+		checkboxes[i].checked = source.checked;
+	}
+}
 </script>
