@@ -140,7 +140,7 @@ $totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("un
 									$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
 									$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "(" . $location->name . ")</a></td>";
 									$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
-									$output .= "<td class=\"fw-bolder text-gray-500\">" . $reading['username'] . "</td>";
+									$output .= "<td class=\"fw-bolder text-gray-500\">" . showHide($reading['username']) . "</td>";
 									$output .= "";
 									$output .= "</tr>";
 									

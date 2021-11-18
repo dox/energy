@@ -54,7 +54,7 @@ if (isset($_GET['nodeUID'])) {
 					$output .= "<td class=\"fw-bolder text-gray-500\"><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . $node->type . "</td>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
-					$output .= "<td class=\"fw-bolder text-gray-500\">" . $reading['username'] . "</td>";
+					$output .= "<td class=\"fw-bolder text-gray-500\">" . showHide($reading['username']) . "</td>";
 					$output .= "";
 					$output .= "</tr>";
 					

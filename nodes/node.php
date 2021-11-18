@@ -191,7 +191,7 @@ if ($_SESSION['logon'] == true) {
 								$output  = "<tr>";
 								$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
 								$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
-								$output .= "<td class=\"fw-bolder text-gray-500\">" . $reading['username'] . "</td>";
+								$output .= "<td class=\"fw-bolder text-gray-500\">" . showHide($reading['username']) . "</td>";
 								$output .= "";
 								$output .= "</tr>";
 								
@@ -203,7 +203,7 @@ if ($_SESSION['logon'] == true) {
 				</div>
 			</div>
 			
-			<div class="ct-chart-readings ct-double-octave ct-series-b"></div>
+			<div class="ct-chart-readings ct-double-octave ct-series-b" style="height:450px"></div>
 		</div>
 		<div class="col-lg-6 col-12">
 			<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
@@ -211,7 +211,7 @@ if ($_SESSION['logon'] == true) {
 			<div class="card border-0 shadow">
 				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
 					<h2 class="fs-5 fw-bold mb-0">Node Details</h2>
-					<a href="#" class="btn btn-sm btn-primary">Edit</a>
+					<a href="index.php?n=node_edit&nodeUID=<?php echo $node->uid; ?>" class="btn btn-sm btn-primary">Edit</a>
 				</div>
 				<div class="card-body">
 					<ul class="list-group list-group-flush list my--3">
@@ -225,18 +225,12 @@ if ($_SESSION['logon'] == true) {
 						<li class="list-group-item px-0"><strong>Enabled:</strong> <?php echo $node->enabled;?></li>
 						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo $node->geo;?></li>
 						
-						<?php
-						if ($_SESSION['logon'] == true) {
-						?>
-						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo $node->serial;?></li>
-						<li class="list-group-item px-0"><strong>MPRN:</strong> <?php echo $node->mprn;?></li>
-						<li class="list-group-item px-0"><strong>Billed to Tennant:</strong> <?php echo $node->billed;?></li>
-						<li class="list-group-item px-0"><strong>Supplier:</strong> <?php echo $node->supplier;?></li>
-						<li class="list-group-item px-0"><strong>Account No:</strong> <?php echo $node->account_no;?></li>
-						<li class="list-group-item px-0"><strong>Address:</strong> <?php echo $node->address;?></li>
-						<?php
-						}
-						?>
+						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo showHide($node->serial);?></li>
+						<li class="list-group-item px-0"><strong>MPRN:</strong> <?php echo showHide($node->mprn);?></li>
+						<li class="list-group-item px-0"><strong>Billed to Tennant:</strong> <?php echo showHide($node->billed);?></li>
+						<li class="list-group-item px-0"><strong>Supplier:</strong> <?php echo showHide($node->supplier);?></li>
+						<li class="list-group-item px-0"><strong>Account No:</strong> <?php echo showHide($node->account_no);?></li>
+						<li class="list-group-item px-0"><strong>Address:</strong> <?php echo showHide($node->address);?></li>
 					</ul>
 				</div>
 			</div>
@@ -337,7 +331,6 @@ new Chartist.Line('.ct-chart-readings', {
 	fullWidth: true,
 	axisX: {
 		type: Chartist.FixedScaleAxis,
-		divisor: 50,
 		labelInterpolationFnc: function(value) {
 			return moment(value).format('MMM D');
 		}

@@ -95,47 +95,14 @@ function displayGraph($chartID = null) {
 	return $graphOutput;
 }
 
-function displayGraphJC($chartID = null, $data = null) {
-	foreach($data AS $date => $value) {
-		$dataArray["'" . $date . "'"] = $value;
+function showHide($string = null) {
+	if ($_SESSION['logon'] == true) {
+		$returnString = $string;
+	} else {
+		$returnString = "***";
 	}
-
-	$jsOutput  = "<script>";
-	$jsOutput .= "var ctx = document.getElementById('" . $chartID . "').getContext('2d');";
-	$jsOutput .= "var " . $chartID . " = new Chart(ctx, {";
-	$jsOutput .= "type: 'bar',";
-	$jsOutput .= "data: {";
-	$jsOutput .= "labels: [" . implode(",", array_keys($dataArray)) . "],";
-	$jsOutput .= "datasets: [{";
-	$jsOutput .= "label: 'Consumption',";
-	$jsOutput .= "data: [" . implode(",", $dataArray) . "],";
-	$jsOutput .= "backgroundColor: [";
-	$jsOutput .= "'rgba(153, 102, 255, 0.2)'";
-	$jsOutput .= "],";
-	$jsOutput .= "borderColor: [";
-	$jsOutput .= "'rgba(153, 102, 255, 1)'";
-	$jsOutput .= "],";
-	$jsOutput .= "borderWidth: 1";
-	$jsOutput .= "}]";
-	$jsOutput .= "},";
-	$jsOutput .= "options: {";
-	$jsOutput .= "plugins: {";
-	$jsOutput .= "legend: {";
-	$jsOutput .= "display: false";
-	$jsOutput .= "}";
-	$jsOutput .= "},";
-
-	$jsOutput .= "scales: {";
-	$jsOutput .= "y: {";
-	$jsOutput .= "beginAtZero: true";
-	$jsOutput .= "}";
-	$jsOutput .= "}";
-	$jsOutput .= "}";
-	$jsOutput .= "});";
-	$jsOutput .= "</script>";
-
-
-	return $jsOutput;
+	
+	return $returnString;
 }
 
 function unitByType($type = null) {
