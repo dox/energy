@@ -12,7 +12,11 @@
     <label for="inputPassword" class="visually-hidden">Password</label>
     <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
     <button class="btn btn-lg btn-primary w-100" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted text-center"><a href="<?php echo reset_url; ?>">Forgot your password?</a></p>
+    <?php
+    if (reset_url != null) {
+      echo "<p class=\"mt-5 mb-3 text-muted text-center\"><a href=\"" . reset_url . "\">Forgot your password?</a></p>";
+    }
+    ?>
   </form>
 </div>
 
