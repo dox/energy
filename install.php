@@ -3,20 +3,14 @@ include_once("inc/include.php");
 
 if (isset($_POST['install_attempt'])) {
   $filename = "sql_import.sql";
-
+  
   if (!file_exists($filename)) {
 	  die('mySQL import file does not exist!');
   }
-
-  clearstatcache();
-
-  $handle = fopen($filename, "r") or die("Can't open mySQL import file");
-  while (($line = fgets($handle)) !== false) {
-	//echo $line . "<br />";
-	$database->query($line);
-  }
-
-  fclose($handle);
+  
+  $command = "mysql --user='" . db_username . "' --password='" . db_password . "' -h '" . db_host . "' -D '" . db_name . "' < " . $filename;
+  
+  $output = shell_exec($command);
 
   echo "Install complete.  Please visit your site.";
   exit;
@@ -29,7 +23,7 @@ if (isset($_POST['install_attempt'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="Andrew Breakspear">
-  <title>Zendesk Scheduler: Installer</title>
+  <title>energy: Installer</title>
 
   <!-- Bootstrap core CSS/JS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -63,7 +57,7 @@ if (isset($_POST['install_attempt'])) {
 	<!-- CHECK FOR PRE-EXISTING INSTALL -->
 	<?php
 	  $sql  = "SHOW tables";
-	  $tables = $db->query($sql);
+	  $tables = $db->query($sql)->fetchAll();
 
 	if (count($tables) == 0) {
 	  $content = "<strong>TABLES</strong> Database has no tables (which is good!).  Ready to install";
