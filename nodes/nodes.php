@@ -13,7 +13,7 @@ if (isset($_POST['name'])) {
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
       <div class="dropdown-menu dashboard-dropdown">
-        <a class="dropdown-item me-2" href="#">
+        <a class="dropdown-item me-2" href="index.php?n=node_add">
           <span class="sidebar-icon">
             <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
           </span> Add New Node
