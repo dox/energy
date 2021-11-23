@@ -141,21 +141,12 @@ $locationUID = $_GET['locationUID'];
 
 
 <script>
-var map = L.map('map').setView([<?php echo ""; ?>], 18);
+var map = L.map('map').setView([<?php echo $settingsClass->value("site_geolocation"); ?>], 18);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-<?php
-if (isset($node->geo)) {
-  $output  = "L.marker([" . $node->geoLocation() . "]).addTo(map)";
-  $output .= ".bindPopup('" . escape($node->name) . "')";
-  $output .= ".openPopup();";
-
-  echo $output;
-}
-?>
 var popup = L.popup();
 
 function onMapClick(e) {
