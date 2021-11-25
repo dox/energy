@@ -40,6 +40,7 @@ if (isset($_GET['nodeUID'])) {
 					<th class="border-bottom" scope="col">Type</th>
 					<th class="border-bottom" scope="col">Reading</th>
 					<th class="border-bottom" scope="col">Username</th>
+					<th class="border-bottom" scope="col"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -55,8 +56,16 @@ if (isset($_GET['nodeUID'])) {
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . $node->type . "</td>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
 					$output .= "<td class=\"fw-bolder text-gray-500\">" . showHide($reading['username']) . "</td>";
-					$output .= "";
+					
+					
+					if ($_SESSION['logon'] == true) {
+						$output .= "<td><a href=\"#\" class=\"text-muted\" id=\"" . $reading['uid'] . "\" onclick=\"deleteReading(this.id);\"><svg width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#delete\"></use></svg></a></td>";
+					} else {
+						$output .= "<td></td>";
+					}
+					
 					$output .= "</tr>";
+					
 					
 					echo $output;
 				}
@@ -66,3 +75,36 @@ if (isset($_GET['nodeUID'])) {
 	</div>
 </div>
 </div>
+
+<script>
+function deleteReading(this_id) {	
+	var isGood=confirm('Are you sure you want to delete this reading from the database?  This action cannot be undone!');
+	
+	if(isGood) {
+		var formData = new FormData();
+		
+		formData.append("readingUID", this_id);
+		
+		var request = new XMLHttpRequest();
+		
+		request.open("POST", "../actions/reading_delete.php", true);
+		request.send(formData);
+		
+		// 4. This will be called after the response is received
+		request.onload = function() {
+		  if (request.status != 200) { // analyze HTTP status of the response
+			alert("Something went wrong.  Please refresh this page and try again.");
+			alert(`Error ${request.status}: ${request.statusText}`); // e.g. 404: Not Found
+		  } else {
+			location.reload();
+		  }
+		}
+		
+		request.onerror = function() {
+		  alert("Request failed");
+		};
+		
+		return false;
+	}
+}
+</script>
