@@ -231,14 +231,17 @@ if ($_SESSION['logon'] == true) {
 				</div>
 				<div class="card-body">
 					<ul class="list-group list-group-flush list my--3">
-						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo $node->name;?></li>
-						<li class="list-group-item px-0"><strong>Location:</strong> <?php echo $node->location;?></li>
-						<li class="list-group-item px-0"><strong>Type:</strong> <?php echo $node->type . " / " . $node->unit;?></li>
-						<li class="list-group-item px-0"><strong>Photograph:</strong> <?php echo $node->photograph;?></li>
-						
-						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->retention_days;?></li>
-						
-						<li class="list-group-item px-0"><strong>Enabled:</strong> <?php echo $node->enabled;?></li>
+						<?php
+						if ($node->enabled == 1) {
+							$enabled = "<span class=\"btn btn-sm btn-outline-success float-end\">Enabled</span>";
+						} else {
+							$enabled = "<span class=\"btn btn-sm btn-outline-dark float-end\">Disabled</span>";
+						}
+						?>
+						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo $node->name . $enabled ?></li>
+						<li class="list-group-item px-0"><strong>Location:</strong> <?php echo $location->cleanName();?></li>
+						<li class="list-group-item px-0"><strong>Type / Units:</strong> <?php echo $node->type . " / " . $node->unit;?></li>
+						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->cleanRetention();?></li>
 						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo $node->geo;?></li>
 						
 						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo showHide($node->serial);?></li>

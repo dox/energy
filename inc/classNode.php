@@ -34,6 +34,20 @@ class node {
 
     return $cleanName;
   }
+  
+  public function cleanRetention($includeText = false) {
+    if ($this->retention == 0) {
+        $return = "&#8734;";
+    } else {
+        $return = $this->retention;
+    }
+    
+    if ($includeText == true) {
+      $return = $return . " days";
+    }
+    
+    return $return;
+  }
 
   public function currentReading() {
     global $db;
