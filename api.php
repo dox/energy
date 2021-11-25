@@ -1,4 +1,6 @@
 <?php
+// DON'T USE THIS YET!
+
 // API usage:
 // action [readingadd / meterread] * required
 // meterUID [numeric]

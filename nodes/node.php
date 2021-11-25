@@ -165,7 +165,7 @@ if ($_SESSION['logon'] == true) {
 <div class="container px-4 py-5">
 	<div class="row">
 		<div class="col-lg-6 col-12 mb-3">
-			<div class="card border-0 shadow">
+			<div class="card border-0 shadow mb-3">
 				<div class="card-header">
 					<div class="row align-items-center">
 						<div class="col">
@@ -201,12 +201,28 @@ if ($_SESSION['logon'] == true) {
 						</tbody>
 					</table>
 				</div>
+				
+				<div class="ct-chart-readings ct-double-octave ct-series-b" style="height:350px"></div>
 			</div>
 			
-			<div class="ct-chart-readings ct-double-octave ct-series-b" style="height:450px"></div>
+			<div class="card border-0 shadow">
+				<div class="card-body">
+					<?php echo $node->displayImage(); ?>
+					<input class="form-control" type="file" id="formFile">
+					<button type="submit" class="btn btn-primary mb-3">Upload</button>
+				</div>
+			</div>
+			
 		</div>
 		<div class="col-lg-6 col-12">
-			<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
+			<div class="card border-0 mb-3 shadow">
+				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
+					<h2 class="fs-5 fw-bold mb-0">Annual Consumption</h2>
+				</div>
+				<div class="card-body">
+					<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
+				</div>
+			</div>
 			
 			<div class="card border-0 shadow">
 				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
