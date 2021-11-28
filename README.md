@@ -3,7 +3,6 @@ A simple utility to record, review and report on utility meter readings
 
 A working, live example of this utility can be viewed at: http://readings.seh.ox.ac.uk
 
-
 ## Installation
 * Setup your webserver as you normally would (Apache with PHP and mySQL work well!)
 * cd to your web directory and run ```git clone https://github.com/dox/energy .```
@@ -16,3 +15,10 @@ A working, live example of this utility can be viewed at: http://readings.seh.ox
 
 ## Upgrading
 Upgrading is as simple as running ```git pull``` in the directory you created above.
+
+# Support
+https://www.paypal.me/andrewbreakspear?locale.x=en_GB
+
+Thanks for using some this tool (or others I've built)!  Your  sponsorship goes directly to allowing me to spend more time coding, and less time doing other things (like my day job, or ironing...)
+
+I'm not a company, and I'm not employed as a developer - so finding time to sit down and code can be hard sometimes.  I'd love to continue to develop (and support!) the tools I've written so far, and contributing in this way allows that to happen.
