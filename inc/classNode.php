@@ -391,16 +391,89 @@ class node {
 
     return $array;
   }
+  
+  public function uploadImage($FILE) {
+      global $db, $logsClass;
+      
+      $uploadOk = 1;
+      
+      $target_dir = "uploads/";
+      $target_file = $target_dir . basename($FILE["photograph"]["name"]);
+      $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+      
+      // Check if image file is a actual image or fake image
+      $check = getimagesize($FILE["photograph"]["tmp_name"]);
+      if($check !== false) {
+        $uploadOk = 1;
+      } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+      }
+      
+      // Check if file already exists
+      if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+      }
+      
+      // Check file size
+      if ($_FILES["photograph"]["size"] > 5000000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+      }
+      
+      // Allow certain file formats
+      if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+      && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+      }
+      
+      // Check if $uploadOk is set to 0 by an error
+      if ($uploadOk == 0) {
+       $logArray['category'] = "file";
+       $logArray['type'] = "warning";
+       $logArray['value'] = $target_file . " file failed to upload for [nodeUID:" . $this->uid . "]";
+       $logsClass->create($logArray);
+      // if everything is ok, try to upload file
+      } else {
+        if (move_uploaded_file($FILE["photograph"]["tmp_name"], $target_file)) {
+          $sql  = "UPDATE nodes SET photograph = '" . basename($FILE["photograph"]["name"]) . "' ";
+          $sql .= " WHERE uid = '" . $this->uid . "'";
+          $db->query($sql);
+          
+          $logArray['category'] = "file";
+          $logArray['type'] = "success";
+          $logArray['value'] = $target_file . " file uploaded successfully for [nodeUID:" . $this->uid . "]";
+          $logsClass->create($logArray);
+        } else {
+          echo "Sorry, there was an error uploading your file.";
+          
+          $logArray['category'] = "file";
+          $logArray['type'] = "warning";
+          $logArray['value'] = $target_file . " file failed to upload for [nodeUID:" . $this->uid . "]";
+          $logsClass->create($logArray);
+        }
+      }
+      
+      
+      
+      return true;
+    }
 
   public function deleteImage() {
-    global $logsClass;
-
+    global $db, $logsClass;
+    
     if (isset($this->photograph)) {
       $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $this->photograph;
 
       if (file_exists($file)) {
         unlink($file);
-
+        
+        $sql  = "UPDATE nodes SET photograph = null ";
+        $sql .= "WHERE uid = '" . $this->uid . "'";
+        $db->query($sql);
+        
         $logArray['category'] = "file";
     		$logArray['type'] = "success";
     		$logArray['value'] = $file . " file deleted successfully from [nodeUID:" . $this->uid . "]";

@@ -4,6 +4,16 @@
 $node = new node($_GET['nodeUID']);
 $location = new location($node->location);
 
+if (isset($_FILES['photograph']) && $_SESSION['logon'] == true) {
+	$node->uploadImage($_FILES);
+	$node = new node($_GET['nodeUID']);
+}
+
+if (isset($_POST['deletePhoto']) && $_SESSION['logon'] == true) {
+	$node->deleteImage();
+	$node = new node($_GET['nodeUID']);
+}
+
 $costUnit = $settingsClass->value("unit_cost_" . $node->type);
 $co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
@@ -207,9 +217,30 @@ if ($_SESSION['logon'] == true) {
 			
 			<div class="card border-0 shadow">
 				<div class="card-body">
-					<?php echo $node->displayImage(); ?>
-					<input class="form-control" type="file" id="formFile">
-					<button type="submit" class="btn btn-primary mb-3">Upload</button>
+					<?php echo $node->displayImage();
+					
+					if ($_SESSION['logon'] == true) {
+						if (empty($node->photograph)) {
+							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
+							$output .= "<div class=\"btn-group\" role=\"group\" aria-label=\"Photograph Upload\">";
+							$output .= "<input class=\"form-control\" type=\"file\" id=\"photograph\" name=\"photograph\">";
+							$output .= "<button type=\"submit\" class=\"btn btn-primary\">Upload</button>";
+							$output .= "</div>";
+							$output .= "</form>";
+						} else {
+							$output  = "<a href=\"" . $_SERVER[REQUEST_URI] . "&deletePhoto=true\" class=\"btn btn-warning\">Delete Photograph</a>";
+							
+							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
+							$output .= "<button type=\"submit\" class=\"btn btn-warning\">Delete Photograph</button>";
+							$output .= "<input type=\"hidden\" id=\"deletePhoto\" name=\"deletePhoto\" value=\"true\"/>";
+							$output .= "</form>";
+						}
+						
+						echo $output;
+					}
+					?>
+					
+					
 				</div>
 			</div>
 			
