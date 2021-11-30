@@ -2,15 +2,30 @@
 include_once("inc/include.php");
 
 if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
+
 	if ($ldap_connection->auth()->attempt($_POST['inputUsername'] . LDAP_ACCOUNT_SUFFIX, $_POST['inputPassword'], $stayAuthenticated = true)) {
 		// Successfully authenticated user.
-		$_SESSION['logon'] = true;
-		$_SESSION['username'] = strtoupper($_POST['inputUsername']);
+		$user = $ldap_connection->query()->where('samaccountname', '=', $_POST['inputUsername'])->firstOrFail(); //look up user
+		$userGroups = $user['memberof']; //get user's groups
 
-		$logArray['category'] = "logon";
-		$logArray['type'] = "success";
-		$logArray['value'] = $_SESSION['username'] . " logged on successfully";
-		$logsClass->create($logArray);
+		if (in_array(strtolower(LDAP_ALLOWED_DN), array_map('strtolower',$userGroups))) {
+			// User is in allowed group for logon
+			$_SESSION['logon'] = true;
+			$_SESSION['username'] = strtoupper($_POST['inputUsername']);
+		
+			$logArray['category'] = "logon";
+			$logArray['type'] = "success";
+			$logArray['value'] = $_SESSION['username'] . " logged on successfully";
+			$logsClass->create($logArray);
+		} else {
+			// User is not in correct group for logon
+			$logArray['category'] = "logon";
+			$logArray['type'] = "warning";
+			$logArray['value'] = $_POST['inputUsername'] . " failed to log on.  Not in correct group";
+			$logsClass->create($logArray);
+
+			session_destroy();
+		}
 
 	} else {
 		// Username or password is incorrect.
@@ -18,7 +33,7 @@ if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
 		$logArray['type'] = "warning";
 		$logArray['value'] = $_POST['inputUsername'] . " failed to log on.  Username or password incorrect";
 		$logsClass->create($logArray);
-
+		
 		session_destroy();
 	}
 }
