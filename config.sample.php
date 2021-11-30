@@ -19,4 +19,5 @@ define("LDAP_BIND_DN", "CN=some,OU=where,DC=ox,DC=ac,DC=uk");
 define("LDAP_BASE_DN", "DC=ox,DC=ac,DC=uk");
 define("LDAP_BIND_PASSWORD", "ldap-password");
 define("LDAP_ACCOUNT_SUFFIX", "@somewhere.ox.ac.uk");
+define("LDAP_ALLOWED_DN", 'CN=Groups,DC=ox,DC=ac,DC=uk');
 ?>
