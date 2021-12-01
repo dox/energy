@@ -23,31 +23,6 @@ $navbarArray['settings'] = array(
       "link" => "index.php?n=settings",
       "pages" => array()
 );
-/*
-$navbarArray['persons_all'] = array(
-  "title" => "Persons",
-  "icon" => "person",
-  "sublinks" => array(
-    array(
-      "title" => "Suspended",
-      "link" => "./index.php?n=persons_all&filter=suspended"
-    ),
-    array(
-      "title" => "Students",
-      "link" => "./index.php?n=persons_all&filter=students"
-    ),
-    array(
-      "title" => "Staff",
-      "link" => "./index.php?n=persons_all&filter=staff"
-    ),
-    array(
-      "title" => "All",
-      "link" => "./index.php?n=persons_all&filter=all"
-    )
-  )
-);
-*/
-
 ?>
 
 <header class="p-3 bg-dark text-white shadow">
@@ -86,7 +61,6 @@ $navbarArray['persons_all'] = array(
     </ul>
 
     <div class="text-end">
-    <!--<button type="button" class="btn btn-outline-light me-2">Login</button>-->
       <?php
       if (isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
         echo "<a href=\"index.php?logout=true\" class=\"btn btn-warning\">Log Off</a>";

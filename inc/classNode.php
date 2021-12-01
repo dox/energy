@@ -268,16 +268,6 @@ class node {
     return $projectedConsumption;
   }
 
-  public function displaySecurely($field = null) {
-    if ($_SESSION['logon'] == true) {
-      $return = $this->$field;
-    } else {
-      $return = "*******";
-    }
-
-    return $return;
-  }
-
   public function nodeTypeBadge() {
     if ($this->type == "Gas") {
   		$class = "bg-warning";
@@ -455,8 +445,6 @@ class node {
           $logsClass->create($logArray);
         }
       }
-      
-      
       
       return true;
     }

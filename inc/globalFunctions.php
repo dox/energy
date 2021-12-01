@@ -24,7 +24,7 @@ function escape($var) {
 }
 
 function autoPluralise ($singular, $plural, $count = 1) {
-	// fantasticly clever function to return the correct plural of a word/count combo
+	// fantastically clever function to return the correct plural of a word/count combo
 	// Usage:	$singular	= single version of the word (e.g. 'Bus')
 	//       	$plural 	= plural version of the word (e.g. 'Busses')
 	//			$count		= the number you wish to work out the plural from (e.g. 2)
@@ -86,13 +86,6 @@ function howLongAgo($time = false) {
 		return "No readings";
 	}
 	return $return;
-}
-
-function displayGraph($chartID = null) {
-	$graphOutput  = "<canvas id=\"" . $chartID . "\" width=\"100\" height=\"30\"></canvas>";
-	$graphOutput .= "";
-
-	return $graphOutput;
 }
 
 function showHide($string = null) {
