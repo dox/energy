@@ -405,15 +405,4 @@ new Chartist.Line('.ct-chart-readings', {
 	}
 	?>
 	var popup = L.popup();
-	
-	function onMapClick(e) {
-	  popup
-		.setLatLng(e.latlng)
-		.setContent("New Node Location: " + e.latlng.toString())
-		.openOn(map);
-	
-	  document.getElementById("geo").value = e.latlng.lat + ',' + e.latlng.lng;
-	}
-	
-	map.on('click', onMapClick);
 </script>
