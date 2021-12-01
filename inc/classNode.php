@@ -308,7 +308,7 @@ class node {
     if (isset($this->photograph)) {
       $output = "<img src=\"uploads/" . $this->photograph . "\" class=\"rounded img-fluid w-100 mb-4\" alt=\"Image of utlity node\">";
     } else {
-      $output = "";
+      $output = "<div class=\"d-grid gap-2\"><span class=\"btn btn-sm btn-outline-secondary\">No photograph uploaded</span></div>";
     }
 
     return $output;
