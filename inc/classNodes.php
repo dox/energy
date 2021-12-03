@@ -84,8 +84,8 @@ class nodes extends node {
       $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
       $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
       $output .= "<td>" . howLongAgo($node->mostRecentReadingDate()) . "</td>";
-      $output .= "<td>" . $node->displaySecurely('serial') . "</td>";
-      $output .= "<td>" . $node->displaySecurely('mprn') . "</td>";
+      $output .= "<td>" . showHide($node->serial) . "</td>";
+      $output .= "<td>" . showHide($node->mprn) . "</td>";
       $output .= "</tr>";
     }
 
