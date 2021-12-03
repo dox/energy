@@ -17,6 +17,7 @@ class node {
   public $supplier;
   public $account_no;
   public $retention_days;
+  public $cache;
 
   function __construct($nodeUID = null) {
 
@@ -76,27 +77,36 @@ class node {
     if ($date == null) {
       $date = date('Y-m-d');
     }
-
-    $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
-
-    // get this month's and previous months readings
-    $thisMonthReading = $this->readingForMonth($date);
-    $previousMonthReading = $this->readingForMonth($previousMonthDate);
-
-    // check if there is actually a reading for this/previous month
-    if ($thisMonthReading == 0 || $previousMonthReading == 0) {
-      $difference = 0;
+    
+    $cacheValue = $this->getFromCache($date);
+    if ($cacheValue != false) {
+      return $cacheValue;
     } else {
-      // the difference between the 2 readings is the consumption
-      $difference = $thisMonthReading - $previousMonthReading;
+      $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
+      
+          // get this month's and previous months readings
+          $thisMonthReading = $this->readingForMonth($date);
+          $previousMonthReading = $this->readingForMonth($previousMonthDate);
+      
+          // check if there is actually a reading for this/previous month
+          if ($thisMonthReading == 0 || $previousMonthReading == 0) {
+            $difference = 0;
+          } else {
+            // the difference between the 2 readings is the consumption
+            $difference = $thisMonthReading - $previousMonthReading;
+          }
+      
+          // check in case the difference is a negative value (it shouldn't be!)
+          if ($difference < 0) {
+            $difference = 0;
+          }
+          
+          $this->cache($date, $difference);
+      
+          return $difference;
     }
 
-    // check in case the difference is a negative value (it shouldn't be!)
-    if ($difference < 0) {
-      $difference = 0;
-    }
-
-    return $difference;
+    
   }
 
   public function consumptionForYear($year = null) {
@@ -525,6 +535,52 @@ class node {
 
   public function previousReadingValue() {
     return $this->getPreviousReading()['reading1'];
+  }
+  
+  public function cache($date, $value) {
+    global $db;
+    
+    $sql  = "SELECT cache FROM " . self::$table_name;
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+    
+    $currentCache = $db->query($sql)->fetchArray(); 
+  
+    $currentCache = json_decode($currentCache['cache'], TRUE);
+    $currentCache[$date] = $value;
+    
+    $sql  = "UPDATE " . self::$table_name;
+    $sql .= " SET cache = '" . json_encode($currentCache) . "' ";
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+    
+    $db->query($sql);
+    
+    return true;
+  }
+  
+  public function getFromCache($date) {
+    $cache = json_decode($this->cache);
+    //printArray($cache);
+    
+    if (isset($cache->$date)) {
+      return $cache->$date;
+    } else {
+      return false;
+    }
+  }
+  
+  public function expireCache() {
+    global $db;
+    
+    $sql  = "UPDATE " . self::$table_name;
+    $sql .= " SET cache = NULL ";
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+    
+    $db->query($sql);
+    
+    return true;
   }
 
 

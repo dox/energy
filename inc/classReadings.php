@@ -67,6 +67,9 @@ class readings {
 
   public function create($nodeUID = null, $reading1 = null) {
     global $db, $logsClass;
+    
+    $node = new node($nodeUID);
+    $location = new location($node->location);
 
     if (isset($_SESSION['username'])) {
       $username = $_SESSION['username'];
@@ -77,8 +80,10 @@ class readings {
     $sql  = "INSERT INTO " . self::$table_name;
     $sql .= " (node, date, reading1, username) ";
     $sql .= " VALUES('" . $nodeUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $username . "')";
-
+    
     $insert = $db->query($sql);
+    $node->expireCache();
+    $location->expireCache();
 
     $logArray['category'] = "reading";
     $logArray['type'] = "success";

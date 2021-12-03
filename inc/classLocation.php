@@ -6,6 +6,7 @@ class location {
   public $name;
   public $description;
   public $geo;
+  public $cache;
 
   function __construct($locationUID = null) {
 
@@ -103,24 +104,77 @@ class location {
     if ($date == null) {
       $date = date('Y-m-d');
     }
-
-    $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
-
-    // get this month's and previous months readings
-    $nodes = $this->allNodesByType($type);
-
-    $totalConsumption = 0;
-    foreach ($nodes AS $node) {
-      $node = new node($node['uid']);
-      $totalConsumption = $totalConsumption + $node->consumptionForMonth($date);
+    
+    $cacheValue = $this->getFromCache($type, $date);
+    if ($cacheValue != false) {
+      return $cacheValue;
+    } else {
+      $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
+      
+          // get this month's and previous months readings
+          $nodes = $this->allNodesByType($type);
+      
+          $totalConsumption = 0;
+          foreach ($nodes AS $node) {
+            $node = new node($node['uid']);
+            $totalConsumption = $totalConsumption + $node->consumptionForMonth($date);
+          }
+      
+          // check in case the difference is a negative value (it shouldn't be!)
+          if ($totalConsumption < 0) {
+            $totalConsumption = 0;
+          }
+          
+          $this->cache($type, $date, $totalConsumption);
+      
+          return $totalConsumption;
     }
+  }
+  
+  public function cache($type, $date, $value) {
+    global $db;
+    
+    $sql  = "SELECT cache FROM " . self::$table_name;
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+    
+    $currentCache = $db->query($sql)->fetchArray(); 
 
-    // check in case the difference is a negative value (it shouldn't be!)
-    if ($totalConsumption < 0) {
-      $totalConsumption = 0;
+    $currentCache = json_decode($currentCache['cache'], TRUE);
+    $currentCache[$type][$date] = $value;
+    
+    $sql  = "UPDATE " . self::$table_name;
+    $sql .= " SET cache = '" . json_encode($currentCache) . "' ";
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+    
+    $db->query($sql);
+    
+    return true;
+  }
+  
+  public function getFromCache($type, $date) {
+    $cache = json_decode($this->cache);
+    //printArray($cache);
+    
+    if (isset($cache->$type->$date)) {
+      return $cache->$type->$date;
+    } else {
+      return false;
     }
-
-    return $totalConsumption;
+  }
+  
+  public function expireCache() {
+    global $db;
+    
+    $sql  = "UPDATE " . self::$table_name;
+    $sql .= " SET cache = NULL ";
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+    
+    $db->query($sql);
+    
+    return true;
   }
 
   public function update($array = null) {
