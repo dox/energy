@@ -19,6 +19,6 @@ Upgrading is as simple as running ```git pull``` in the directory you created ab
 # Support
 https://www.paypal.me/andrewbreakspear?locale.x=en_GB
 
-Thanks for using some this tool (or others I've built)!  Your  sponsorship goes directly to allowing me to spend more time coding, and less time doing other things (like my day job, or ironing...)
+Thanks for using this tool (or any of the others I've built)!  Your support/sponsorship goes directly to allowing me to spend more time coding, and less time doing other things (like my day job, or ironing...)
 
 I'm not a company, and I'm not employed as a developer - so finding time to sit down and code can be hard sometimes.  I'd love to continue to develop (and support!) the tools I've written so far, and contributing in this way allows that to happen.
