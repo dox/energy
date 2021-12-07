@@ -68,6 +68,33 @@ if ($_GET['type'] == "node") {
 	}
 	
 	$output = $nodeArray;
+} elseif ($_GET['type'] == "readings") {
+	if ($_GET['filter'] == "all") {
+		$readings = readings::all();
+	} else {
+		$readings = readings::node_all_readings($_GET['filter']);
+	}
+	
+	foreach ($readings AS $reading) {
+		$node = new node($reading['node']);
+		$location = new location($node->location);
+		
+		$nodeRow['uid'] = $reading['uid'];
+		$nodeRow['date'] = $reading['date'];
+		$nodeRow['node_uid'] = $reading['node'];
+		$nodeRow['node_name'] = $node->cleanName();
+		$nodeRow['location_uid'] = $location->uid;
+		$nodeRow['location'] = $location->cleanName();
+		$nodeRow['reading1'] = $reading['reading1'];
+		$nodeRow['node_unit'] = $node->unit;
+		$nodeRow['username'] = showHide($reading['username']);
+		$nodeRow['node_type'] = $node->type;
+		
+		$nodeArray[] = $nodeRow;
+	}
+	
+	$output = $nodeArray;
+	
 } else {
 	$output[0]  = array($_GET['type'] => "This export hasn't been created yet.  It's on the roadmap to be developed though");
 	$output[1] .= $_GET;

@@ -4,9 +4,11 @@ if (isset($_GET['nodeUID'])) {
 	$location = new location($node->location);
 	$pageTitle = "All readings for " . $location->name;
 	$readings = readings::node_all_readings($node->uid);
+	$exportLink = "export.php?type=readings&filter=" . $node->uid;
 } else {
 	$pageTitle = "All readings";
 	$readings = readings::all(100);
+	$exportLink = "export.php?type=readings&filter=all";
 }
 
 
@@ -17,7 +19,7 @@ if (isset($_GET['nodeUID'])) {
 		<div class="dropdown">
 			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
 			<div class="dropdown-menu dashboard-dropdown">
-				<a class="dropdown-item" href="export.php?type=readings&filter=all" target="_blank">
+				<a class="dropdown-item" href="<?php echo $exportLink; ?>" target="_blank">
 					<span class="sidebar-icon">
 						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
 					</span> Export Data
