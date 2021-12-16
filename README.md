@@ -8,8 +8,9 @@ A working, live example of this utility can be viewed at: http://readings.seh.ox
 * cd to your web directory and run ```git clone https://github.com/dox/energy .```
 * Then install (via composer) [ldaprecord](https://ldaprecord.com)
     * ```composer require directorytree/ldaprecord```
-* Create a database in mysql and include the host, database, username and password in config.php
-* Modify the inc/config.php file with your LDAP settings
+* If not already installed, install php-mysql
+* Create a database in mysql and include the host, database, username and password in config.php (copy from config.sample.php)
+* Modify the config.php file with your LDAP settings
 * Visit http://yourdomain/install.php and click 'CLICK HERE TO SETUP TABLES IN YOUR DATABASE'.  This will create the structure for the database
 * Check your site is up and running (it should be!)
 
