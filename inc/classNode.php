@@ -37,10 +37,11 @@ class node {
   }
   
   public function cleanRetention($includeText = false) {
-    if ($this->retention == 0) {
+    
+    if ($this->retention_days == 0) {
         $return = "&#8734;";
     } else {
-        $return = $this->retention;
+        $return = $this->retention_days;
     }
     
     if ($includeText == true) {

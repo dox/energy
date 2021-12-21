@@ -272,7 +272,7 @@ if ($_SESSION['logon'] == true) {
 						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo $node->name . $enabled ?></li>
 						<li class="list-group-item px-0"><strong>Location:</strong> <?php echo $location->cleanName();?></li>
 						<li class="list-group-item px-0"><strong>Type / Units:</strong> <?php echo $node->type . " / " . $node->unit;?></li>
-						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->cleanRetention();?></li>
+						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->cleanRetention(true);?></li>
 						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo $node->geo;?></li>
 						
 						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo showHide($node->serial);?></li>
