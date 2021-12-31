@@ -148,7 +148,7 @@ if (isset($_POST['uid'])) {
       <label for="billed" class="form-check-label">Enabled</label>
     </div>
   
-    <input type="hidden" id="geo" name="geo" value="<?php $node->geoLocation(); ?>">
+    <input type="hidden" id="geo" name="geo" value="<?php echo $node->geoLocation(); ?>">
     <div id="map" class="mb-3" style="width: 100%; height: 500px"></div>
   
     <div class="mb-3">
