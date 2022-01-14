@@ -4,7 +4,7 @@ class nodes extends node {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
-    $sql .= " ORDER BY uid DESC";
+    $sql .= " ORDER BY name ASC";
 
     $nodes = $db->query($sql)->fetchAll();
 
@@ -16,7 +16,7 @@ class nodes extends node {
 
     $sql  = "SELECT * FROM " . self::$table_name;
     $sql .= " WHERE enabled = 1";
-    $sql .= " ORDER BY uid DESC";
+    $sql .= " ORDER BY name ASC";
 
     $nodes = $db->query($sql)->fetchAll();
 

@@ -215,7 +215,7 @@ class location {
     $sql  = "SELECT * FROM nodes";
     $sql .= " WHERE location = '" . $this->uid . "' ";
     $sql .= $sqlEnabled;
-    $sql .= " ORDER BY uid DESC";
+    $sql .= " ORDER BY type ASC, name ASC";
 
     $nodes = $db->query($sql)->fetchAll();
 
@@ -235,7 +235,7 @@ class location {
     $sql .= " WHERE location = '" . $this->uid . "' ";
     $sql .= " AND type = '" . $type . "' ";
     $sql .= $sqlEnabled;
-    $sql .= " ORDER BY uid DESC";
+    $sql .= " ORDER BY name ASC";
 
     $nodes = $db->query($sql)->fetchAll();
 
