@@ -2,6 +2,7 @@
 $site = new site();
 $recentReadings = readings::all(5);
 
+$datePreviousFrom = date('Y-m-d', strtotime('24 months ago'));
 $dateFrom = date('Y-m-d', strtotime('12 months ago'));
 $dateTo = date('Y-m-d');
 
@@ -11,6 +12,9 @@ $monthlyConsumptionGas = array_reverse($site->consumptionBetweenDatesByMonth("ga
 $monthlyConsumptionWater = array_reverse($site->consumptionBetweenDatesByMonth("water"), true);
 
 $monthlyCO2 = $site->co2BetweenDatesByMonth();
+$monthlyCO2previous = $site->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
+
+$deltaCO2 = number_format(array_sum($monthlyCO2previous) / array_sum($monthlyCO2) * 100, 0);
 
 $totalCO2Electric = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_electric");
 $totalCO2Gas = array_sum($monthlyConsumptionGas) * $settingsClass->value("unit_co2e_gas");
@@ -24,19 +28,16 @@ $totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("un
 			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
 				<div class="d-block mb-3 mb-sm-0">
 					<div class="fs-5 fw-normal mb-2">CO&#8322; Emissions from Energy Usage</div>
+					
 					<h2 class="fs-3 fw-extrabold"><?php echo number_format(array_sum($monthlyCO2), 0) . " kg"; ?></h2>
+					
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
 						<span class="fas fa-angle-up text-success"></span>
-						<span class="text-success fw-bold">0%</span>
+						<span class="<?php if ($deltaCO2 <= 0) { echo "text-success"; } else { echo "text-danger"; } ?> fw-bold"><?php echo $deltaCO2; ?>%</span>
 					</div>
 				</div>
-				<div class="d-flex ms-auto">
-					<!--<a href="#" class="btn btn-sm text-muted me-3">
-						<svg class="bi" width="24" height="24" role="img"><use xlink:href="inc/icons.svg#download"></use></svg>
-					</a>
-					<a href="#" class="btn btn-dark btn-sm me-3">Week</a>-->
-					</div>
+
 			</div>
 			<div class="card-body p-2">
 				<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
@@ -162,17 +163,28 @@ var data = {
 	// A labels array that can contain any sort of values
 	labels: ['<?php echo implode("','", array_keys($monthlyCO2)); ?>'],
 	// Our series array that contains series objects or in this case series data arrays
-	series: [
-		[<?php echo implode(",", $monthlyCO2); ?>]
-	]
+	series: [{
+		name: 'This Year',
+		data: [<?php echo implode(",", $monthlyCO2); ?>]
+	},{
+		name: 'Previous Year',
+		data: [<?php echo implode(",", $monthlyCO2previous); ?>]
+	}]
 };
 
 new Chartist.Line('.ct-chart-sales-value', data, {
 	low: 0,
 	showArea: true,
 	fullWidth: true,
+	series: {
+		'Previous Year': {
+			showLine: false,
+			showPoint: false
+		}
+	},
 	plugins: [
 		//Chartist.plugins.tooltip()
+		Chartist.plugins.legend()
 	],
 	axisX: {
 		// On the x-axis start means top and end means bottom
