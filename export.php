@@ -2,7 +2,7 @@
 include_once("inc/include.php");
 
 if ($_GET['type'] == "node") {
-	$node = new node($_GET['filter']);
+	$node = new node(filter_var($_GET['filter'], FILTER_SANITIZE_NUMBER_INT));
 	
 	$thisYearDateFrom = date('Y-m-d', strtotime('100 months ago'));
 	$thisYearDateTo = date('Y-m-d');
@@ -72,7 +72,7 @@ if ($_GET['type'] == "node") {
 	if ($_GET['filter'] == "all") {
 		$readings = readings::all();
 	} else {
-		$readings = readings::node_all_readings($_GET['filter']);
+		$readings = readings::node_all_readings(filter_var($_GET['filter'], FILTER_SANITIZE_NUMBER_INT));
 	}
 	
 	foreach ($readings AS $reading) {
