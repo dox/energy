@@ -65,8 +65,12 @@ class readings {
     //return $readings;
   }
 
-  public function create($nodeUID = null, $reading1 = null) {
+  public function create($nodeUID = null, $readingDate = null, $reading1 = null) {
     global $db, $logsClass;
+    
+    if ($readingDate == null) {
+      $readingDate = date('Y-m-d H:i:s');
+    }
     
     $node = new node($nodeUID);
     $location = new location($node->location);
@@ -79,7 +83,7 @@ class readings {
 
     $sql  = "INSERT INTO " . self::$table_name;
     $sql .= " (node, date, reading1, username) ";
-    $sql .= " VALUES('" . $nodeUID . "', '" . date('Y-m-d H:i:s') . "', '" . $reading1 . "', '" . $username . "')";
+    $sql .= " VALUES('" . $nodeUID . "', '" . $readingDate . "', '" . $reading1 . "', '" . $username . "')";
     
     $insert = $db->query($sql);
     $node->expireCache();

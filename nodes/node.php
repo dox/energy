@@ -1,4 +1,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <?php
 $node = new node($_GET['nodeUID']);
@@ -18,7 +20,7 @@ $costUnit = $settingsClass->value("unit_cost_" . $node->type);
 $co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
 if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
-	readings::create($node->uid, $_POST['reading1']);
+	readings::create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
 
 $recentReadings = readings::node_all_readings($node->uid, 5);
@@ -160,9 +162,11 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 <?php
 if ($_SESSION['logon'] == true) {
 ?>
+
 <div class="container px-4 py-5">
 	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo $node->uid; ?>">
 		  <div class="input-group">
+			<input type="text" class="form-control input-primary " name="reading_date" id="reading_date" placeholder="Select Date" readonly="readonly">
 			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading" min="<?php echo $node->currentReading(); ?>">
 			<button type="submit" class="btn btn-lg btn-primary" name="submit">Submit</button>
 		  </div>
@@ -405,4 +409,12 @@ new Chartist.Line('.ct-chart-readings', {
 	}
 	?>
 	var popup = L.popup();
+</script>
+
+<script>
+var fp2 = flatpickr("#reading_date", {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: '<?php echo date('Y-m-d H:i');?>'
+})
 </script>
