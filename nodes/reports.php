@@ -15,7 +15,7 @@ $nodes = null;
 //get each site
 foreach ($_POST['locations'] AS $locationUID) {
   //get each node in this site that matches types
-  $sql = "SELECT * FROM nodes WHERE location = '" . $locationUID . "' " . $enabled . " AND type IN ('" . implode("','", $_POST['nodes']) . "');";
+  $sql = "SELECT * FROM nodes WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' " . $enabled . " AND type IN ('" . implode("','", filter_var_array($_POST['nodes'], FILTER_SANITIZE_ENCODED)) . "');";
   $nodesByLocation = $db->query($sql)->fetchAll();
   
   foreach ($nodesByLocation AS $node) {
@@ -68,7 +68,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 							<?php
 							foreach ($locationsClass->all() AS $location) {
 								$checked = "";
-								if (in_array($location['uid'], $_POST['locations'])) {
+								if (in_array($location['uid'], filter_var_array($_POST['locations'], FILTER_SANITIZE_NUMBER_INT))) {
 									$checked = " checked ";
 								}
 								
@@ -150,7 +150,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 						<div class="row">
 							<div class="col-3">
 								<div class="feature-icon bg-danger bg-gradient">
-									<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo strtolower($_POST['nodes'][0]); ?>"/></svg>
+									<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo strtolower(filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED)); ?>"/></svg>
 								</div>
 							</div>
 							<div class="col-9">
@@ -158,7 +158,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 								  $totalConsumption = 0;
 								  foreach ($nodes AS $node) {
 									$node = new node($node['uid']);
-									$totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
+									$totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 								  }
 								  ?>
 								<h3 class="mb-1"><?php echo $node->type; ?></h3>
@@ -181,7 +181,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 							</div>
 							<div class="col-9">
 								<?php
-								  $settingName = "unit_cost_" . $_POST['nodes'][0];
+								  $settingName = "unit_cost_" . filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED);
 								
 								  $unitCost = $settingsClass->value($settingName);
 								  $totalCost = $totalConsumption * $unitCost;
@@ -205,7 +205,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 							</div>
 							<div class="col-9">
 								<?php
-								  $settingName = "unit_co2e_" . $_POST['nodes'][0];
+								  $settingName = "unit_co2e_" . filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED);
 								
 								  $co2eUnit = $settingsClass->value($settingName);
 								  ?>
@@ -237,13 +237,13 @@ foreach ($_POST['locations'] AS $locationUID) {
 <script>
 <?php
 if (isset($_POST['date_from'])) {
-  $dateFrom = $_POST['date_from'];
+  $dateFrom = filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT);
 } else {
   $dateFrom = date('Y-m-d', strtotime('1 year ago'));
 }
 
 if (isset($_POST['date_to'])) {
-  $dateTo = $_POST['date_to'];
+  $dateTo = filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT);
 } else {
   $dateTo = date('Y-m-d');
 }
@@ -269,7 +269,7 @@ foreach ($nodes AS $node) {
   $node = new node($node['uid']);
   $location = new location($node->location);
 
-  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
+  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 }
 
 $labels = "'" . implode("','", array_keys($data)) . "'";
@@ -283,7 +283,7 @@ $data = array();
 foreach ($nodes AS $node) {
   $node = new node($node['uid']);
 
-  $nodeData = $node->consumptionBetweenDatesByMonth($_POST['date_from'], $_POST['date_to']);
+  $nodeData = $node->consumptionBetweenDatesByMonth(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 
   foreach ($nodeData AS $monthData => $value) {
 	$monthlyData[$monthData] = $monthlyData[$monthData] + $value;
@@ -336,7 +336,7 @@ foreach ($nodes AS $node) {
   $node = new node($node['uid']);
   $location = new location($node->location);
 
-  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates($_POST['date_from'], $_POST['date_to']);
+  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 }
 
 ?>
