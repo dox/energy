@@ -26,7 +26,7 @@ if (isset($_POST['uid'])) {
 <div class="container px-4 py-5">
   <h1 class="mb-5">Node Edit: <?php echo $node->name; ?></h1>
 
-  <form method="post" id="nodeUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+  <form method="post" id="nodeUpdate" action="index.php?n=node_edit&nodeUID=<?php echo $node->uid; ?>">
     <div class="mb-3">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name" name="name" placeholder="Node Name" value="<?php echo $node->name; ?>">

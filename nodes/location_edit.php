@@ -1,18 +1,18 @@
 <?php
 admin_gatekeeper();
 
-$location = new locations($_GET['locationUID']);
+$location = new locations(filter_var($_GET['locationUID'], FILTER_SANITIZE_NUMBER_INT));
 
 if (isset($_POST['uid'])) {
   $location->update($_POST);
-  $location = new locations($_POST['uid']);
+  $location = new locations(filter_var($_POST['uid'], FILTER_SANITIZE_NUMBER_INT));
 }
 
 ?>
 <div class="container px-4 py-5">
   <h1 class="mb-5">Location: Edit</h1>
   
-  <form method="post" id="locationUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+  <form method="post" id="locationUpdate" action="index.php?n=location_edit&locationUID=<?php echo $location->uid; ?>">
       <div class="mb-3">
         <label for="name">Name</label>
         <input type="text" class="form-control" id="name" name="name" placeholder="Location Name" value="<?php echo $location->name; ?>">
@@ -23,7 +23,7 @@ if (isset($_POST['uid'])) {
         <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<?php echo $location->description; ?>">
       </div>
     
-      <input type="hidden" id="geo" name="geo">
+      <input type="hidden" id="geo" name="geo" value="<?php echo $location->geo; ?>">
       <div id="map" style="width: 100%; height: 500px"></div>
       <input type="hidden" id="uid" name="uid" value="<?php echo $location->uid; ?>">
     

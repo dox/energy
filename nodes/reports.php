@@ -45,7 +45,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 		</div>
 	</h1>
 	
-	<form method="post" id="termUpdate" action="<?php echo $_SERVER['REQUEST_URI']; ?>" class="needs-validation" novalidate>
+	<form method="post" id="termUpdate" action="index.php?n=reports" class="needs-validation" novalidate>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="#">Filter:</a>
