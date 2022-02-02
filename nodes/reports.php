@@ -27,23 +27,13 @@ foreach ($_POST['locations'] AS $locationUID) {
 ?>
 
 <div class="container px-4 py-5">
-	<h1 class="d-flex mb-5 justify-content-between align-items-center">Reports
-		<div class="dropdown">
-			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-			<div class="dropdown-menu dashboard-dropdown">
-				<a class="dropdown-item me-2" href="#">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
-					</span> Saved Reports (coming soon)
-				</a>
-				<a class="dropdown-item" href="export.php?type=readings&filter=special" target="_blank">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
-					</span> Export Data
-				</a>
-			</div>
-		</div>
-	</h1>
+	<?php
+	$title     = "Reports";
+	$actions[] = array('name' => 'Saved Reports', 'icon' => 'logs', 'href' => 'index.php?n=logs');
+	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=node&filter=');
+	
+	echo pageHeader($title);
+	?>
 	
 	<form method="post" id="termUpdate" action="index.php?n=reports" class="needs-validation" novalidate>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">

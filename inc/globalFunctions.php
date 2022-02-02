@@ -120,4 +120,41 @@ function unitByType($type = null) {
 	
 	return $unitName;
 }
+
+function pageHeader($title = null, $actionsArray = null) {
+	$output  = "<h1 class=\"d-flex mb-5 justify-content-between align-items-center\">" . $title;
+	$output .= "<div class=\"dropdown\">";
+	
+	if (isset($actionsArray)) {
+		$output .= "<button class=\"btn btn-sm btn-outline-info dropdown-toggle\" data-bs-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Actions</button>";
+		$output .= "<div class=\"dropdown-menu dashboard-dropdown\">";
+		
+		foreach ($actionsArray AS $action) {
+			if ($action['name'] == "separator") {
+				$output .= "<div role=\"separator\" class=\"dropdown-divider my-1\"></div>";
+			} else {
+				if (isset($action['data-bs-target'])) {
+					$output .= "<a class=\"dropdown-item me-2 " . $action['class'] . "\" href=\"#\" data-bs-toggle=\"modal\" data-bs-target=\"" . $action['data-bs-target'] . "\">";
+					$output .= "<span class=\"sidebar-icon\">";
+					$output .= "<svg class=\"dropdown-icon me-2 \" width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . $action['icon'] . "\"/></svg>";
+					$output .= "</span> " . $action['name'];
+					$output .= "</a>";
+				} else {
+					$output .= "<a class=\"dropdown-item me-2 " . $action['class'] . "\" href=\"" . $action['href'] . "\">";
+					$output .= "<span class=\"sidebar-icon\">";
+					$output .= "<svg class=\"dropdown-icon me-2 \" width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . $action['icon'] . "\"/></svg>";
+					$output .= "</span> " . $action['name'];
+					$output .= "</a>";
+				}
+			}
+		}
+		
+		$output .= "</div>";
+	}
+	
+	$output .= "</div>";
+	$output .= "</h1>";
+	
+	return $output;
+}
 ?>

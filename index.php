@@ -2,16 +2,18 @@
 include_once("inc/include.php");
 
 if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
+	
+	$cleanUsername = addslashes($_POST['inputUsername']);
 
-	if ($ldap_connection->auth()->attempt($_POST['inputUsername'] . LDAP_ACCOUNT_SUFFIX, $_POST['inputPassword'], $stayAuthenticated = true)) {
+	if ($ldap_connection->auth()->attempt($cleanUsername . LDAP_ACCOUNT_SUFFIX, $_POST['inputPassword'], $stayAuthenticated = true)) {
 		// Successfully authenticated user.
-		$user = $ldap_connection->query()->where('samaccountname', '=', $_POST['inputUsername'])->firstOrFail(); //look up user
+		$user = $ldap_connection->query()->where('samaccountname', '=', $cleanUsername)->firstOrFail(); //look up user
 		$userGroups = $user['memberof']; //get user's groups
 
 		if (in_array(strtolower(LDAP_ALLOWED_DN), array_map('strtolower',$userGroups))) {
 			// User is in allowed group for logon
 			$_SESSION['logon'] = true;
-			$_SESSION['username'] = strtoupper($_POST['inputUsername']);
+			$_SESSION['username'] = strtoupper($cleanUsername);
 		
 			$logArray['category'] = "logon";
 			$logArray['type'] = "success";
@@ -21,7 +23,7 @@ if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
 			// User is not in correct group for logon
 			$logArray['category'] = "logon";
 			$logArray['type'] = "warning";
-			$logArray['value'] = $_POST['inputUsername'] . " failed to log on.  Not in correct group";
+			$logArray['value'] = $cleanUsername . " failed to log on.  Not in correct group";
 			$logsClass->create($logArray);
 
 			session_destroy();
@@ -31,7 +33,7 @@ if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
 		// Username or password is incorrect.
 		$logArray['category'] = "logon";
 		$logArray['type'] = "warning";
-		$logArray['value'] = $_POST['inputUsername'] . " failed to log on.  Username or password incorrect";
+		$logArray['value'] = $cleanUsername . " failed to log on.  Username or password incorrect";
 		$logsClass->create($logArray);
 		
 		session_destroy();

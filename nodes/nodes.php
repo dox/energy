@@ -1,39 +1,22 @@
 <?php
-$locationsClass = new locations();
-$readingsClass = new readings();
-$nodesClass = new nodes();
-
 if (isset($_POST['name'])) {
-  $nodesClass->create($_POST);
+  nodes::create($_POST);
 }
 ?>
 
 <div class="container px-4 py-5">
-  <h1 class="d-flex mb-5 justify-content-between align-items-center">Nodes
-    <div class="dropdown">
-      <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-      <div class="dropdown-menu dashboard-dropdown">
-        <a class="dropdown-item me-2" href="index.php?n=node_add">
-          <span class="sidebar-icon">
-            <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg>
-          </span> Add New Node
-        </a>
-        <a class="dropdown-item me-2" href="javascript:toggleHiddenMeters();">
-          <span class="sidebar-icon">
-            <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#hidden"/></svg>
-          </span> Show Hidden Nodes
-        </a>
-        <a class="dropdown-item" href="export.php?type=nodes&filter=all" target="_blank">
-          <span class="sidebar-icon">
-            <svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
-          </span> Export Data
-        </a>
-      </div>
-    </div>
-  </h1>
+  <?php
+  $title     = "Nodes";
+  $actions[] = array('name' => 'Add New Node', 'icon' => 'add', 'href' => 'index.php?n=node_add');
+  $actions[] = array('name' => 'Show Hidden Nodes', 'icon' => 'hidden', 'href' => 'javascript:toggleHiddenMeters();');
+  $actions[] = array('name' => 'separator');
+  $actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=nodes&filter=all');
+  
+  echo pageHeader($title, $actions);
+  ?>
   
   <?php
-  foreach ($locationsClass->all() AS $location) {
+  foreach (locations::all() AS $location) {
     $location = new location($location['uid']);
   
     $nodes = $location->allNodes("all");

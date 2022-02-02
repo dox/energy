@@ -55,25 +55,14 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 ?>
 
 <div class="container px-4 py-5">
-	<h1 class="d-flex mb-5 justify-content-between align-items-center"><?php echo $node->name; ?>
-		<div class="dropdown">
-			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-			<div class="dropdown-menu dashboard-dropdown">
-				<a class="dropdown-item me-2" href="index.php?n=node_edit&nodeUID=<?php echo $node->uid; ?>">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg>
-					</span> Edit Node
-				</a>
-				<div role="separator" class="dropdown-divider my-1"></div>
-				
-				<a class="dropdown-item" id="test" href="export.php?type=node&filter=<?php echo $node->uid; ?>" target="_blank">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
-					</span> Export Data
-				</a>
-			</div>
-		</div>
-	</h1>
+	<?php
+	$title     = $node->name;
+	$actions[] = array('name' => 'Edit Node', 'icon' => 'edit', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
+	$actions[] = array('name' => 'separator');
+	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=node&filter=' . $node->uid);
+	
+	echo pageHeader($title, $actions);
+	?>
 		
 	<div class="col-12 mb-3">
 		<div class="card bg-yellow-100 border-0 shadow">

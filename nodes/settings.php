@@ -15,16 +15,15 @@ $settings = $settingsClass->all();
 ?>
 
 <div class="container px-4 py-5">
-  <h1 class="d-flex mb-5 justify-content-between align-items-center">Admin Settings
-    <div class="dropdown">
-      <button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-      <div class="dropdown-menu dashboard-dropdown">
-        <a class="dropdown-item me-3" href="index.php?n=logs"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#logs"/></svg> View Logs</a>
-        <a class="dropdown-item me-3" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#add"/></svg> Add Setting</a>
-        <a class="dropdown-item" href="#" onclick="purgeOldLogs()"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#delete"/></svg> Purge Old Readings</a>
-      </div>
-    </div>
-  </h1>
+  <?php
+  $title     = "Admin Settings";
+  $actions[] = array('name' => 'View Logs', 'icon' => 'logs', 'href' => 'index.php?n=logs');
+  $actions[] = array('name' => 'Add Setting', 'icon' => 'add', 'data-bs-target' => '#exampleModal');
+  $actions[] = array('name' => 'separator');
+  $actions[] = array('name' => 'Purge Old Readings', 'icon' => 'delete', 'href' => 'javascript:purgeOldLogs();', 'class' => 'text-danger');
+  
+  echo pageHeader($title, $actions);
+  ?>
 
   <div class="alert alert-danger text-center"><strong>Warning!</strong> Making changes to these settings can disrupt the running of this site.  Proceed with caution.</div>
   

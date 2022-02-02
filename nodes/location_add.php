@@ -3,7 +3,10 @@ admin_gatekeeper();
 
 ?>
 <div class="container px-4 py-5">
-  <h1 class="mb-5">Location: Add</h1>
+  <?php
+  $title     = "Location: Add"
+  echo pageHeader($title);
+  ?>
   
   <form method="post" id="locationUpdate" action="index.php?n=map">
       <div class="mb-3">

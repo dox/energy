@@ -22,21 +22,15 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 ?>
 
 <div class="container px-4 py-5">
-	<h1 class="d-flex mb-5 justify-content-between align-items-center"><?php echo $location->name; ?>
-		<div class="dropdown">
-			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-			<div class="dropdown-menu dashboard-dropdown">
-				<a class="dropdown-item me-2 <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=node_add&locationUID=<?php echo $location->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#nodes"/></svg> Add Node</a>
-				<a class="dropdown-item <?php if ($_SESSION['logon'] != true) { echo "disabled";} ?>" href="index.php?n=location_edit&locationUID=<?php echo $location->uid; ?>"><svg width="1em" height="1em"><use xlink:href="inc/icons.svg#edit"/></svg> Edit Location</a>
-								
-				<a class="dropdown-item me-2" href="export.php?type=location&filter=<?php echo $location->uid; ?>" target="_blank">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
-					</span> Export Data
-				</a>
-			</div>
-		</div>
-	</h1>
+	<?php
+	$title     = $location->name;
+	$actions[] = array('name' => 'Edit Location', 'icon' => 'edit', 'href' => 'index.php?n=location_edit&locationUID=' . $location->uid);
+	$actions[] = array('name' => 'Add Node', 'icon' => 'add', 'href' => 'index.php?n=node_add&locationUID=' . $location->uid);
+	$actions[] = array('name' => 'separator');
+	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=location&filter=' . $location->uid);
+	
+	echo pageHeader($title, $actions);
+	?>
 
 	<div class="col-12 mb-3">
 			<div class="card bg-yellow-100 border-0 shadow">

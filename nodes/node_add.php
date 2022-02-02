@@ -9,7 +9,11 @@ $locationUID = $_GET['locationUID'];
 ?>
 
 <div class="container px-4 py-5">
-  <h1 class="mb-5">Add New Node</h1>
+  <?php
+  $title     = "Node: Add";
+  
+  echo pageHeader($title);
+  ?>
 
   <form method="post" id="nodeUpdate" action="index.php?n=nodes">
     <div class="mb-3">

@@ -15,18 +15,12 @@ if (isset($_GET['nodeUID'])) {
 ?>
 
 <div class="container px-4 py-5">
-	<h1 class="d-flex mb-5 justify-content-between align-items-center">Readings
-		<div class="dropdown">
-			<button class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-			<div class="dropdown-menu dashboard-dropdown">
-				<a class="dropdown-item" href="<?php echo $exportLink; ?>" target="_blank">
-					<span class="sidebar-icon">
-						<svg class="dropdown-icon me-2" width="1em" height="1em"><use xlink:href="inc/icons.svg#download"/></svg>
-					</span> Export Data
-				</a>
-			</div>
-		</div>
-	</h1>
+	<?php
+	$title     = "Readings";
+	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => $exportLink);
+	
+	echo pageHeader($title, $actions);
+	?>
 	
 	<div class="card border-0 shadow">
 		<div class="card-header">

@@ -10,7 +10,10 @@ if (isset($_POST['uid'])) {
 
 ?>
 <div class="container px-4 py-5">
-  <h1 class="mb-5">Location: Edit</h1>
+  <?php
+  $title     = "Location: Edit";
+  echo pageHeader($title);
+  ?>
   
   <form method="post" id="locationUpdate" action="index.php?n=location_edit&locationUID=<?php echo $location->uid; ?>">
       <div class="mb-3">
