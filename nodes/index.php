@@ -29,7 +29,7 @@ $totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("un
 				<div class="d-block mb-3 mb-sm-0">
 					<div class="fs-5 fw-normal mb-2">CO&#8322; Emissions from Energy Usage</div>
 					
-					<h2 class="fs-3 fw-extrabold"><?php echo number_format(array_sum($monthlyCO2), 0) . " kg"; ?></h2>
+					<h2 class="fs-3 fw-extrabold"><?php echo number_format(array_sum($monthlyCO2)/1000, 2) . " tonnes"; ?></h2>
 					
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
