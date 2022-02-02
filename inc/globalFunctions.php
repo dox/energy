@@ -23,6 +23,13 @@ function escape($var) {
 	return $var;
 }
 
+function percentageDifference($num1, $num2) {
+	$percentage = ($num1 - $num2) / (($num1 + $num2)/2);
+	$percentage = number_format($percentage * 100, 2);
+	
+	return $percentage;
+}
+
 function autoPluralise ($singular, $plural, $count = 1) {
 	// fantastically clever function to return the correct plural of a word/count combo
 	// Usage:	$singular	= single version of the word (e.g. 'Bus')

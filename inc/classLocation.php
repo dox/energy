@@ -241,5 +241,35 @@ class location {
 
     return $nodes;
   }
+  
+  public function co2BetweenDatesByMonth($dateFrom = null, $dateTo = null) {
+    global $db, $settingsClass;
+    
+    if ($dateFrom == null || $dateTo == null) {
+      $dateFrom = date('Y-m-d', strtotime('1 year ago'));
+      $dateTo = date('Y-m-d');
+    }
+    
+    $totalCO2 = array();
+    
+    foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
+      $co2PerUnit = $settingsClass->value("unit_co2e_" . $nodeType);
+      
+      $consumptionForType = $this->consumptionBetweenDatesByMonth($nodeType, $dateFrom, $dateTo);
+      
+      foreach ($consumptionForType AS $month => $value) {
+        $consumptionForType[$month] = $value * $co2PerUnit;
+      }
+      
+      foreach ($consumptionForType AS $month => $value) {
+        $totalCO2[$month] = $totalCO2[$month] + $value;
+      }
+      
+    }
+    
+    return $totalCO2;
+  }
+  
+  
 }
 ?>

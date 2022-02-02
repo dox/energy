@@ -14,7 +14,7 @@ $monthlyConsumptionWater = array_reverse($site->consumptionBetweenDatesByMonth("
 $monthlyCO2 = $site->co2BetweenDatesByMonth();
 $monthlyCO2previous = $site->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
 
-$deltaCO2 = number_format(array_sum($monthlyCO2previous) / array_sum($monthlyCO2) * 100, 0);
+$deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 
 $totalCO2Electric = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_electric");
 $totalCO2Gas = array_sum($monthlyConsumptionGas) * $settingsClass->value("unit_co2e_gas");
@@ -33,8 +33,15 @@ $totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("un
 					
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
-						<span class="fas fa-angle-up text-success"></span>
-						<span class="<?php if ($deltaCO2 <= 0) { echo "text-success"; } else { echo "text-danger"; } ?> fw-bold"><?php echo $deltaCO2; ?>%</span>
+						<?php
+						if ($deltaCO2 <= 0) {
+							echo "<svg class=\"text-success\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-down\"></use></svg>";
+							echo " <span class=\"text-success\">" . $deltaCO2 . "% decrease compared to previous year</span>";
+						} else {
+							echo "<svg class=\"text-danger\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-up\"></use></svg>";
+							echo " <span class=\"text-danger\">" . $deltaCO2 . "% increase compared to previous year</span>";
+						}
+						?>
 					</div>
 				</div>
 

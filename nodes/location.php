@@ -1,4 +1,8 @@
 <?php
+$datePreviousFrom = date('Y-m-d', strtotime('24 months ago'));
+$dateFrom = date('Y-m-d', strtotime('12 months ago'));
+$dateTo = date('Y-m-d');
+
 $location = new location($_GET['locationUID']);
 $readingsClass = new readings();
 $nodesClass = new nodes();
@@ -9,6 +13,12 @@ $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $se
 $totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
 
 $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
+
+
+$monthlyCO2 = $location->co2BetweenDatesByMonth();
+$monthlyCO2previous = $location->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
+
+$deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 ?>
 
 <div class="container px-4 py-5">
@@ -36,7 +46,16 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 						<h2 class="fs-3 fw-extrabold"><?php echo number_format($totalCO2/1000, 2) . " tonnes"; ?></h2>
 						<div class="small mt-2">
 							<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
-							<span class="text-success fw-bold">0%</span>
+							
+							<?php
+							if ($deltaCO2 <= 0) {
+								echo "<svg class=\"text-success\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-down\"></use></svg>";
+								echo " <span class=\"text-success\">" . $deltaCO2 . "% decrease compared to previous year</span>";
+							} else {
+								echo "<svg class=\"text-danger\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-up\"></use></svg>";
+								echo " <span class=\"text-danger\">" . $deltaCO2 . "% increase compared to previous year</span>";
+							}
+							?>
 						</div>
 					</div>
 					<div class="d-flex ms-auto">
