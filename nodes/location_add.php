@@ -4,7 +4,7 @@ admin_gatekeeper();
 ?>
 <div class="container px-4 py-5">
   <?php
-  $title     = "Location: Add"
+  $title     = "Location: Add";
   echo pageHeader($title);
   ?>
   
