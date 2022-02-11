@@ -57,7 +57,7 @@ class readings {
     global $db;
 
     $sql  = "SELECT * FROM readings_by_month ";
-    $sql .= " WHERE location = '" . $locationUID . "' ";
+    $sql .= " WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' ";
     $sql .= " ORDER BY year, month DESC";
 
     $readings = $db->query($sql)->fetchAll();
