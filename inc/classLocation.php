@@ -11,7 +11,7 @@ class location {
   function __construct($locationUID = null) {
 
     global $db;
-		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . $locationUID . "'";
+		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "'";
 		$node = $db->query($sql)->fetchArray();
 
 		foreach ($node AS $key => $value) {
