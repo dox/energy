@@ -22,7 +22,7 @@ class node {
   function __construct($nodeUID = null) {
 
     global $db;
-		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . $nodeUID . "'";
+		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . filter_var($nodeUID, FILTER_SANITIZE_NUMBER_INT) . "'";
 		$node = $db->query($sql)->fetchArray();
 
 		foreach ($node AS $key => $value) {
