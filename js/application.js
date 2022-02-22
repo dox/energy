@@ -38,7 +38,7 @@ function purgeOldLogs() {
 
   var isGood=confirm('Are you sure you want to purge old logs from the database?  Each meter has its own retention policy.  This action cannot be undone!');
 
-	if(isGood) {
+  if(isGood) {
     var formData = new FormData();
 
     //formData.append("readingUID", this_id);
@@ -66,41 +66,37 @@ function purgeOldLogs() {
   }
 }
 
+function nodeDelete(id) {
 
+  var isGood=confirm('Are you sure you want to delete this node?  This will also delete all readings for this node.  This action cannot be undone!');
 
-function nodeDelete( elem ) {
-  event.preventDefault();
+  if(isGood) {
+    var formData = new FormData();
+    
+    formData.append("nodeUID", id);
 
-  var uid = elem.id;
+    var request = new XMLHttpRequest();
 
-  var formData = new FormData();
+    request.open("POST", "../actions/node_delete.php", true);
+    request.send(formData);
 
-  formData.append("uid", uid);
-
-  var request = new XMLHttpRequest();
-
-  request.open("POST", "../actions/node_delete.php", true);
-  request.send(formData);
-
-  // 4. This will be called after the response is received
-  request.onload = function() {
-    if (request.status != 200) { // analyze HTTP status of the response
-      alert("Something went wrong.  Please refresh this page and try again.");
-      alert(`Error ${request.status}: ${request.statusText}`); // e.g. 404: Not Found
-    } else {
-      window.location.href = "index.php?n=nodes";
+    // 4. This will be called after the response is received
+    request.onload = function() {
+      if (request.status != 200) { // analyze HTTP status of the response
+        alert("Something went wrong.  Please refresh this page and try again.");
+        alert(`Error ${request.status}: ${request.statusText}`); // e.g. 404: Not Found
+      } else {
+        window.location.href = 'index.php?n=nodes';
+      }
     }
+
+    request.onerror = function() {
+      alert("Request failed");
+    };
+
+    return false;
   }
-
-  request.onerror = function() {
-    alert("Request failed");
-  };
-
-  return false;
 }
-
-
-
 
 function sortTable(n,id) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;

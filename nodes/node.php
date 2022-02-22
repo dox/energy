@@ -58,7 +58,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 	<?php
 	$title     = $node->name;
 	$actions[] = array('name' => 'Edit Node', 'icon' => 'edit', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
-	$actions[] = array('name' => 'Delete Node', 'icon' => 'delete', 'class' => 'danger', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
+	$actions[] = array('name' => 'Delete Node', 'icon' => 'delete', 'href' => 'javascript:nodeDelete(' . $node->uid . ');', 'class' => 'text-danger');
 	$actions[] = array('name' => 'separator');
 	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=node&filter=' . $node->uid);
 	

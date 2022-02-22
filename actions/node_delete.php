@@ -2,8 +2,8 @@
 include_once("../inc/include.php");
 admin_gatekeeper();
 
-if (isset($_POST['uid'])) {
-  $meter = new meter($_POST['uid']);
-  $meter->delete();
+if (isset($_POST['nodeUID'])) {
+  $node = new node($_POST['nodeUID']);
+  $node->delete();
 }
 ?>
