@@ -58,6 +58,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 	<?php
 	$title     = $node->name;
 	$actions[] = array('name' => 'Edit Node', 'icon' => 'edit', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
+	$actions[] = array('name' => 'Delete Node', 'icon' => 'delete', 'class' => 'danger', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
 	$actions[] = array('name' => 'separator');
 	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=node&filter=' . $node->uid);
 	
@@ -156,7 +157,7 @@ if ($_SESSION['logon'] == true) {
 	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo $node->uid; ?>">
 		  <div class="input-group">
 			<input type="text" class="form-control input-primary " name="reading_date" id="reading_date" placeholder="Select Date" readonly="readonly">
-			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading" min="<?php echo $node->currentReading(); ?>">
+			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading">
 			<button type="submit" class="btn btn-lg btn-primary" name="submit">Submit</button>
 		  </div>
 		</form>
