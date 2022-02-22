@@ -26,6 +26,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 	$title     = $location->name;
 	$actions[] = array('name' => 'Edit Location', 'icon' => 'edit', 'href' => 'index.php?n=location_edit&locationUID=' . $location->uid);
 	$actions[] = array('name' => 'Add Node', 'icon' => 'add', 'href' => 'index.php?n=node_add&locationUID=' . $location->uid);
+	$actions[] = array('name' => 'Delete Location', 'icon' => 'delete', 'href' => 'javascript:locationDelete(' . $location->uid . ');', 'class' => 'text-danger');
 	$actions[] = array('name' => 'separator');
 	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=location&filter=' . $location->uid);
 	

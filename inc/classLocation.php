@@ -270,6 +270,28 @@ class location {
     return $totalCO2;
   }
   
+  public function delete() {
+    global $db, $logsClass;
+    
+    $locationUID = $this->uid;
+    
+    foreach ($this->allnodes("all") AS $node) {
+      $node = new node($node['uid']);
+      $node->delete();
+    }
   
+    $sql  = "DELETE FROM " . self::$table_name;
+    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql .= " LIMIT 1";
+  
+    $deleteLocation = $db->query($sql);
+  
+    $logArray['category'] = "location";
+    $logArray['type'] = "warning";
+    $logArray['value'] = "[locationUID:" . $locationUID . "] deleted successfully";
+    $logsClass->create($logArray);
+  
+    return $deleteLocation;
+  }
 }
 ?>
