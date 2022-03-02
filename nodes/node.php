@@ -364,7 +364,8 @@ new Chartist.Line('.ct-chart-readings', {
 			name: 'series-1',
 			data: [
 				<?php
-				$readingsAll = array_reverse(readings::node_all_readings($node->uid, 1000), true);
+				$readingsClass = new readings();
+				$readingsAll = array_reverse($readingsClass->node_all_readings($node->uid, 1000), true);
 				
 				foreach ($readingsAll AS $reading) {
 					$date = date('U', strtotime($reading['date']));
