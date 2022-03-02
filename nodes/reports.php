@@ -288,8 +288,11 @@ foreach ($nodes AS $node) {
   }
 
 }
-$monthlyData = array_reverse($monthlyData);
-$monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
+if (isset($monthlyData)) {
+	$monthlyData = array_reverse($monthlyData);
+	$monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
+}
+
 ?>
 
 
