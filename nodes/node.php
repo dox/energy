@@ -20,7 +20,8 @@ $costUnit = $settingsClass->value("unit_cost_" . $node->type);
 $co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
 if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
-	readings::create($node->uid, $_POST['reading_date'], $_POST['reading1']);
+	$readingsClass = new readings();
+	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
 
 $readingsClass = new readings();
