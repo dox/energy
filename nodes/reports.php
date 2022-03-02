@@ -268,7 +268,9 @@ foreach ($nodes AS $node) {
   $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 }
 
-$labels = "'" . implode("','", array_keys($data)) . "'";
+if (isset($data)) {
+	$labels = "'" . implode("','", array_keys($data)) . "'";
+}
 ?>
 
 
