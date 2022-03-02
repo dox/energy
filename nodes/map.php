@@ -2,10 +2,9 @@
 $siteClass = new site();
 
 if (isset($_POST['name'])) {
-	locations::create($_POST);
+	$locations = new locations();
+	$locations->create($_POST);
 }
-
-$locations = locations::all();
 ?>
 
 <div class="container px-4 py-5">
