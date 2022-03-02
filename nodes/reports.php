@@ -94,9 +94,12 @@ foreach ($_POST['locations'] AS $locationUID) {
 							
 							foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
 									$checked = "";
-									if (in_array($nodeType, $_POST['nodes'])) {
-										$checked = " checked ";
+									if (isset($_POST['locations'])) {
+										if (in_array($nodeType, $_POST['nodes'])) {
+											$checked = " checked ";
+										}
 									}
+									
 									
 									$output  = "<li class=\"dropdown-item\">";
 									$output .= "<div class=\"form-check\">";
