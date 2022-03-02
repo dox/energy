@@ -58,9 +58,12 @@ foreach ($_POST['locations'] AS $locationUID) {
 							<?php
 							foreach ($locationsClass->all() AS $location) {
 								$checked = "";
-								if (in_array($location['uid'], filter_var_array($_POST['locations'], FILTER_SANITIZE_NUMBER_INT))) {
-									$checked = " checked ";
+								if (isset($_POST['locations'])) {
+									if (in_array($location['uid'], filter_var_array($_POST['locations'], FILTER_SANITIZE_NUMBER_INT))) {
+										$checked = " checked ";
+									}
 								}
+								
 								
 								$output  = "<li class=\"dropdown-item\">";
 								$output .= "<div class=\"form-check\">";
