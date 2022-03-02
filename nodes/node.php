@@ -36,7 +36,11 @@ $previousYearDateTo = date('Y-m-d', strtotime('12 months ago'));
 $consumptionPreviousYear12Months = array_reverse($node->consumptionBetweenDatesByMonth($previousYearDateFrom, $previousYearDateTo), true);
 $consumptionPreviousYear12MonthsTotal = array_sum($consumptionPreviousYear12Months);
 
-$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPreviousYear12MonthsTotal)*100;
+if ($consumptionLast12MonthsTotal > 0 && $consumptionPreviousYear12MonthsTotal > 0) {
+	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPreviousYear12MonthsTotal)*100;
+} else {
+	$deltaConsumption = 0;
+}
 
 if ($deltaConsumption > 100 && !is_infinite($deltaConsumption)) {
 	$deltaConsumption = number_format($deltaConsumption-100, 1);
