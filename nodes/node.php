@@ -23,7 +23,8 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
 	readings::create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
 
-$recentReadings = readings::node_all_readings($node->uid, 5);
+$readingsClass = new readngs();
+$recentReadings = $readingsClass->node_all_readings($node->uid, 5);
 
 $thisYearDateFrom = date('Y-m-d', strtotime('12 months ago'));
 $thisYearDateTo = date('Y-m-d');

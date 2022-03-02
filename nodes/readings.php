@@ -1,9 +1,11 @@
 <?php
+$readingsClass = new readings();
+
 if (isset($_GET['nodeUID'])) {
 	$node = new node($_GET['nodeUID']);
 	$location = new location($node->location);
 	$pageTitle = "All readings for " . $location->name;
-	$readings = readings::node_all_readings($node->uid);
+	$readings = $readingsClass->node_all_readings($node->uid);
 	$exportLink = "export.php?type=readings&filter=" . $node->uid;
 } else {
 	$pageTitle = "All readings";

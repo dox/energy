@@ -146,7 +146,8 @@ class site {
   }
   
   public function geoMarkersOfNodes() {
-	  $nodes = nodes::all();
+	  $nodesClass = new nodes();
+	  $nodes = $nodesClass->all();
 	  
 	  foreach ($nodes AS $node) {
 		  $node = new node($node['uid']);
