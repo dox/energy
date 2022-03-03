@@ -37,7 +37,7 @@ if ($_GET['type'] == "node") {
 	
 } elseif ($_GET['type'] == "nodes") {
 	$nodesClass = new nodes();
-	$nodes = $nodesClass->all();
+	$nodes = $nodesClass->allEnabled();
 	
 	foreach ($nodes AS $node) {
 		$node = new node($node['uid']);
@@ -53,8 +53,8 @@ if ($_GET['type'] == "node") {
 		$nodeRow['geo'] = $node->geo;
 		$nodeRow['reading_current_date'] = $node->mostRecentReadingDate();
 		$nodeRow['reading_current_value'] = $node->mostRecentReadingValue();
-		$nodeRow['reading_previous_date'] = $node->previousReadingDate();
-		$nodeRow['reading_previous_value'] = $node->previousReadingValue();
+		//$nodeRow['reading_previous_date'] = $node->previousReadingDate();
+		//$nodeRow['reading_previous_value'] = $node->previousReadingValue();
 		
 		$nodeRow['serial'] = showHide($node->serial);
 		$nodeRow['mprn'] = showHide($node->mprn);
