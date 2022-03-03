@@ -24,8 +24,12 @@ function escape($var) {
 }
 
 function percentageDifference($num1, $num2) {
-	$percentage = ($num1 - $num2) / (($num1 + $num2)/2);
-	$percentage = number_format($percentage * 100, 2);
+	if (isset($num1) && isset($num2) && $num1 > 0 && $num2 > 0 ) {
+		$percentage = ($num1 - $num2) / (($num1 + $num2)/2);
+		$percentage = number_format($percentage * 100, 2);
+	} else {
+		$percentage = 0;
+	}
 	
 	return $percentage;
 }

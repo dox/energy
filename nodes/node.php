@@ -20,10 +20,12 @@ $costUnit = $settingsClass->value("unit_cost_" . $node->type);
 $co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
 if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
-	readings::create($node->uid, $_POST['reading_date'], $_POST['reading1']);
+	$readingsClass = new readings();
+	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
 
-$recentReadings = readings::node_all_readings($node->uid, 5);
+$readingsClass = new readings();
+$recentReadings = $readingsClass->node_all_readings($node->uid, 5);
 
 $thisYearDateFrom = date('Y-m-d', strtotime('12 months ago'));
 $thisYearDateTo = date('Y-m-d');
@@ -35,7 +37,11 @@ $previousYearDateTo = date('Y-m-d', strtotime('12 months ago'));
 $consumptionPreviousYear12Months = array_reverse($node->consumptionBetweenDatesByMonth($previousYearDateFrom, $previousYearDateTo), true);
 $consumptionPreviousYear12MonthsTotal = array_sum($consumptionPreviousYear12Months);
 
-$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPreviousYear12MonthsTotal)*100;
+if ($consumptionLast12MonthsTotal > 0 && $consumptionPreviousYear12MonthsTotal > 0) {
+	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPreviousYear12MonthsTotal)*100;
+} else {
+	$deltaConsumption = 0;
+}
 
 if ($deltaConsumption > 100 && !is_infinite($deltaConsumption)) {
 	$deltaConsumption = number_format($deltaConsumption-100, 1);
@@ -358,7 +364,8 @@ new Chartist.Line('.ct-chart-readings', {
 			name: 'series-1',
 			data: [
 				<?php
-				$readingsAll = array_reverse(readings::node_all_readings($node->uid, 1000), true);
+				$readingsClass = new readings();
+				$readingsAll = array_reverse($readingsClass->node_all_readings($node->uid, 1000), true);
 				
 				foreach ($readingsAll AS $reading) {
 					$date = date('U', strtotime($reading['date']));

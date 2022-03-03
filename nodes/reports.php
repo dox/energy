@@ -58,9 +58,12 @@ foreach ($_POST['locations'] AS $locationUID) {
 							<?php
 							foreach ($locationsClass->all() AS $location) {
 								$checked = "";
-								if (in_array($location['uid'], filter_var_array($_POST['locations'], FILTER_SANITIZE_NUMBER_INT))) {
-									$checked = " checked ";
+								if (isset($_POST['locations'])) {
+									if (in_array($location['uid'], filter_var_array($_POST['locations'], FILTER_SANITIZE_NUMBER_INT))) {
+										$checked = " checked ";
+									}
 								}
+								
 								
 								$output  = "<li class=\"dropdown-item\">";
 								$output .= "<div class=\"form-check\">";
@@ -91,9 +94,12 @@ foreach ($_POST['locations'] AS $locationUID) {
 							
 							foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
 									$checked = "";
-									if (in_array($nodeType, $_POST['nodes'])) {
-										$checked = " checked ";
+									if (isset($_POST['locations'])) {
+										if (in_array($nodeType, $_POST['nodes'])) {
+											$checked = " checked ";
+										}
 									}
+									
 									
 									$output  = "<li class=\"dropdown-item\">";
 									$output .= "<div class=\"form-check\">";
@@ -262,7 +268,9 @@ foreach ($nodes AS $node) {
   $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 }
 
-$labels = "'" . implode("','", array_keys($data)) . "'";
+if (isset($data)) {
+	$labels = "'" . implode("','", array_keys($data)) . "'";
+}
 ?>
 
 
@@ -280,8 +288,11 @@ foreach ($nodes AS $node) {
   }
 
 }
-$monthlyData = array_reverse($monthlyData);
-$monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
+if (isset($monthlyData)) {
+	$monthlyData = array_reverse($monthlyData);
+	$monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
+}
+
 ?>
 
 

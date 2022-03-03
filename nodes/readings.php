@@ -1,5 +1,6 @@
 <?php
 $readingsClass = new readings();
+
 if (isset($_GET['nodeUID'])) {
 	$node = new node($_GET['nodeUID']);
 	$location = new location($node->location);
@@ -11,8 +12,6 @@ if (isset($_GET['nodeUID'])) {
 	$readings = $readingsClass->all(100);
 	$exportLink = "export.php?type=readings&filter=all";
 }
-
-
 ?>
 
 <div class="container px-4 py-5">

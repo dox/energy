@@ -142,7 +142,9 @@ $totalCO2Water = $monthlyConsumptionWater * $settingsClass->value("unit_co2e_wat
 							</thead>
 							<tbody>
 								<?php
-								foreach (readings::all(10) AS $reading) {
+								$readingsClass = new readings();
+								
+								foreach ($readingsClass->all(10) AS $reading) {
 									$node = new node($reading['node']);
 									$location = new location($node->location);
 									

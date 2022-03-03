@@ -1,6 +1,9 @@
 <?php
+$locations = new locations();
+
 if (isset($_POST['name'])) {
-  nodes::create($_POST);
+  $nodes = new nodes();
+  $nodes->create($_POST);
 }
 ?>
 
@@ -16,7 +19,7 @@ if (isset($_POST['name'])) {
   ?>
   
   <?php
-  foreach (locations::all() AS $location) {
+  foreach ($locations->all() AS $location) {
     $location = new location($location['uid']);
   
     $nodes = $location->allNodes("all");
