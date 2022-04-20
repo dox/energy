@@ -29,6 +29,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 for (var i = 0; i < locations.length; i++) {
 	L.marker([locations[i][1], locations[i][2]]).addTo(map)
-	.bindPopup(locations[i][0], {closeOnClick: false, autoClose: false})
+	.bindPopup(locations[i][0])
 }
 </script>
