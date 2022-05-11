@@ -182,7 +182,7 @@ for (var i = 0; i < locations.length; i++) {
 			showGrid: false,
 			showLabel: true,
 			labelInterpolationFnc: function(value) {
-				return (value) + 'kg';
+				return (value / 1000) + 't';
 			}
 		}
 	});

@@ -212,7 +212,9 @@ if ($_SESSION['logon'] == true) {
 					</table>
 				</div>
 				
-				<div class="ct-chart-readings ct-double-octave ct-series-b" style="height:350px"></div>
+				<div class="p-2" style="height:350px">
+					<div class="ct-chart-readings ct-double-octave ct-series-b" style="height:100%"></div>
+				</div>
 			</div>
 			
 			<div class="card border-0 shadow">
@@ -306,6 +308,7 @@ new Chartist.Line('.ct-chart-sales-value', data, {
 	low: 0,
 	showArea: true,
 	fullWidth: true,
+	chartPadding: 40,
 	plugins: [
 		//Chartist.plugins.tooltip()
 	],
@@ -379,7 +382,6 @@ new Chartist.Line('.ct-chart-readings', {
 			]
 		}
 	],
-	fullWidth: true,
 	axisX: {
 		type: Chartist.FixedScaleAxis,
 		labelInterpolationFnc: function(value) {
