@@ -35,6 +35,7 @@ if (isset($_POST['name'])) {
     $output .= "<th class=\"border-0\" style=\"width:20%\">Type</th>";
     $output .= "<th class=\"border-0\" style=\"width:40%\">Name</th>";
     $output .= "<th class=\"border-0\">Current Reading</th>";
+    $output .= "<th class=\"border-0\">Reading Date</th>";
     $output .= "</tr>";
     $output .= "</thead>";
     
@@ -53,6 +54,7 @@ if (isset($_POST['name'])) {
       $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
       $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
       $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
+      $output .= "<td>" . dateDisplay($node->mostRecentReadingDate()) . " <i>(" . howLongAgo($node->mostRecentReadingDate()) . ")</i></td>";
       $output .= "</tr>";
     }
     
