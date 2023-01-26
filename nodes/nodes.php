@@ -52,7 +52,7 @@ if (isset($_POST['name'])) {
       
       $output .= "<tr class=\"" . $enabledClass . "\">";
       $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
-      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->cleanName() . "</a></td>";
       $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
       $output .= "<td>" . dateDisplay($node->mostRecentReadingDate()) . " <i>(" . howLongAgo($node->mostRecentReadingDate()) . ")</i></td>";
       $output .= "</tr>";
