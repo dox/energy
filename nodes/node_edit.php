@@ -8,12 +8,6 @@ $readingsClass = new readings();
 $node = new node($_GET['nodeUID']);
 $locationUID = $node->location;
 
-if ($node->enabled == "1") {
-  $nodeEnabledStatus = " checked";
-} else {
-  $nodeEnabledStatus = "";
-}
-
 $location = new location($node->location);
 
 if (isset($_POST['uid'])) {
@@ -143,13 +137,16 @@ if (isset($_POST['uid'])) {
   
   
   
-    <div class="mb-3">
-  
-    </div>
+    <div class="row">
   
     <div class="form-check mb-3">
-      <input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="1" <?php echo $nodeEnabledStatus; ?>>
-      <label for="billed" class="form-check-label">Enabled</label>
+      <label for="retention_days">Node Enabled</enabledlabel>
+      <select class="form-select" id="retention_days" name="enabled">
+        <option value="0" <?php if ($node->enabled == 0) { echo " selected"; } ?>>Disabled (hidden)</option>
+        <option value="1" <?php if ($node->enabled == 1) { echo " selected"; } ?>>Enabled</option>
+      </select>
+      <div id="retention_daysHelp" class="form-text">Disabled (hidden) nodes still contribute to historic energy usage calculations.</div>
+    </div>
     </div>
   
     <input type="hidden" id="geo" name="geo" value="<?php echo $node->geoLocation(); ?>">

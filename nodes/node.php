@@ -62,7 +62,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 
 <div class="container px-4 py-5">
 	<?php
-	$title     = $node->name;
+	$title     = $node->cleanName();
 	$actions[] = array('name' => 'Edit Node', 'icon' => 'edit', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
 	$actions[] = array('name' => 'Delete Node', 'icon' => 'delete', 'href' => 'javascript:nodeDelete(' . $node->uid . ');', 'class' => 'text-danger');
 	$actions[] = array('name' => 'separator');
