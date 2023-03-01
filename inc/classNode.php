@@ -124,6 +124,8 @@ class node {
     $readings = $this->readingsByMonth();
     //printArray($readings);
     
+    $consumption = array();
+    
     $i = 0;
     foreach ($readings AS $date => $value) {
       $previousMonth = date('Y-m', strtotime("-1 month", strtotime($date)));
