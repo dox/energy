@@ -229,7 +229,6 @@ foreach ($_POST['locations'] AS $locationUID) {
 
 
 
-
 <script>
 <?php
 if (isset($_POST['date_from'])) {
@@ -381,3 +380,11 @@ function toggleCheckboxes(source) {
 	}
 }
 </script>
+
+<?php
+echo "<table><tr>";
+foreach ($monthlyData AS $data) {
+	echo "<td>" . $data . "</td>";
+}
+echo "</tr></table>";
+?>
