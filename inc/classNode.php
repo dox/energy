@@ -76,6 +76,68 @@ class node {
 
     return $return;
   }
+  
+  public function readingsByMonth() {
+    global $db;
+    
+    $sql  = "SELECT DATE_FORMAT(date, '%Y-%m') AS date, MAX(reading1) AS reading1";
+    $sql .= " FROM readings";
+    $sql .= " WHERE node = '" . $this->uid . "'";
+    $sql .= " GROUP BY DATE_FORMAT(date, '%Y-%m')";
+    $sql .= " ORDER BY date DESC;";
+    
+    $readingsByMonth = $db->query($sql)->fetchAll();
+    
+    foreach ($readingsByMonth AS $reading) {
+      $returnArray[$reading['date']] = $reading['reading1'];
+    }
+    
+    $mostRecentDate = date('Y-m', strtotime(array_key_first($returnArray)));
+    
+    $i = 0;
+    
+    foreach ($returnArray AS $date => $value) {
+      $previousDate = date('Y-m', strtotime("-" . $i . " month", strtotime($mostRecentDate)));
+      
+      // if a reading for this month doesn't exist, create one
+      if (!array_key_exists($previousDate, $returnArray) && $date != date('Y-m')) {
+        //echo "Data for " . $previousDate . " doesn't exist<br />";
+        $beforePreviousDate = date('Y-m', strtotime("-1 month", strtotime($previousDate)));
+        $laterDate = date('Y-m', strtotime("+1 month", strtotime($previousDate)));
+        
+        $average = ($returnArray[$beforePreviousDate] + $returnArray[$laterDate])/2;
+        
+        $returnArray[$previousDate] = $average;
+      }
+      
+      $i++;
+    }
+    
+    krsort($returnArray);
+    
+    return $returnArray;
+  }
+  
+  public function consumptionByMonth() {
+    $readings = $this->readingsByMonth();
+    //printArray($readings);
+    
+    $i = 0;
+    foreach ($readings AS $date => $value) {
+      $previousMonth = date('Y-m', strtotime("-1 month", strtotime($date)));
+      $thisMonthReading = $value;
+      $previousMonthReading = $readings[$previousMonth];
+      
+      //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . "<br />";
+      $consumption[$date] = $thisMonthReading - $previousMonthReading;
+      $i++;
+    }
+    
+    //krsort($consumption);
+    
+    return $consumption;
+    
+  }
 
   public function consumptionForMonth($date = null) {
     global $db;

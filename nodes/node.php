@@ -4,6 +4,8 @@
 
 <?php
 $node = new node($_GET['nodeUID']);
+$consumptionLast12Months = array_slice($node->consumptionByMonth(), 0, 12, true);
+
 $location = new location($node->location);
 
 if (isset($_FILES['photograph']) && $_SESSION['logon'] == true) {
@@ -29,7 +31,7 @@ $recentReadings = $readingsClass->node_all_readings($node->uid, 5);
 
 $thisYearDateFrom = date('Y-m-d', strtotime('12 months ago'));
 $thisYearDateTo = date('Y-m-d');
-$consumptionLast12Months = array_reverse($node->consumptionBetweenDatesByMonth($thisYearDateFrom, $thisYearDateTo), true);
+
 $consumptionLast12MonthsTotal = array_sum($consumptionLast12Months);
 
 $previousYearDateFrom = date('Y-m-d', strtotime('24 months ago'));
@@ -297,10 +299,10 @@ if ($_SESSION['logon'] == true) {
 <script>
 var data = {
 	// A labels array that can contain any sort of values
-	labels: ['<?php echo implode("','", array_keys($consumptionLast12Months)); ?>'],
+	labels: ['<?php echo implode("','", array_reverse(array_keys($consumptionLast12Months))); ?>'],
 	// Our series array that contains series objects or in this case series data arrays
 	series: [
-		[<?php echo implode(",", $consumptionLast12Months); ?>]
+		[<?php echo implode(",", array_reverse($consumptionLast12Months)); ?>]
 	]
 };
 
