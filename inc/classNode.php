@@ -80,6 +80,8 @@ class node {
   public function readingsByMonth() {
     global $db;
     
+    $returnArray = array();
+    
     $sql  = "SELECT DATE_FORMAT(date, '%Y-%m') AS date, MAX(reading1) AS reading1";
     $sql .= " FROM readings";
     $sql .= " WHERE node = '" . $this->uid . "'";
