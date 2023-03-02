@@ -135,7 +135,6 @@ class node {
   
   public function consumptionByMonth() {
     $readings = $this->readingsByMonth();
-    //printArray($readings);
     
     $consumption = array();
     
@@ -145,15 +144,31 @@ class node {
       $thisMonthReading = $value;
       $previousMonthReading = $readings[$previousMonth];
       
+      if ($date != array_key_last($readings)) {
+        $consumption[$date] = $thisMonthReading - $previousMonthReading;
+      }
       //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . "<br />";
-      $consumption[$date] = $thisMonthReading - $previousMonthReading;
       $i++;
     }
     
     //krsort($consumption);
     
     return $consumption;
+  }
+  
+  public function co2ByMonth() {
+    global $settingsClass;
     
+    $consumption = $this->consumptionByMonth();
+    
+    $unitCO2 = $settingsClass->value("unit_co2e_" . $this->type);
+    
+    $co2ByMonth = array();
+    foreach ($consumption AS $date => $value) {
+      $co2ByMonth[$date] = ($value * $unitCO2);
+    }
+    
+    return $co2ByMonth;
   }
 
   public function consumptionForMonth($date = null) {

@@ -270,6 +270,24 @@ class location {
     return $totalCO2;
   }
   
+  public function co2ByMonth() {
+    $nodes = $this->allNodes();
+    
+    $co2Array = array();
+    foreach ($nodes AS $node) {
+      $node = new node($node['uid']);
+      
+      foreach ($node->co2ByMonth() AS $date => $value) {
+        $co2Array[$date] = $co2Array[$date] + $value;
+      }
+      
+    }
+    
+    $co2Array = array_reverse($co2Array);
+    
+    return $co2Array;
+  }
+  
   public function delete() {
     global $db, $logsClass;
     

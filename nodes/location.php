@@ -4,6 +4,7 @@ $dateFrom = date('Y-m-d', strtotime('12 months ago'));
 $dateTo = date('Y-m-d');
 
 $location = new location($_GET['locationUID']);
+
 $readingsClass = new readings();
 $nodesClass = new nodes();
 $nodes = $location->allnodes("all");
@@ -12,12 +13,13 @@ $totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("electri
 $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $settingsClass->value("unit_co2e_gas");
 $totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
 
-$totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 
 
-$monthlyCO2 = $location->co2BetweenDatesByMonth();
+
+$monthlyCO2 = $location->co2ByMonth();
 $monthlyCO2previous = $location->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
 
+$totalCO2 = array_sum($monthlyCO2);
 $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 ?>
 
@@ -160,7 +162,7 @@ for (var i = 0; i < locations.length; i++) {
 var options = {
 	series: [{
 		name: "CO2",
-		data: [<?php echo implode(",", $location->consumptionBetweenDatesByMonth("electric")); ?>]
+		data: [<?php echo implode(",", $monthlyCO2); ?>]
 	}],
 	chart: {
 		id: 'chart-monthly',
@@ -178,12 +180,12 @@ var options = {
 		curve: 'smooth'
 	},
 	xaxis: {
-		categories: ['<?php echo implode("','", array_keys($location->consumptionBetweenDatesByMonth("electric"))); ?>']
+		categories: ['<?php echo implode("','", array_keys($monthlyCO2)); ?>']
 	},
 	yaxis: {
 	  labels: {
 		formatter: function (value) {
-		  return value + "kg";
+		  return value.toFixed(2) + "kg";
 		}
 	  },
 	},

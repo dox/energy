@@ -6,18 +6,18 @@ $dateFrom = date('Y-m-d', strtotime('12 months ago'));
 $dateTo = date('Y-m-d');
 
 
-$monthlyConsumptionElectric = array_sum($site->consumptionBetweenDatesByMonth("electric"));
-$monthlyConsumptionGas = array_sum($site->consumptionBetweenDatesByMonth("gas"));
-$monthlyConsumptionWater = array_sum($site->consumptionBetweenDatesByMonth("water"));
+$monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
+$monthlyConsumptionGas = $site->consumptionBetweenDatesByMonth("gas");
+$monthlyConsumptionWater = $site->consumptionBetweenDatesByMonth("water");
 
 $monthlyCO2 = $site->co2BetweenDatesByMonth($dateFrom, $dateTo);
 $monthlyCO2previous = $site->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
 
 $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 
-$totalCO2Electric = $monthlyConsumptionElectric * $settingsClass->value("unit_co2e_electric");
-$totalCO2Gas = $monthlyConsumptionGas * $settingsClass->value("unit_co2e_gas");
-$totalCO2Water = $monthlyConsumptionWater * $settingsClass->value("unit_co2e_water");
+$totalCO2Electric = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_electric");
+$totalCO2Gas = array_sum($monthlyConsumptionGas) * $settingsClass->value("unit_co2e_gas");
+$totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("unit_co2e_water");
 ?>
 <div class="container px-4 py-5">
 	<?php
