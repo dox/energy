@@ -348,6 +348,7 @@ chartMonthly.render();
 var options = {
 	series: [<?php echo implode(",", $locationData); ?>],
 	chart: {
+		id: 'chart-location',
 		width: 380,
 		type: 'pie',
 		toolbar: {
