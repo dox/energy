@@ -301,7 +301,6 @@ foreach ($nodes AS $node) {
 
   $locationData[$location->cleanName()] = $locationData[$location->cleanName()] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 }
-printArray($locationData);
 ?>
 
 <script>
