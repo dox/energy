@@ -175,10 +175,10 @@ $totalCO2Water = $monthlyConsumptionWater * $settingsClass->value("unit_co2e_wat
 // Chart-Monthly
 var options = {
 	series: [{
-		name: "This Year's Consumption",
+		name: "This Year",
 		data: [<?php echo implode(",", $monthlyCO2); ?>]
 	}, {
-		name: "Last Year's Consumption",
+		name: "Last Year",
 		data: [<?php echo implode(",", $monthlyCO2previous); ?>]
 	}],
 	chart: {
@@ -205,7 +205,7 @@ var options = {
 	yaxis: {
 	  labels: {
 		formatter: function (value) {
-		  return (value/1000) + "t";
+		  return (value/1000).toFixed(2) + "t";
 		}
 	  },
 	},

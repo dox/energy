@@ -159,7 +159,7 @@ for (var i = 0; i < locations.length; i++) {
 // Chart-Monthly
 var options = {
 	series: [{
-		name: "Monthly Consumption",
+		name: "CO2",
 		data: [<?php echo implode(",", $location->consumptionBetweenDatesByMonth("electric")); ?>]
 	}],
 	chart: {
@@ -183,7 +183,7 @@ var options = {
 	yaxis: {
 	  labels: {
 		formatter: function (value) {
-		  return value + "<?php echo $node->unit; ?>";
+		  return value + "kg";
 		}
 	  },
 	},

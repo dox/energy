@@ -7,7 +7,6 @@ $dateTo = date('Y-m-d');
 
 
 $monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
-printArray($monthlyConsumptionElectric);
 ?>
 
 <div class="container">
