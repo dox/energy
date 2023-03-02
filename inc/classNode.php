@@ -157,41 +157,15 @@ class node {
   }
 
   public function consumptionForMonth($date = null) {
-    global $db;
-
     if ($date == null) {
       $date = date('Y-m-d');
     }
     
-    $cacheValue = $this->getFromCache($date);
-    if ($cacheValue != false) {
-      return $cacheValue;
-    } else {
-      $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
-      
-          // get this month's and previous months readings
-          $thisMonthReading = $this->readingForMonth($date);
-          $previousMonthReading = $this->readingForMonth($previousMonthDate);
-      
-          // check if there is actually a reading for this/previous month
-          if ($thisMonthReading == 0 || $previousMonthReading == 0) {
-            $difference = 0;
-          } else {
-            // the difference between the 2 readings is the consumption
-            $difference = $thisMonthReading - $previousMonthReading;
-          }
-      
-          // check in case the difference is a negative value (it shouldn't be!)
-          if ($difference < 0) {
-            $difference = 0;
-          }
-          
-          $this->cache($date, $difference);
-      
-          return $difference;
-    }
-
+    $date = date('Y-m', strtotime($date));
     
+    $consumptionForMonth = $this->consumptionByMonth()[$date];
+    
+    return $consumptionForMonth;
   }
 
   public function consumptionForYear($year = null) {
