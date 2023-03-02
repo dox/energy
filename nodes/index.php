@@ -49,7 +49,7 @@ $totalCO2Water = $monthlyConsumptionWater * $settingsClass->value("unit_co2e_wat
 
 			</div>
 			<div class="card-body p-2">
-				<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
+				<div id="chart-monthly"></div>
 			</div>
 		</div>
 	</div>
@@ -169,46 +169,48 @@ $totalCO2Water = $monthlyConsumptionWater * $settingsClass->value("unit_co2e_wat
 	</div>
 </div>
 
+
+
 <script>
-var data = {
-	// A labels array that can contain any sort of values
-	labels: ['<?php echo implode("','", array_keys($monthlyCO2)); ?>'],
-	// Our series array that contains series objects or in this case series data arrays
+// Chart-Monthly
+var options = {
 	series: [{
-		name: 'This Year',
+		name: "This Year's Consumption",
 		data: [<?php echo implode(",", $monthlyCO2); ?>]
-	},{
-		name: 'Previous Year',
+	}, {
+		name: "Last Year's Consumption",
 		data: [<?php echo implode(",", $monthlyCO2previous); ?>]
-	}]
+	}],
+	chart: {
+		id: 'chart-monthly',
+		type: 'area',
+		height: 300,
+		toolbar: {
+			tools: {
+				zoomout: false,
+				zoomin: false,
+				pan: false
+			}
+		}
+	},
+	dataLabels: {
+		enabled: false,
+	},
+	stroke: {
+		curve: 'smooth'
+	},
+	xaxis: {
+		categories: ['<?php echo implode("','", array_keys($monthlyCO2)); ?>']
+	},
+	yaxis: {
+	  labels: {
+		formatter: function (value) {
+		  return (value/1000) + "t";
+		}
+	  },
+	},
 };
 
-new Chartist.Line('.ct-chart-sales-value', data, {
-	low: 0,
-	showArea: true,
-	fullWidth: true,
-	series: {
-		'Previous Year': {
-			showLine: false,
-			showPoint: false
-		}
-	},
-	plugins: [
-		//Chartist.plugins.tooltip()
-		Chartist.plugins.legend()
-	],
-	axisX: {
-		// On the x-axis start means top and end means bottom
-		position: 'end',
-		showGrid: true
-	},
-	axisY: {
-		// On the y-axis start means left and end means right
-		showGrid: false,
-		showLabel: true,
-		labelInterpolationFnc: function(value) {
-			return (value / 1000) + 't';
-		}
-	}
-});
+var chartMonthly = new ApexCharts(document.querySelector("#chart-monthly"), options);
+chartMonthly.render();
 </script>

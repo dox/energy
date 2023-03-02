@@ -26,8 +26,6 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
 	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
 
-$readingsClass = new readings();
-$recentReadings = $readingsClass->node_all_readings($node->uid, 5);
 
 $thisYearDateFrom = date('Y-m-d', strtotime('12 months ago'));
 $thisYearDateTo = date('Y-m-d');
@@ -58,7 +56,6 @@ if ($deltaConsumption > 100 && !is_infinite($deltaConsumption)) {
 
 
 
-$yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFrom, $dateTo), true);
 
 ?>
 
@@ -91,7 +88,7 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 				</div>
 			</div>
 			<div class="card-body p-2">
-				<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
+				<div id="chart-monthly"></div>
 			</div>
 		</div>
 	</div>
@@ -199,7 +196,7 @@ if ($_SESSION['logon'] == true) {
 						</thead>
 						<tbody>
 							<?php
-							foreach ($recentReadings AS $reading) {
+							foreach (array_splice($node->readings_all(), 0, 5) AS $reading) {
 								$output  = "<tr>";
 								$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
 								$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
@@ -213,10 +210,7 @@ if ($_SESSION['logon'] == true) {
 						</tbody>
 					</table>
 				</div>
-				
-				<div class="p-2" style="height:350px">
-					<div class="ct-chart-readings ct-double-octave ct-series-b" style="height:100%"></div>
-				</div>
+				<div id="chart-readings"></div>
 			</div>
 			
 			<div class="card border-0 shadow">
@@ -255,7 +249,7 @@ if ($_SESSION['logon'] == true) {
 					<h2 class="fs-5 fw-bold mb-0">Annual Consumption</h2>
 				</div>
 				<div class="card-body">
-					<div class="ct-chart-yearly ct-double-octave ct-series-d"></div>
+					<div id="chart-annual"></div>
 				</div>
 			</div>
 			
@@ -296,102 +290,6 @@ if ($_SESSION['logon'] == true) {
 	<div id="map" style="width: 100%; height: 500px"></div>
 </div>
 
-<script>
-var data = {
-	// A labels array that can contain any sort of values
-	labels: ['<?php echo implode("','", array_reverse(array_keys($consumptionLast12Months))); ?>'],
-	// Our series array that contains series objects or in this case series data arrays
-	series: [
-		[<?php echo implode(",", array_reverse($consumptionLast12Months)); ?>]
-	]
-};
-
-new Chartist.Line('.ct-chart-sales-value', data, {
-	low: 0,
-	showArea: true,
-	fullWidth: true,
-	chartPadding: 40,
-	plugins: [
-		//Chartist.plugins.tooltip()
-	],
-	axisX: {
-		// On the x-axis start means top and end means bottom
-		position: 'end',
-		showGrid: true
-	},
-	axisY: {
-		// On the y-axis start means left and end means right
-		showGrid: false,
-		showLabel: true,
-		labelInterpolationFnc: function(value) {
-			return (value) + '<?php echo $node->unit; ?>';
-		}
-	}
-});
-</script>
-
-<script>
-	var data = {
-		// A labels array that can contain any sort of values
-		labels: ['<?php echo implode("','", array_keys($yearlyConsumption)); ?>'],
-		// Our series array that contains series objects or in this case series data arrays
-		series: [
-			[<?php echo implode(",", $yearlyConsumption); ?>]
-		]
-	};
-	
-	new Chartist.Bar('.ct-chart-yearly', data, {
-		low: 0,
-		showArea: true,
-		fullWidth: true,
-		plugins: [
-			//Chartist.plugins.tooltip()
-		],
-		axisX: {
-			// On the x-axis start means top and end means bottom
-			position: 'end',
-			showGrid: true
-		},
-		axisY: {
-			// On the y-axis start means left and end means right
-			showGrid: false,
-			showLabel: true,
-			labelInterpolationFnc: function(value) {
-				return (value) + '<?php echo $node->unit; ?>';
-			}
-		}
-	});
-</script>
-<script>
-new Chartist.Line('.ct-chart-readings', {
-	series: [
-		{
-			name: 'series-1',
-			data: [
-				<?php
-				$readingsClass = new readings();
-				$readingsAll = array_reverse($readingsClass->node_all_readings($node->uid, 1000), true);
-				
-				foreach ($readingsAll AS $reading) {
-					$date = date('U', strtotime($reading['date']));
-					$value = $reading['reading1'];
-					
-					$readingsArray[] = "{x: new Date(" . $date . "), y: " . $value . "}";
-				}
-				
-				echo implode(",", $readingsArray);
-				?>
-			]
-		}
-	],
-	axisX: {
-		type: Chartist.FixedScaleAxis,
-		labelInterpolationFnc: function(value) {
-			return moment(value).format('MMM D');
-		}
-	}
-});
-</script>
 
 <script>
 	var map = L.map('map').setView([<?php echo $node->geoLocation(); ?>], 18);
@@ -418,4 +316,115 @@ var fp2 = flatpickr("#reading_date", {
   time_24hr: true,
   defaultDate: '<?php echo date('Y-m-d H:i');?>'
 })
+</script>
+
+
+<?php
+// build array for readings
+foreach ($node->readings_all() AS $reading) {
+	$chartReadingsArray[] = "[" . (strtotime($reading['date'])*1000) . "," . $reading['reading1'] . "]";
+}
+
+// build array for annual
+$yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFrom, $dateTo), true);
+?>
+<script>
+// Chart-Monthly
+var options = {
+	series: [{
+		name: "Monthly Consumption",
+		data: [<?php echo implode(",", array_reverse($consumptionLast12Months)); ?>]
+	}],
+	chart: {
+		id: 'chart-monthly',
+		type: 'area',
+		height: 300,
+		toolbar: {
+			tools: {
+				zoomout: false,
+				zoomin: false,
+				pan: false
+			}
+		}
+	},
+	stroke: {
+		curve: 'smooth'
+	},
+	xaxis: {
+		categories: ['<?php echo implode("','", array_reverse(array_keys($consumptionLast12Months))); ?>']
+	},
+	yaxis: {
+	  labels: {
+		formatter: function (value) {
+		  return value + "<?php echo $node->unit; ?>";
+		}
+	  },
+	},
+};
+
+var chartMonthly = new ApexCharts(document.querySelector("#chart-monthly"), options);
+chartMonthly.render();
+
+// Chart-Readings
+var options = {
+	series: [{
+		name: "Reading Value",
+		data: [<?php echo implode (",", $chartReadingsArray); ?>]
+	}],
+	chart: {
+		id: 'chart-readings',
+		type: 'line',
+		toolbar: {
+			tools: {
+				zoomout: false,
+				zoomin: false,
+				pan: false
+			}
+		}
+	},
+	xaxis: {
+		type: 'datetime',
+	},
+	tooltip: {
+		x: {
+			format: 'yyyy MMM dd'
+		}
+	},
+};
+
+var chartReadings = new ApexCharts(document.querySelector("#chart-readings"), options);
+chartReadings.render();
+
+
+// Chart-Annual
+var options = {
+	series: [{
+		name: "Annual Consumption",
+		data: [<?php echo implode (",", $yearlyConsumption); ?>]
+	}],
+	chart: {
+		id: 'chart-annual',
+		type: 'bar',
+		toolbar: {
+			tools: {
+				zoomout: false,
+				zoomin: false,
+				pan: false
+			}
+		}
+	},
+	xaxis: {
+		categories: ['<?php echo implode ("','", array_keys($yearlyConsumption)); ?>']
+	},
+	yaxis: {
+	  labels: {
+		formatter: function (value) {
+		  return value + "<?php echo $node->unit; ?>";
+		}
+	  },
+	},
+};
+
+var chartAnnual = new ApexCharts(document.querySelector("#chart-annual"), options);
+chartAnnual.render();
 </script>

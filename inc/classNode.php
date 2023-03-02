@@ -29,6 +29,19 @@ class node {
 			$this->$key = $value;
 		}
   }
+  
+  public function readings_all() {
+    global $db;
+    
+    $sql  = "SELECT *";
+    $sql .= " FROM readings";
+    $sql .= " WHERE node = '" . $this->uid . "'";
+    $sql .= " ORDER BY date DESC;";
+    
+    $readings = $db->query($sql)->fetchAll();
+    
+    return $readings;
+  }
 
   public function cleanName() {
     $cleanName = str_replace("'", "\'", $this->name);

@@ -130,10 +130,10 @@ foreach ($_POST['locations'] AS $locationUID) {
 	
 	<div class="row">
 		<div class="col-md-8 col-12">
-			<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
+			<div id="chart-monthly"></div>
 		</div>
 		<div class="col-md-4 col-12">
-			<div class="ct-chart-location"></div>
+			<div id="chart-location"></div>
 		</div>
 	</div>
 	
@@ -257,22 +257,6 @@ var date_to = flatpickr("#date_to", {
 </script>
 
 
-
-<!-- Pie Chart showing type usage per location -->
-<?php
-foreach ($nodes AS $node) {
-  $node = new node($node['uid']);
-  $location = new location($node->location);
-
-  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
-}
-
-if (isset($data)) {
-	$labels = "'" . implode("','", array_keys($data)) . "'";
-}
-?>
-
-
 <!-- CONSUMPTION BY MONTH GRAPH -->
 <?php
 // CONSUMPTION BY MONTH
@@ -299,80 +283,6 @@ if (isset($monthlyData)) {
 
 
 <script>
-// LINE CHART
-var data = {
-	// A labels array that can contain any sort of values
-	labels: ['<?php echo implode("','", array_keys($monthlyData)); ?>'],
-	// Our series array that contains series objects or in this case series data arrays
-	series: [
-		[<?php echo implode(",", $monthlyData); ?>]
-	]
-};
-
-new Chartist.Line('.ct-chart-sales-value', data, {
-	low: 0,
-	showArea: true,
-	fullWidth: true,
-	plugins: [
-		//Chartist.plugins.tooltip()
-	],
-	axisX: {
-		// On the x-axis start means top and end means bottom
-		position: 'end',
-		showGrid: true
-	},
-	axisY: {
-		// On the y-axis start means left and end means right
-		showGrid: false,
-		showLabel: true
-	}
-});
-
-
-
-<!-- Pie Chart showing type usage per location -->
-<?php
-foreach ($nodes AS $node) {
-  $node = new node($node['uid']);
-  $location = new location($node->location);
-
-  $data[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
-}
-
-?>
-// PIE CHART
-var data = {
-	// A labels array that can contain any sort of values
-	labels: ['<?php echo implode("','", array_keys($data)); ?>'],
-	// Our series array that contains series objects or in this case series data arrays
-	series: [<?php echo implode(",", $data); ?>]
-};
-
-var options = {
-	labelInterpolationFnc: function(value) {
-		return value[0]
-	}
-};
-
-var responsiveOptions = [
-	  ['screen and (min-width: 640px)', {
-		chartPadding: 10,
-		labelOffset: 30,
-		labelDirection: 'explode',
-		labelInterpolationFnc: function(value) {
-		  return value;
-		}
-	  }],
-	  ['screen and (min-width: 1024px)', {
-		labelOffset: 20,
-		chartPadding: 0
-	  }]
-	];
-
-new Chartist.Pie('.ct-chart-location', data, options, responsiveOptions);
-
-
-
 function toggleCheckboxes(source) {
 	checkboxes = document.getElementsByName('locations[]');
 	for(var i=0, n=checkboxes.length;i<n;i++) {
@@ -381,10 +291,74 @@ function toggleCheckboxes(source) {
 }
 </script>
 
+
+
 <?php
-echo "<table><tr>";
-foreach ($monthlyData AS $data) {
-	echo "<td>" . $data . "</td>";
+$locationData = array();
+foreach ($nodes AS $node) {
+  $node = new node($node['uid']);
+  $location = new location($node->location);
+
+  $locationData[$location->name] = $data[$location->name] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
 }
-echo "</tr></table>";
 ?>
+
+<script>
+// Chart-Monthly
+var options = {
+	series: [{
+		name: "Monthly Consumption",
+		data: [<?php echo implode(",", $monthlyData); ?>]
+	}],
+	chart: {
+		id: 'chart-monthly',
+		type: 'area',
+		height: 300,
+		toolbar: {
+			tools: {
+				zoomout: false,
+				zoomin: false,
+				pan: false
+			}
+		}
+	},
+	dataLabels: {
+		enabled: false,
+	},
+	stroke: {
+		curve: 'smooth'
+	},
+	xaxis: {
+		categories: ['<?php echo implode("','", array_keys($monthlyData)); ?>']
+	},
+	yaxis: {
+	  labels: {
+		formatter: function (value) {
+		  return value + "<?php echo $nodeUnit; ?>";
+		}
+	  },
+	},
+};
+
+var chartMonthly = new ApexCharts(document.querySelector("#chart-monthly"), options);
+chartMonthly.render();
+
+// Chart-Location
+var options = {
+	series: [<?php echo implode(",", $locationData); ?>],
+	chart: {
+		width: 380,
+		type: 'pie',
+		toolbar: {
+			show: true
+		}
+	},
+	labels: ['<?php echo implode("','", array_keys($locationData)); ?>']
+};
+
+var chart = new ApexCharts(document.querySelector("#chart"), options);
+chart.render();
+
+var chartLocation = new ApexCharts(document.querySelector("#chart-location"), options);
+chartLocation.render();
+</script>

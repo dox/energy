@@ -61,7 +61,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						</div>
 				</div>
 				<div class="card-body p-2">
-					<div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
+					<div id="chart-monthly"></div>
 				</div>
 			</div>
 		</div>
@@ -153,37 +153,42 @@ for (var i = 0; i < locations.length; i++) {
 	.bindPopup(locations[i][0])
 }
 </script>
-
+	
 
 <script>
-	var data = {
-		// A labels array that can contain any sort of values
-		labels: ['<?php echo implode("','", array_keys($location->consumptionBetweenDatesByMonth("electric"))); ?>'],
-		// Our series array that contains series objects or in this case series data arrays
-		series: [
-			[<?php echo implode(",", $location->consumptionBetweenDatesByMonth("electric")); ?>]
-		]
-	};
-	
-	new Chartist.Line('.ct-chart-sales-value', data, {
-		low: 0,
-		showArea: true,
-		fullWidth: true,
-		plugins: [
-			//Chartist.plugins.tooltip()
-		],
-		axisX: {
-			// On the x-axis start means top and end means bottom
-			position: 'end',
-			showGrid: true
-		},
-		axisY: {
-			// On the y-axis start means left and end means right
-			showGrid: false,
-			showLabel: true,
-			labelInterpolationFnc: function(value) {
-				return (value / 1000) + 't';
+// Chart-Monthly
+var options = {
+	series: [{
+		name: "Monthly Consumption",
+		data: [<?php echo implode(",", $location->consumptionBetweenDatesByMonth("electric")); ?>]
+	}],
+	chart: {
+		id: 'chart-monthly',
+		type: 'area',
+		height: 300,
+		toolbar: {
+			tools: {
+				zoomout: false,
+				zoomin: false,
+				pan: false
 			}
 		}
-	});
-	</script>
+	},
+	stroke: {
+		curve: 'smooth'
+	},
+	xaxis: {
+		categories: ['<?php echo implode("','", array_keys($location->consumptionBetweenDatesByMonth("electric"))); ?>']
+	},
+	yaxis: {
+	  labels: {
+		formatter: function (value) {
+		  return value + "<?php echo $node->unit; ?>";
+		}
+	  },
+	},
+};
+
+var chartMonthly = new ApexCharts(document.querySelector("#chart-monthly"), options);
+chartMonthly.render();
+</script>
