@@ -1,10 +1,14 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <?php
 $node = new node($_GET['nodeUID']);
 $consumptionLast12Months = array_slice($node->consumptionByMonth(), 0, 12, true);
+$consumptionPrevious12Months = array_slice($node->consumptionByMonth(), 12, 12, true);
+
+
+$consumptionLast12MonthsTotal = array_sum($consumptionLast12Months);
+$consumptionPrevious12MonthsTotal = array_sum($consumptionPrevious12Months);
 
 $location = new location($node->location);
 
@@ -27,33 +31,19 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
 }
 
 
-$thisYearDateFrom = date('Y-m-d', strtotime('12 months ago'));
-$thisYearDateTo = date('Y-m-d');
 
-$consumptionLast12MonthsTotal = array_sum($consumptionLast12Months);
-
-$previousYearDateFrom = date('Y-m-d', strtotime('24 months ago'));
-$previousYearDateTo = date('Y-m-d', strtotime('12 months ago'));
-$consumptionPreviousYear12Months = array_reverse($node->consumptionBetweenDatesByMonth($previousYearDateFrom, $previousYearDateTo), true);
-$consumptionPreviousYear12MonthsTotal = array_sum($consumptionPreviousYear12Months);
-
-if ($consumptionLast12MonthsTotal > 0 && $consumptionPreviousYear12MonthsTotal > 0) {
-	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPreviousYear12MonthsTotal)*100;
-} else {
-	$deltaConsumption = 0;
-}
-
-if ($deltaConsumption > 100 && !is_infinite($deltaConsumption)) {
-	$deltaConsumption = number_format($deltaConsumption-100, 1);
-	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . $deltaConsumption . "%</span> increase compared to previous year";
-} elseif ($deltaConsumption <= 100 && !is_infinite($deltaConsumption)) {
+if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal) {
+	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
+	
 	$deltaConsumption = number_format(100-$deltaConsumption, 1);
-	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . $deltaConsumption . "%</span> decrease compared to previous year";
+	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . $deltaConsumption . "%</span> less than previous year";
 } else {
 	$deltaConsumption = 0;
-	$deltaConsumptionText = "&nbsp";
+	
+	$deltaConsumption = number_format($deltaConsumption-100, 1);
+	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . $deltaConsumption . "%</span> more than previous year";
+	
 }
-
 
 
 
@@ -332,12 +322,15 @@ $yearlyConsumption = array_reverse($node->consumptionBetweenDatesByYear($dateFro
 // Chart-Monthly
 var options = {
 	series: [{
-		name: "Monthly Consumption",
+		name: "This Year",
 		data: [<?php echo implode(",", array_reverse($consumptionLast12Months)); ?>]
+	}, {
+		name: "Previous Year",
+		data: [<?php echo implode(",", array_reverse($consumptionPrevious12Months)); ?>]
 	}],
 	chart: {
 		id: 'chart-monthly',
-		type: 'area',
+		type: 'bar',
 		height: 300,
 		toolbar: {
 			tools: {
@@ -346,6 +339,9 @@ var options = {
 				pan: false
 			}
 		}
+	},
+	dataLabels: {
+		enabled: false
 	},
 	stroke: {
 		curve: 'smooth'

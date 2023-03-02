@@ -13,10 +13,8 @@ $totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("electri
 $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $settingsClass->value("unit_co2e_gas");
 $totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
 
+$monthlyCO2 = array_slice($location->co2ByMonth(),0,12);
 
-
-
-$monthlyCO2 = $location->co2ByMonth();
 $monthlyCO2previous = $location->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
 
 $totalCO2 = array_sum($monthlyCO2);
@@ -83,7 +81,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("electric")), 0) . " kWh"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg"; ?></span> CO2
+					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg"; ?></span> CO2-->
 				</div>
 			</div>
 		</div>
@@ -101,7 +99,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("gas")), 0) . " m&#179;"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg"; ?></span> CO2
+					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg"; ?></span> CO2-->
 				</div>
 			</div>
 		</div>
@@ -119,7 +117,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("water")), 0) . " m&#179;"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg"; ?></span> CO2
+					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg"; ?></span> CO2-->
 				</div>
 			</div>
 		</div>
@@ -162,7 +160,7 @@ for (var i = 0; i < locations.length; i++) {
 var options = {
 	series: [{
 		name: "CO2",
-		data: [<?php echo implode(",", $monthlyCO2); ?>]
+		data: [<?php echo implode(",", array_reverse($monthlyCO2)); ?>]
 	}],
 	chart: {
 		id: 'chart-monthly',
@@ -179,13 +177,16 @@ var options = {
 	stroke: {
 		curve: 'smooth'
 	},
+	dataLabels: {
+		enabled: false
+	},
 	xaxis: {
-		categories: ['<?php echo implode("','", array_keys($monthlyCO2)); ?>']
+		categories: ['<?php echo implode("','", array_keys(array_reverse($monthlyCO2))); ?>']
 	},
 	yaxis: {
 	  labels: {
 		formatter: function (value) {
-		  return value.toFixed(2) + "kg";
+		  return (value/1000).toFixed(2) + "t";
 		}
 	  },
 	},

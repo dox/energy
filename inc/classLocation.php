@@ -283,8 +283,6 @@ class location {
       
     }
     
-    $co2Array = array_reverse($co2Array);
-    
     return $co2Array;
   }
   
