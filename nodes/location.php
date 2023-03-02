@@ -14,6 +14,7 @@ $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $se
 $totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
 
 $monthlyCO2 = array_slice($location->co2ByMonth(),0,12);
+$monthlyPreviousCO2 = array_slice($location->co2ByMonth(),12,12);
 
 $monthlyCO2previous = $location->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
 
@@ -159,9 +160,12 @@ for (var i = 0; i < locations.length; i++) {
 // Chart-Monthly
 var options = {
 	series: [{
-		name: "CO2",
-		data: [<?php echo implode(",", array_reverse($monthlyCO2)); ?>]
-	}],
+			name: "This Year",
+			data: [<?php echo implode(",", array_reverse($monthlyCO2)); ?>]
+		},{
+			name: "Previous Year",
+			data: [<?php echo implode(",", array_reverse($monthlyPreviousCO2)); ?>]
+		}],
 	chart: {
 		id: 'chart-monthly',
 		type: 'area',
