@@ -32,7 +32,7 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
 
 
 
-if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal) {
+if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
 	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
 	
 	$deltaConsumption = number_format(100-$deltaConsumption, 1);
