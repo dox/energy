@@ -6,7 +6,12 @@ $dateFrom = date('Y-m-d', strtotime('12 months ago'));
 $dateTo = date('Y-m-d');
 
 
-$monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
+printArray($site->consumptionByMonth("Gas"));
+
+//$monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
+//$monthlyConsumptionGas = $site->consumptionBetweenDatesByMonth("gas");
+//$monthlyConsumptionWater = $site->consumptionBetweenDatesByMonth("water");
+
 ?>
 
 <div class="container">

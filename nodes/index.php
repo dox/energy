@@ -5,19 +5,38 @@ $datePreviousFrom = date('Y-m-d', strtotime('24 months ago'));
 $dateFrom = date('Y-m-d', strtotime('12 months ago'));
 $dateTo = date('Y-m-d');
 
+$monthlyConsumptionElectric = $site->consumptionByMonth("Electric");
+$monthlyConsumptionGas = $site->consumptionByMonth("Gas");
+$monthlyConsumptionWater = $site->consumptionByMonth("Water");
 
-$monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
-$monthlyConsumptionGas = $site->consumptionBetweenDatesByMonth("gas");
-$monthlyConsumptionWater = $site->consumptionBetweenDatesByMonth("water");
+foreach (array_slice($monthlyConsumptionElectric, 0, 12) AS $date => $value) {
+	$electricCO2 = $monthlyConsumptionElectric[$date] * $settingsClass->value("unit_co2e_electric");
+	$gasCO2 = $monthlyConsumptionGas[$date] * $settingsClass->value("unit_co2e_gas");
+	$waterCO2 = $monthlyConsumptionWater[$date] * $settingsClass->value("unit_co2e_water");
+	
+	$monthlyCO2[$date] = $electricCO2 + $gasCO2 + $waterCO2;
+}
 
-$monthlyCO2 = $site->co2BetweenDatesByMonth($dateFrom, $dateTo);
-$monthlyCO2previous = $site->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
+foreach (array_slice($monthlyConsumptionElectric, 12, 12) AS $date => $value) {
+	$electricCO2 = $monthlyConsumptionElectric[$date] * $settingsClass->value("unit_co2e_electric");
+	$gasCO2 = $monthlyConsumptionGas[$date] * $settingsClass->value("unit_co2e_gas");
+	$waterCO2 = $monthlyConsumptionWater[$date] * $settingsClass->value("unit_co2e_water");
+	
+	$monthlyCO2previous[$date] = $electricCO2 + $gasCO2 + $waterCO2;
+}
+
+$monthlyCO2 = array_reverse($monthlyCO2);
+$monthlyCO2previous = array_reverse($monthlyCO2previous);
 
 $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 
-//$totalCO2Electric = array_sum($monthlyConsumptionElectric) * $settingsClass->value("unit_co2e_electric");
-//$totalCO2Gas = array_sum($monthlyConsumptionGas) * $settingsClass->value("unit_co2e_gas");
-//$totalCO2Water = array_sum($monthlyConsumptionWater) * $settingsClass->value("unit_co2e_water");
+$totalElectric = number_format(array_sum(array_slice($monthlyConsumptionElectric, 0, 12)), 0);
+$totalGas = number_format(array_sum(array_slice($monthlyConsumptionGas, 0, 12)), 0);
+$totalWater = number_format(array_sum(array_slice($monthlyConsumptionWater, 0, 12)), 0);
+
+$totalCO2Electric = $totalElectric * $settingsClass->value("unit_co2e_electric");
+$totalCO2Gas = $totalGas * $settingsClass->value("unit_co2e_gas");
+$totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
 ?>
 <div class="container px-4 py-5">
 	<?php
@@ -66,10 +85,10 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Electricity</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($monthlyConsumptionElectric), 0) . " kWh"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo $totalElectric . " kWh"; ?></h4>
 						</div>
 					</div>
-					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg"; ?></span> CO2-->
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg CO2e"; ?></span>
 				</div>
 			</div>
 		</div>
@@ -84,10 +103,10 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Gas</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($monthlyConsumptionGas), 0) . " m³"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalGas, 0) . " m³"; ?></h4>
 						</div>
 					</div>
-					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg"; ?></span> CO2-->
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg CO2e"; ?></span>
 				</div>
 			</div>
 		</div>
@@ -102,10 +121,10 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Water</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($monthlyConsumptionWater), 0) . " m³"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalWater, 0) . " m³"; ?></h4>
 						</div>
 					</div>
-					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg"; ?></span> CO2-->
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg CO2e"; ?></span>
 				</div>
 			</div>
 		</div>
