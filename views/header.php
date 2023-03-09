@@ -25,47 +25,50 @@ $navbarArray['settings'] = array(
 );
 ?>
 
-<header class="p-3 bg-dark text-bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"><svg class="me-2" width="40" height="40" role="img" aria-label="<?php echo site_name; ?>"><use xlink:href="inc/icons.svg#logo"></use></svg></a>
-      
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-      <?php
-      foreach ($navbarArray AS $key => $navBarLink) {
-        $icon = "<svg class=\"m-1\" width=\"20\" height=\"20\"><use xlink:href=\"inc/icons.svg#" . $navBarLink['icon'] . "\"></use></svg>";
-        
-        if ($key == $_GET['n']) {
-          $active = " text-white";
-        } else {
-          if (in_array($_GET['n'], $navBarLink['pages'])) {
+    <a class="navbar-brand" href="index.php" ><svg class="me-2 text-light" width="40" height="40" role="img" aria-label="<?php echo site_name; ?>"><use xlink:href="inc/icons.svg#logo"></use></svg></a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <?php
+        foreach ($navbarArray AS $key => $navBarLink) {
+          $icon = "<svg class=\"m-1\" width=\"20\" height=\"20\"><use xlink:href=\"inc/icons.svg#" . $navBarLink['icon'] . "\"></use></svg>";
+          
+          if ($key == $_GET['n']) {
             $active = " text-white";
           } else {
-            $active = "text-secondary";
+            if (in_array($_GET['n'], $navBarLink['pages'])) {
+              $active = " text-white";
+            } else {
+              $active = "text-secondary";
+            }
           }
-        }
-        
-        $output  = "<li>";
-        $output .= "<a class=\"nav-link px-2 " . $active . "\" href=\"" . $navBarLink['link'] . "\" >";
-        $output .= $icon;
-        $output .= $navBarLink['title'];
-        $output .= "</a>";
-        $output .= "</li>";
-        
-        echo $output;
-      }
-      ?>
-      </ul>
-      
-      <div class="text-end">
-        <?php
-        if (isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
-          echo "<a href=\"index.php?logout=true\" class=\"btn btn-outline-light me-2\">Log Off</a>";
-        } else {
-          echo "<a href=\"index.php?n=logon\" class=\"btn btn-warning\">Log In</a>";
+          
+          $output  = "<li class=\"nav-item\">";
+          $output .= "<a class=\"nav-link px-2 " . $active . "\" href=\"" . $navBarLink['link'] . "\" >";
+          $output .= $icon;
+          $output .= $navBarLink['title'];
+          $output .= "</a>";
+          $output .= "</li>";
+          
+          echo $output;
         }
         ?>
-      </div>
+      </ul>
+      <form class="d-flex">
+        <?php
+        if (isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
+          echo "<a href=\"index.php?logout=true\" class=\"btn btn-success me-2\">Log Off</a>";
+        } else {
+          echo "<a href=\"index.php?n=logon\" class=\"btn btn-outline-success\">Log In</a>";
+        }
+        ?>
+      </form>
     </div>
   </div>
-</header>
+</nav>
