@@ -46,10 +46,10 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 							<?php
 							if ($deltaCO2 <= 0) {
 								echo "<svg class=\"text-success\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-down\"></use></svg>";
-								echo " <span class=\"text-success\">" . $deltaCO2 . "% decrease compared to previous year</span>";
+								echo " <span class=\"text-success\">" . abs($deltaCO2) . "% decrease compared to previous year</span>";
 							} else {
 								echo "<svg class=\"text-danger\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-up\"></use></svg>";
-								echo " <span class=\"text-danger\">" . $deltaCO2 . "% increase compared to previous year</span>";
+								echo " <span class=\"text-danger\">" . abs($deltaCO2) . "% increase compared to previous year</span>";
 							}
 							?>
 						</div>

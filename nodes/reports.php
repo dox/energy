@@ -205,7 +205,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 								
 								  $co2eUnit = $settingsClass->value($settingName);
 								  ?>
-								<h3 class="mb-1">CO&#8322;</h3>
+								<h3 class="mb-1">CO&#8322;e</h3>
 								<h4 class="fw-extrabold mb-1"><?php echo number_format($totalConsumption * $co2eUnit, 0) . " kg"; ?></h4>
 							</div>
 						</div>

@@ -36,12 +36,12 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
 	
 	$deltaConsumption = number_format(100-$deltaConsumption, 1);
-	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . $deltaConsumption . "%</span> less than previous year";
+	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . abs($deltaConsumption) . "%</span> less than previous year";
 } else {
 	$deltaConsumption = 0;
 	
 	$deltaConsumption = number_format($deltaConsumption-100, 1);
-	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . $deltaConsumption . "%</span> more than previous year";
+	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . abs($deltaConsumption) . "%</span> more than previous year";
 	
 }
 
@@ -130,7 +130,7 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 							</div>
 						</div>
 						<div class="col-9">
-							<h3 class="mb-1">CO&#8322;</h3>
+							<h3 class="mb-1">CO&#8322;e</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal * $co2eUnit, 0) . " kg"; ?></h4>
 						</div>
 					</div>

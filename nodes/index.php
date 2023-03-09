@@ -27,7 +27,6 @@ foreach (array_slice($monthlyConsumptionElectric, 12, 12) AS $date => $value) {
 
 $monthlyCO2 = array_reverse($monthlyCO2);
 $monthlyCO2previous = array_reverse($monthlyCO2previous);
-
 $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 
 $totalElectric = number_format(array_sum(array_slice($monthlyConsumptionElectric, 0, 12)), 0);
@@ -37,6 +36,8 @@ $totalWater = number_format(array_sum(array_slice($monthlyConsumptionWater, 0, 1
 $totalCO2Electric = $totalElectric * $settingsClass->value("unit_co2e_electric");
 $totalCO2Gas = $totalGas * $settingsClass->value("unit_co2e_gas");
 $totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
+
+$totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 ?>
 <div class="container px-4 py-5">
 	<?php
@@ -50,17 +51,17 @@ $totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
 				<div class="d-block mb-3 mb-sm-0">
 					<div class="fs-5 fw-normal mb-2">CO&#8322; Emissions from Energy Usage</div>
 					
-					<h2 class="fs-3 fw-extrabold"><?php echo number_format(array_sum($monthlyCO2)/1000, 2) . " tonnes"; ?></h2>
+					<h2 class="fs-3 fw-extrabold"><?php echo number_format($totalCO2, 2) . " tonnes"; ?></h2>
 					
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
 						<?php
 						if ($deltaCO2 <= 0) {
 							echo "<svg class=\"text-success\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-down\"></use></svg>";
-							echo " <span class=\"text-success\">" . $deltaCO2 . "% decrease compared to previous year</span>";
+							echo " <span class=\"text-success\">" . abs($deltaCO2) . "% decrease compared to previous year</span>";
 						} else {
 							echo "<svg class=\"text-danger\" width=\"1em\" height=\"1em\" role=\"img\"><use xlink:href=\"inc/icons.svg#graph-up\"></use></svg>";
-							echo " <span class=\"text-danger\">" . $deltaCO2 . "% increase compared to previous year</span>";
+							echo " <span class=\"text-danger\">" . abs($deltaCO2) . "% increase compared to previous year</span>";
 						}
 						?>
 					</div>
@@ -88,7 +89,7 @@ $totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
 							<h4 class="fw-extrabold mb-1"><?php echo $totalElectric . " kWh"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg CO2e"; ?></span>
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " tonnes CO&#8322;e"; ?></span>
 				</div>
 			</div>
 		</div>
@@ -106,7 +107,7 @@ $totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalGas, 0) . " m³"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg CO2e"; ?></span>
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " tonnes CO&#8322;e"; ?></span>
 				</div>
 			</div>
 		</div>
@@ -124,7 +125,7 @@ $totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalWater, 0) . " m³"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg CO2e"; ?></span>
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " tonnes CO&#8322;e"; ?></span>
 				</div>
 			</div>
 		</div>
