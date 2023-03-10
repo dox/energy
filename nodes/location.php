@@ -24,7 +24,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 
 <div class="container px-4 py-5">
 	<?php
-	$title     = $location->name;
+	$title     = $location->cleanName();
 	$actions[] = array('name' => 'Edit Location', 'icon' => 'edit', 'href' => 'index.php?n=location_edit&locationUID=' . $location->uid);
 	$actions[] = array('name' => 'Add Node', 'icon' => 'add', 'href' => 'index.php?n=node_add&locationUID=' . $location->uid);
 	$actions[] = array('name' => 'Delete Location', 'icon' => 'delete', 'href' => 'javascript:locationDelete(' . $location->uid . ');', 'class' => 'text-danger');

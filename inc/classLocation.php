@@ -18,10 +18,15 @@ class location {
 			$this->$key = $value;
 		}
   }
-
+  
   public function cleanName() {
     $cleanName = str_replace("'", "\'", $this->name);
-
+    
+    // catch empty names
+    if ($cleanName == "") {
+      $cleanName = "[no-name]";
+    }
+  
     return $cleanName;
   }
 

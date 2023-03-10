@@ -11,6 +11,7 @@ if (isset($_POST['name'])) {
   <?php
   $title     = "Nodes";
   $actions[] = array('name' => 'Add New Node', 'icon' => 'add', 'href' => 'index.php?n=node_add');
+  $actions[] = array('name' => 'Add New Location', 'icon' => 'nodes', 'href' => 'index.php?n=location_add');
   $actions[] = array('name' => 'Show Hidden Nodes', 'icon' => 'hidden', 'href' => 'javascript:toggleHiddenMeters();');
   $actions[] = array('name' => 'separator');
   $actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=nodes&filter=all');
@@ -26,7 +27,7 @@ if (isset($_POST['name'])) {
     
     $output  = "<div class=\"card mb-4 shadow\">";
     $output .= "<div class=\"card-header\">";
-    $output .= "<h2 class=\"mb-0\"><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->name . "</a></h2>";
+    $output .= "<h2 class=\"mb-0\"><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->cleanName() . "</a></h2>";
     $output .= "</div>"; //card-header
     $output .= "<div class=\"table-responsive\">";
     $output .= "<table class=\"table table-hover table-flush table-nowrap mb-0\">";
