@@ -32,13 +32,13 @@ $monthlyCO2 = array_reverse($monthlyCO2);
 $monthlyCO2previous = array_reverse($monthlyCO2previous);
 $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
 
-$totalElectric = number_format(array_sum(array_slice($monthlyConsumptionElectric, 0, 12)), 0);
-$totalGas = number_format(array_sum(array_slice($monthlyConsumptionGas, 0, 12)), 0);
-$totalWater = number_format(array_sum(array_slice($monthlyConsumptionWater, 0, 12)), 0);
+$totalElectric = 0 + array_sum(array_slice($monthlyConsumptionElectric, 0, 12));
+$totalGas = 0 + array_sum(array_slice($monthlyConsumptionGas, 0, 12));
+$totalWater = 0 + array_sum(array_slice($monthlyConsumptionWater, 0, 12));
 
-$totalCO2Electric = $totalElectric * $settingsClass->value("unit_co2e_electric");
-$totalCO2Gas = $totalGas * $settingsClass->value("unit_co2e_gas");
-$totalCO2Water = $totalWater * $settingsClass->value("unit_co2e_water");
+$totalCO2Electric = 0 + $totalElectric * $settingsClass->value("unit_co2e_electric");
+$totalCO2Gas = 0 + $totalGas * $settingsClass->value("unit_co2e_gas");
+$totalCO2Water = 0 + $totalWater * $settingsClass->value("unit_co2e_water");
 
 $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 ?>
@@ -54,7 +54,7 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 				<div class="d-block mb-3 mb-sm-0">
 					<div class="fs-5 fw-normal mb-2">CO&#8322; Emissions from Energy Usage</div>
 					
-					<h2 class="fs-3 fw-extrabold"><?php echo number_format($totalCO2, 2) . " tonnes"; ?></h2>
+					<h2 class="fs-3 fw-extrabold"><?php echo number_format($totalCO2/1000, 2) . " tonnes"; ?></h2>
 					
 					<div class="small mt-2">
 						<span class="fw-normal me-2">Total for the last 12 months across all utilities</span>
@@ -89,10 +89,10 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Electricity</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo $totalElectric . " kWh"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalElectric, 0) . " kWh"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " tonnes CO&#8322;e"; ?></span>
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric/1000, 0) . " tonnes CO&#8322;e"; ?></span>
 				</div>
 			</div>
 		</div>
@@ -110,7 +110,7 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalGas, 0) . " m³"; ?></h4>
 						</div>
 					</div>
-					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " tonnes CO&#8322;e"; ?></span>
+					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas/1000, 0) . " tonnes CO&#8322;e"; ?></span>
 				</div>
 			</div>
 		</div>
