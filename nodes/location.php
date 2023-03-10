@@ -190,7 +190,7 @@ var options = {
 	yaxis: {
 	  labels: {
 		formatter: function (value) {
-		  return (value/1000).toFixed(2) + "t";
+		  return (value/1000) + "t";
 		}
 	  },
 	},

@@ -312,7 +312,7 @@ var options = {
 	}],
 	chart: {
 		id: 'chart-monthly',
-		type: 'area',
+		type: 'bar',
 		height: 300,
 		toolbar: {
 			tools: {
