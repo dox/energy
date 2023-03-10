@@ -9,6 +9,9 @@ $monthlyConsumptionElectric = $site->consumptionByMonth("Electric");
 $monthlyConsumptionGas = $site->consumptionByMonth("Gas");
 $monthlyConsumptionWater = $site->consumptionByMonth("Water");
 
+$monthlyCO2 = array();
+$monthlyCO2previous = array();
+
 foreach (array_slice($monthlyConsumptionElectric, 0, 12) AS $date => $value) {
 	$electricCO2 = $monthlyConsumptionElectric[$date] * $settingsClass->value("unit_co2e_electric");
 	$gasCO2 = $monthlyConsumptionGas[$date] * $settingsClass->value("unit_co2e_gas");
