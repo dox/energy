@@ -5,14 +5,19 @@ function printArray($array) {
 	echo ("</pre>");
 }
 
-function bestGuess($array, $dateRequried) {
-	$monthBefore = date('Y-m', strftime($dateRequried . " -01 -1 month"));
-	$monthAfter = date('Y-m', strtotime($dateRequried . " + month"));
+function averagePerDay($array) {
+	$firstValue = reset($array);
+	$firstDate = array_key_first($array);
 	
-	$valueBeforeDate = "";
-	$valueAfterDate = "";
+	$lastValue = end($array);
+	$lastDate = array_key_last($array);
 	
-	//echo $dateRequried . " before= " . $monthBefore . " and after= " . $monthAfter;
+	$diff = abs(strtotime($firstDate) - strtotime($lastDate));
+	$days = $diff / (60*60*24);
+	
+	$changePerDayAvg = ($firstValue - $lastValue) / $days;
+	
+	return $changePerDayAvg;
 }
 
 function displayReading($reading = null) {

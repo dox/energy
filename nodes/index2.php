@@ -1,12 +1,34 @@
 <?php
 $node = new node(6);
 
+$array = array("2023-03" => "100", "2023-02" => "90", "2022-12" => "80", "2022-08" => "30");
+printArray($array);
 
-printArray($node->readingsByMonth());
 
-//$monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
-//$monthlyConsumptionGas = $site->consumptionBetweenDatesByMonth("gas");
-//$monthlyConsumptionWater = $site->consumptionBetweenDatesByMonth("water");
+$lookup = "2023-01";
+
+
+foreach ($array AS $date => $value) {
+	
+	
+	$prevDate = date('Y-m', strtotime("-1 month", strtotime($date)));
+	//echo $prevDate . "<br />";
+	
+	if (key_exists($prevDate, $array)) {
+		//echo $prevDate . " exists<br />";
+	} else {
+		//echo $prevDate . " doesn't exist<br />";
+		//echo "Element before=" . current($array) . "<br />";
+		//echo "Element after=" . next($array) . "<br />";
+		
+		$date1 = strtotime(current($array));
+		$date2 = strtotime(next($array));
+		
+		$diff = abs(strtotime($date2) - strtotime($date1));
+		echo $diff;
+	}
+	//echo $value . "<br />";
+}
 
 ?>
 
