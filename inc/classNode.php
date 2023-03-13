@@ -145,7 +145,7 @@ class node {
       $previousMonthReading = $readings[$previousMonth];
       
       if ($date != array_key_last($readings)) {
-        $consumption[$date] = $thisMonthReading - $previousMonthReading;
+        $consumption[$date] = max($thisMonthReading - $previousMonthReading, 0);
       }
       //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . "<br />";
       $i++;
@@ -794,5 +794,7 @@ class node {
 
 
 }
+
+
 
 ?>
