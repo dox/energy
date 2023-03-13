@@ -5,6 +5,16 @@ function printArray($array) {
 	echo ("</pre>");
 }
 
+function bestGuess($array, $dateRequried) {
+	$monthBefore = date('Y-m', strftime($dateRequried . " -01 -1 month"));
+	$monthAfter = date('Y-m', strtotime($dateRequried . " + month"));
+	
+	$valueBeforeDate = "";
+	$valueAfterDate = "";
+	
+	//echo $dateRequried . " before= " . $monthBefore . " and after= " . $monthAfter;
+}
+
 function displayReading($reading = null) {
 	if (is_numeric( $reading ) && floor( $reading ) != $reading) {
 		$returnReading = $reading;

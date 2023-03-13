@@ -1,12 +1,8 @@
 <?php
-$site = new site();
-
-$datePreviousFrom = date('Y-m-d', strtotime('24 months ago'));
-$dateFrom = date('Y-m-d', strtotime('12 months ago'));
-$dateTo = date('Y-m-d');
+$node = new node(6);
 
 
-printArray($site->consumptionByMonth("Gas"));
+printArray($node->readingsByMonth());
 
 //$monthlyConsumptionElectric = $site->consumptionBetweenDatesByMonth("electric");
 //$monthlyConsumptionGas = $site->consumptionBetweenDatesByMonth("gas");

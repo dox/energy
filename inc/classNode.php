@@ -121,7 +121,7 @@ class node {
         $laterDate = date('Y-m', strtotime("+1 month", strtotime($previousDate)));
         
         $average = ($returnArray[$beforePreviousDate] + $returnArray[$laterDate])/2;
-        
+        //$average = bestGuess($returnArray, $date);
         $returnArray[$previousDate] = $average;
       }
       

@@ -30,19 +30,20 @@ if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
 	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
 
-
-
 if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
 	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
 	
 	$deltaConsumption = number_format(100-$deltaConsumption, 1);
 	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . abs($deltaConsumption) . "%</span> less than previous year";
-} else {
-	$deltaConsumption = 0;
+} elseif ($consumptionLast12MonthsTotal >= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
+	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
 	
 	$deltaConsumption = number_format($deltaConsumption-100, 1);
 	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . abs($deltaConsumption) . "%</span> more than previous year";
 	
+} else {
+	
+	$deltaConsumptionText = "";
 }
 
 
