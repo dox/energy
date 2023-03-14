@@ -122,7 +122,7 @@ class node {
       // if a reading for this month doesn't exist, create one
       if (!array_key_exists($previousDate, $returnArray) && $thisDate != date('Y-m')) {
          
-        $returnArray[$previousDate] = $value - $averagePerMonth;
+         $returnArray[$previousDate] = $value;
       }
       
       $i++;
