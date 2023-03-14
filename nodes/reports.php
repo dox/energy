@@ -24,6 +24,24 @@ foreach ($_POST['locations'] AS $locationUID) {
 
   $nodeUnit = $node['unit'];
 }
+
+$dateFromClean = date('Y-m', strtotime(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT)));
+$dateToClean   = date('Y-m', strtotime(filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT)));
+
+foreach ($nodes AS $node) {
+	$node = new node($node['uid']);
+	
+	foreach ($node->consumptionByMonth() AS $date => $value) {
+		if (date('Y-m', strtotime($date)) >= $dateFromClean && date('Y-m', strtotime($date)) <= $dateToClean) {
+			$location = new location($node->location);
+			
+			$totalConsumption[$date] = $totalConsumption[$date] + $value;
+			$totalConsumptionByLocation[$location->cleanName()] = $totalConsumptionByLocation[$location->cleanName()] + $value;
+		}
+	}
+}
+$totalConsumption = array_reverse($totalConsumption);
+
 ?>
 
 <div class="container px-4 py-5">
@@ -150,19 +168,11 @@ foreach ($_POST['locations'] AS $locationUID) {
 								</div>
 							</div>
 							<div class="col-9">
-								<?php
-								  $totalConsumption = 0;
-								  foreach ($nodes AS $node) {
-									$node = new node($node['uid']);
-									$totalConsumption = $totalConsumption + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
-								  }
-								  ?>
 								<h3 class="mb-1"><?php echo $node->type; ?></h3>
-								<h4 class="fw-extrabold mb-1"><?php echo number_format($totalConsumption, 0) . " " . $nodeUnit; ?></h4>
+								<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($totalConsumption), 0) . " " . $nodeUnit; ?></h4>
 							</div>
 							&nbsp;
 						</div>
-						<?php echo $deltaConsumptionText; ?>
 					</div>
 				</div>
 			</div>
@@ -180,7 +190,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 								  $settingName = "unit_cost_" . filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED);
 								
 								  $unitCost = $settingsClass->value($settingName);
-								  $totalCost = $totalConsumption * $unitCost;
+								  $totalCost = array_sum($totalConsumption) * $unitCost;
 								 ?>
 								<h3 class="mb-1">Cost</h3>
 								<h4 class="fw-extrabold mb-1"><?php echo "£" . number_format($totalCost, 0); ?></h4>
@@ -206,7 +216,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 								  $co2eUnit = $settingsClass->value($settingName);
 								  ?>
 								<h3 class="mb-1">CO&#8322;e</h3>
-								<h4 class="fw-extrabold mb-1"><?php echo number_format($totalConsumption * $co2eUnit, 0) . " kg"; ?></h4>
+								<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($totalConsumption) * $co2eUnit, 0) . " kg"; ?></h4>
 							</div>
 						</div>
 						<?php echo "Calculated at " . number_format($co2eUnit, 2) . " kg per " . $node->unit; ?>
@@ -258,30 +268,6 @@ var date_to = flatpickr("#date_to", {
 
 
 <!-- CONSUMPTION BY MONTH GRAPH -->
-<?php
-// CONSUMPTION BY MONTH
-$data = array();
-foreach ($nodes AS $node) {
-  $node = new node($node['uid']);
-
-  $nodeData = $node->consumptionBetweenDatesByMonth(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
-
-  foreach ($nodeData AS $monthData => $value) {
-	$monthlyData[$monthData] = $monthlyData[$monthData] + $value;
-  }
-
-}
-if (isset($monthlyData)) {
-	$monthlyData = array_reverse($monthlyData);
-	$monthlylabels = "'" . implode("','", array_keys($monthlyData)) . "'";
-}
-
-?>
-
-
-
-
-
 <script>
 function toggleCheckboxes(source) {
 	checkboxes = document.getElementsByName('locations[]');
@@ -291,24 +277,12 @@ function toggleCheckboxes(source) {
 }
 </script>
 
-
-
-<?php
-$locationData = array();
-foreach ($nodes AS $node) {
-  $node = new node($node['uid']);
-  $location = new location($node->location);
-
-  $locationData[$location->cleanName()] = $locationData[$location->cleanName()] + $node->consumptionBetweenTwoDates(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT), filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT));
-}
-?>
-
 <script>
 // Chart-Monthly
 var options = {
 	series: [{
 		name: "Monthly Consumption",
-		data: [<?php echo implode(",", $monthlyData); ?>]
+		data: [<?php echo implode(",", $totalConsumption); ?>]
 	}],
 	chart: {
 		id: 'chart-monthly',
@@ -329,7 +303,7 @@ var options = {
 		curve: 'smooth'
 	},
 	xaxis: {
-		categories: ['<?php echo implode("','", array_keys($monthlyData)); ?>']
+		categories: ['<?php echo implode("','", array_keys($totalConsumption)); ?>']
 	},
 	yaxis: {
 	  labels: {
@@ -345,7 +319,7 @@ chartMonthly.render();
 
 // Chart-Location
 var options = {
-	series: [<?php echo implode(",", $locationData); ?>],
+	series: [<?php echo implode(",", $totalConsumptionByLocation); ?>],
 	chart: {
 		id: 'chart-location',
 		width: 380,
@@ -354,7 +328,7 @@ var options = {
 			show: true
 		}
 	},
-	labels: ['<?php echo implode("','", array_keys($locationData)); ?>']
+	labels: ['<?php echo implode("','", array_keys($totalConsumptionByLocation)); ?>']
 };
 
 var chart = new ApexCharts(document.querySelector("#chart"), options);
