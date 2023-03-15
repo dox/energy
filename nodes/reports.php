@@ -35,6 +35,8 @@ foreach ($nodes AS $node) {
 		if (date('Y-m', strtotime($date)) >= $dateFromClean && date('Y-m', strtotime($date)) <= $dateToClean) {
 			$location = new location($node->location);
 			
+			$nodeConsumptionByMonth[$node->cleanName()][date('Y-m', strtotime($date))] = $value;
+			
 			$totalConsumption[$date] = $totalConsumption[$date] + $value;
 			$totalConsumptionByLocation[$location->cleanName()] = $totalConsumptionByLocation[$location->cleanName()] + $value;
 		}
@@ -42,6 +44,13 @@ foreach ($nodes AS $node) {
 }
 $totalConsumption = array_reverse($totalConsumption);
 
+foreach ($nodeConsumptionByMonth AS $date => $values) {
+	if (array_sum($values) == 0) {
+		unset($nodeConsumptionByMonth[$date]);
+	} else {
+		$nodeConsumptionByMonth[$date] = array_reverse($nodeConsumptionByMonth[$date]);
+	}
+}
 ?>
 
 <div class="container px-4 py-5">
@@ -224,6 +233,8 @@ $totalConsumption = array_reverse($totalConsumption);
 				</div>
 			</div>
 		</div>
+		
+		<div id="chart-heat"></div>
 </div>
 
 <div class="b-example-divider"></div>
@@ -331,9 +342,44 @@ var options = {
 	labels: ['<?php echo implode("','", array_keys($totalConsumptionByLocation)); ?>']
 };
 
-var chart = new ApexCharts(document.querySelector("#chart"), options);
-chart.render();
-
 var chartLocation = new ApexCharts(document.querySelector("#chart-location"), options);
 chartLocation.render();
+</script>
+
+
+
+<?php
+foreach ($nodeConsumptionByMonth AS $nodeName => $monthConsumptions) {
+	$output  = "{name: '" . $nodeName . "',";
+	$output .= "data: [";
+	
+	$outputMonth = array();
+	foreach ($monthConsumptions AS $month => $value) {
+		$outputMonth[] .= "{x: '" . $month . "', y: " . $value . "}";
+	}
+	
+	$output .= implode(", ", $outputMonth);
+	$output .= "]}";
+	
+	$outputArray[] = $output;
+}
+?>
+
+<script>
+
+ var options = {
+  series: [<?php echo implode(",", $outputArray); ?>],
+  chart: {
+  height: 500,
+  type: 'heatmap',
+},
+dataLabels: {
+  enabled: false
+},
+
+
+};
+
+var chartHeat = new ApexCharts(document.querySelector("#chart-heat"), options);
+chartHeat.render();
 </script>
