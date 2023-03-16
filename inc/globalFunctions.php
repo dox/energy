@@ -15,7 +15,11 @@ function averagePerDay($array) {
 	$diff = abs(strtotime($firstDate) - strtotime($lastDate));
 	$days = $diff / (60*60*24);
 	
-	$changePerDayAvg = ($firstValue - $lastValue) / $days;
+	if ($firstValue > 0 && $lastValue > 0 && $days > 0) {
+		$changePerDayAvg = ($firstValue - $lastValue) / $days;
+	} else {
+		$changePerDayAvg = 0;
+	}
 	
 	return $changePerDayAvg;
 }

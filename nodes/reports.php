@@ -28,6 +28,7 @@ foreach ($_POST['locations'] AS $locationUID) {
 $dateFromClean = date('Y-m', strtotime(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT)));
 $dateToClean   = date('Y-m', strtotime(filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT)));
 
+$totalConsumption = array();
 foreach ($nodes AS $node) {
 	$node = new node($node['uid']);
 	
