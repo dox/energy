@@ -18,11 +18,14 @@ foreach ($_POST['locations'] AS $locationUID) {
   $sql = "SELECT * FROM nodes WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' " . $enabled . " AND type IN ('" . implode("','", filter_var_array($_POST['nodes'], FILTER_SANITIZE_ENCODED)) . "');";
   $nodesByLocation = $db->query($sql)->fetchAll();
   
-  foreach ($nodesByLocation AS $node) {
-	$nodes[] = $node;
+  if (!empty($nodesByLocation)) {
+	  foreach ($nodesByLocation AS $node) {
+		  $nodes[] = $node;
+		}
+		
+		$nodeUnit = $node['unit'];
   }
-
-  $nodeUnit = $node['unit'];
+  
 }
 
 $dateFromClean = date('Y-m', strtotime(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT)));
