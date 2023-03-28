@@ -135,7 +135,7 @@ class node {
   
   public function consumptionByMonth() {
     $readings = $this->readingsByMonth();
-    
+    //printArray($readings);
     $consumption = array();
     
     $i = 0;
@@ -145,7 +145,14 @@ class node {
       $previousMonthReading = $readings[$previousMonth];
       
       if ($date != array_key_last($readings)) {
-        $consumption[$date] = max($thisMonthReading - $previousMonthReading, 0);
+        $value = max($thisMonthReading - $previousMonthReading, 0);
+        
+        // if reading data for this month is missing, try to calculate an average consumption
+        if ($value == 0 && !empty($consumption)) {
+          $value = array_sum($consumption) / count($consumption);
+        }
+        
+        $consumption[$date] = $value;
       }
       //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . "<br />";
       $i++;
