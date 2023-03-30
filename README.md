@@ -5,7 +5,7 @@ A working, live example of this utility can be viewed at: http://readings.seh.ox
 
 ## Installation
 * Setup your webserver as you normally would (Apache with PHP and mySQL work well!)
-* cd to your web directory and run ```git clone https://github.com/dox/energy .```
+* cd to your web directory and run ```git clone https://github.com/dox/energy .``` (the full stop at the end of this command is required!)
 * Then install (via composer) [ldaprecord](https://ldaprecord.com)
     * ```composer require directorytree/ldaprecord```
 * If not already installed, install php-mysql
