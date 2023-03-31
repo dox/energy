@@ -33,12 +33,12 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
 	
 	$deltaConsumption = number_format(100-$deltaConsumption, 1);
-	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . abs($deltaConsumption) . "%</span> less than previous year";
+	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . $deltaConsumption . "%</span> less than previous year";
 } elseif ($consumptionLast12MonthsTotal >= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
 	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
 	
 	$deltaConsumption = number_format($deltaConsumption-100, 1);
-	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . abs($deltaConsumption) . "%</span> more than previous year";
+	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . $deltaConsumption . "%</span> more than previous year";
 	
 } else {
 	
@@ -216,8 +216,6 @@ if ($_SESSION['logon'] == true) {
 							$output .= "</div>";
 							$output .= "</form>";
 						} else {
-							$output  = "<a href=\"" . $_SERVER[REQUEST_URI] . "&deletePhoto=true\" class=\"btn btn-warning\">Delete Photograph</a>";
-							
 							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
 							$output .= "<button type=\"submit\" class=\"btn btn-warning\">Delete Photograph</button>";
 							$output .= "<input type=\"hidden\" id=\"deletePhoto\" name=\"deletePhoto\" value=\"true\"/>";
