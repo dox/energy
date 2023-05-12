@@ -113,23 +113,26 @@ class node {
     
     $averagePerMonth = averagePerDay($returnArray) * 30;
     
-    foreach ($returnArray AS $date => $value) {
-      $thisValue = $value;
-      $thisDate = $date;
-      
+    foreach ($returnArray AS $readingDate => $readingValue) {
       $previousDate = date('Y-m', strtotime("-" . $i . " month", strtotime($mostRecentDate)));
       
-      // if a reading for this month doesn't exist, create one
-      if (!array_key_exists($previousDate, $returnArray) && $thisDate != date('Y-m')) {
-         
-         $returnArray[$previousDate] = $value;
+      // if a reading for the previous month doesn't exist
+      if (!array_key_exists($previousDate, $returnArray) && $readingDate != date('Y-m')) {
+        $previousPreviousDate = date('Y-m', strtotime("-" . $i + 1 . " month", strtotime($mostRecentDate)));
+        $previousPreviousValue = $returnArray[$previousPreviousDate];
+        
+           //echo "value for " . $previousDate . " didn't exist for reading date " . $readingDate . " so using date " . $previousPreviousDate . " with a value of " . $previousPreviousValue . "<br />";
+           
+           $predictedValue = ($previousPreviousValue + $readingValue) / 2;
+           
+        $returnArray[$previousDate] = $predictedValue;
       }
       
       $i++;
     }
     
     krsort($returnArray);
-    //printArray($returnArray);
+    
     return $returnArray;
   }
   
