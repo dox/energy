@@ -90,7 +90,7 @@ class node {
     return $return;
   }
   
-  public function readingsByMonth() {
+  public function readingsByMonth($debug = false) {
     global $db;
     
     $returnArray = array();
@@ -109,7 +109,7 @@ class node {
     
     $mostRecentDate = date('Y-m', strtotime(array_key_first($returnArray)));
     
-    $i = 1;
+    $i = 0;
     
     $averagePerMonth = averagePerDay($returnArray) * 30;
     
@@ -120,9 +120,11 @@ class node {
       if (!array_key_exists($previousDate, $returnArray) && $readingDate != date('Y-m')) {
         $previousPreviousDate = date('Y-m', strtotime("-" . $i + 1 . " month", strtotime($mostRecentDate)));
         $previousPreviousValue = $returnArray[$previousPreviousDate];
-        
-           //echo "value for " . $previousDate . " didn't exist for reading date " . $readingDate . " so using date " . $previousPreviousDate . " with a value of " . $previousPreviousValue . "<br />";
-           
+          
+          if ($debug == true) {
+            echo "<pre>value for " . $previousDate . " didn't exist for reading date " . $readingDate . " so using date " . $previousPreviousDate . " with a value of " . $previousPreviousValue . "</pre>";
+          }
+          
            $predictedValue = ($previousPreviousValue + $readingValue) / 2;
            
         $returnArray[$previousDate] = $predictedValue;
@@ -136,9 +138,8 @@ class node {
     return $returnArray;
   }
   
-  public function consumptionByMonth() {
-    $readings = $this->readingsByMonth();
-    //printArray($readings);
+  public function consumptionByMonth($debug = false) {
+    $readings = $this->readingsByMonth($debug);
     $consumption = array();
     
     $i = 0;
@@ -147,17 +148,20 @@ class node {
       $thisMonthReading = $value;
       $previousMonthReading = $readings[$previousMonth];
       
+      
       if ($date != array_key_last($readings)) {
         $value = max($thisMonthReading - $previousMonthReading, 0);
+        $guess = "";
         
         // if reading data for this month is missing, try to calculate an average consumption
-        if ($value == 0 && !empty($consumption)) {
+        if (($value == 0 || !isset($previousMonthReading)) && !empty($consumption)) {
           $value = array_sum($consumption) / count($consumption);
+          $guess = " (guessed)";
         }
         
         $consumption[$date] = $value;
       }
-      //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . "<br />";
+      //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . $guess . "<br />";
       $i++;
     }
     
