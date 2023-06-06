@@ -2,6 +2,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <?php
+admin_gatekeeper();
+
 $node = new node($_GET['nodeUID']);
 
 $consumptionLast12Months = array_slice($node->consumptionByMonth(), 0, 12, true);
