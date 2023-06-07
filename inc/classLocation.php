@@ -43,7 +43,10 @@ class location {
   }
 
   public function geoMarker() {
-    $array[] = "['" . $this->cleanName() . "', " . $this->geoLocation() . "]";
+    $url = "index.php?n=node&nodeUID=" . $this->uid;
+    $name = "<a href=\"" . $url . "\">" . $this->cleanName() . "</a>";
+    
+    $array[] = "['" . $name . "', " . $this->geoLocation() . "]";
 
     return $array;
   }
@@ -53,7 +56,11 @@ class location {
 
     foreach ($nodes AS $node) {
       $node = new node($node['uid']);
-      $array[] = "['" . $node->cleanName() . "', " . $node->geoLocation() . "]";
+
+      $url = "index.php?n=node&nodeUID=" . $node->uid;
+      $name = "<a href=\"" . $url . "\">" . $node->cleanName() . "</a>";
+      
+      $array[] = "['" . $name . "', " . $node->geoLocation() . "]";
 
     }
 

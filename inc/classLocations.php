@@ -15,8 +15,11 @@ class locations extends location {
     $locations = $this->all();
 
     foreach ($locations AS $location) {
+      $url = "index.php?n=location&locationUID=" . $this->uid;
+      $name = "<a href=\"" . $url . "\">" . $location->cleanName() . "</a>";
+      
       $location = new location($location['uid']);
-      $array[] = "['" . $location->cleanName() . "', " . $location->geoLocation() . "]";
+      $array[] = "['" . $name . "', " . $location->geoLocation() . "]";
 
     }
 

@@ -68,7 +68,11 @@ class site {
 	  
 	  foreach ($nodes AS $node) {
 		  $node = new node($node['uid']);
-		  $array[] = "['" . $node->cleanName() . "', " . $node->geoLocation() . "]";
+		  
+		  $url = "index.php?n=node&nodeUID=" . $node->uid;
+		  $name = "<a href=\"" . $url . "\">" . $node->cleanName() . "</a>";
+		  
+		  $array[] = "['" . $name . "', " . $node->geoLocation() . "]";
 	  }
 	  
 	  return $array;
