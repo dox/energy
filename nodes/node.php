@@ -96,6 +96,13 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 						<div class="col-9">
 							<h3 class="mb-1"><?php echo $node->type; ?></h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal, 0) . " " .$node->unit; ?></h4>
+							<?php
+							if ($node->type == "Gas") {
+								echo "<p><i>(~" . convertm3TokWh($consumptionLast12MonthsTotal) . " kWh" . ")</i></p>";
+							} else {
+								echo "<p>&nbsp;</p>";
+							}
+							?>
 						</div>
 					</div>
 					<?php echo $deltaConsumptionText; ?>

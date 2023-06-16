@@ -184,7 +184,11 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 								<h3 class="mb-1"><?php echo $node->type; ?></h3>
 								<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($totalConsumption), 0) . " " . $nodeUnit; ?></h4>
 							</div>
-							&nbsp;
+							<?php
+							if ($node->type == "Gas") {
+								echo "<i>(~" . convertm3TokWh(array_sum($totalConsumption)) . " kWh" . ")</i>";
+							}
+							?>
 						</div>
 					</div>
 				</div>

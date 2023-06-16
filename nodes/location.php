@@ -80,6 +80,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						<div class="col-9">
 							<h3 class="mb-1">Electricity</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("electric")), 0) . " kWh"; ?></h4>
+							<p>&nbsp;</p>
 						</div>
 					</div>
 					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric, 0) . " kg"; ?></span> CO2-->
@@ -98,6 +99,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						<div class="col-9">
 							<h3 class="mb-1">Gas</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("gas")), 0) . " m&#179;"; ?></h4>
+							<p><i>(~<?php echo convertm3TokWh(array_sum($location->consumptionBetweenDatesByMonth("gas"))) . " kWh"; ?>)</i></p>
 						</div>
 					</div>
 					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg"; ?></span> CO2-->
@@ -116,6 +118,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2pr
 						<div class="col-9">
 							<h3 class="mb-1">Water</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("water")), 0) . " m&#179;"; ?></h4>
+							<p>&nbsp;</p>
 						</div>
 					</div>
 					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " kg"; ?></span> CO2-->

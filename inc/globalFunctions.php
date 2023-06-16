@@ -180,4 +180,23 @@ function pageHeader($title = null, $actionsArray = null) {
 	
 	return $output;
 }
+
+function convertm3TokWh($m3 = 0) {
+	global $settingsClass;
+	
+	$calorificValue = $settingsClass->value("gas_calorific_value");
+	
+	if (!isset($calorificValue)) {
+		$calorificValue = "38";
+	}
+	
+	$correctionFactor = "1.02264";
+	$kWhCorrectionFactor = "3.6";
+	
+	$kWh = (($m3 + $calorificValue) * $correctionFactor) / $kWhCorrectionFactor;
+	
+	$kWh = number_format($kWh, 0);
+	
+	return $kWh;
+}
 ?>
