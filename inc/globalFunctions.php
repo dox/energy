@@ -193,7 +193,7 @@ function convertm3TokWh($m3 = 0) {
 	$correctionFactor = "1.02264";
 	$kWhCorrectionFactor = "3.6";
 	
-	$kWh = (($m3 + $calorificValue) * $correctionFactor) / $kWhCorrectionFactor;
+	$kWh = (($m3 * $calorificValue) * $correctionFactor) / $kWhCorrectionFactor;
 	
 	$kWh = number_format($kWh, 0);
 	
