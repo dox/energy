@@ -75,12 +75,10 @@ class readings {
     $sql .= " VALUES('" . $nodeUID . "', '" . $readingDate . "', '" . $reading1 . "', '" . $username . "')";
     
     $insert = $db->query($sql);
-    $node->expireCache();
-    $location->expireCache();
 
     $logArray['category'] = "reading";
     $logArray['type'] = "success";
-    $logArray['value'] = "[readingUID:" . $insert->lastInsertID() . "] for [nodeUID:" . $nodeUID . "] created successfully";
+    $logArray['value'] = "[readingUID:" . $insert->lastInsertID() . "] (" . $reading1 . ") for [nodeUID:" . $nodeUID . "] created successfully";
     $logsClass->create($logArray);
 
     return $insert;
