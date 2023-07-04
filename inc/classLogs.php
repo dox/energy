@@ -45,28 +45,15 @@ class logs {
     $logs = $db->query($sql);
   }
 
-  public function purge() {
-		global $db;
-
-    $logs_retention = "360";
-
-		$sql = "SELECT * FROM " . self::$table_name . " WHERE type = 'purge' AND DATE(date) = '" . date('Y-m-d') . "' LIMIT 1";
-		$lastPurge = $db->query($sql)->fetchAll();
-
-		if (empty($lastPurge)) {
-			$sql = "SELECT * FROM " . self::$table_name . " WHERE DATE(date) < '" . date('Y-m-d', strtotime('-' . $logs_retention . ' days')) . "'";
-			$logsToDelete = $db->query($sql)->fetchAll();
-
-			if (count($logsToDelete) > 0) {
-				$sql = "DELETE FROM " . self::$table_name . " WHERE DATE(date) < '" . date('Y-m-d', strtotime('-' . $logs_retention . ' days')) . "'";
-				$logsToDelete = $db->query($sql);
-			}
-		}
-    $logArray['category'] = "admin";
-    $logArray['type'] = "warning";
-    $logArray['value'] = count($logsToDelete) . " log(s) purged";
-    $this->create($logArray);
-	}
+  public function purge() {global $db;
+    global $db;
+    
+    $logs_retention = "365";
+    
+	$sql = "DELETE FROM " . self::$table_name . " WHERE DATE(date) < '" . date('Y-m-d', strtotime('-' . $logs_retention . ' days')) . "'";
+    
+    $db->query($sql);
+  }
 
   private function displayCategoryBadge($category = null) {
     if ($category == "node") {
