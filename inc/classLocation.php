@@ -117,14 +117,11 @@ class location {
       $date = date('Y-m-d');
     }
     
-    $cacheValue = $this->getFromCache($type, $date);
-    if ($cacheValue != false) {
-      return $cacheValue;
-    } else {
+    
       $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
       
           // get this month's and previous months readings
-          $nodes = $this->allNodesByType($type);
+          $nodes = $this->allNodesByType($type, "all");
       
           $totalConsumption = 0;
           foreach ($nodes AS $node) {
@@ -140,7 +137,6 @@ class location {
           $this->cache($type, $date, $totalConsumption);
       
           return $totalConsumption;
-    }
   }
   
   public function cache($type, $date, $value) {

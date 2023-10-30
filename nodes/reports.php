@@ -248,6 +248,38 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 	
 	echo $nodesClass->nodeTable($nodes);
 	
+	// temp data analysis
+	/*
+	$nodes = $nodesClass->all();
+	$output = "<table>";
+	foreach ($nodes AS $node) {
+		$node = new node($node['uid']);
+		
+		$output .= "<tr><td>" . $node->name . "</td><td> " . $node->consumptionBetweenTwoDates($dateFromClean . "-01", $dateToClean . "-01") . "</td></tr>";
+		
+		
+	}
+	$output .= "</table>";
+	
+	echo $output . "<hr />";
+	
+	
+	$locations = $locationsClass->all();
+	
+	$output = "<table>";
+	foreach ($locations AS $location) {
+		$location = new location($location['uid']);
+		
+		//echo $nodeType;
+		//printArray( $location->consumptionBetweenDatesByMonth("Electric", $dateFromClean . "-01", $dateToClean . "-01"));
+		$output .= "<tr><td>" . $location->name . "</td><td> " . array_sum($location->consumptionBetweenDatesByMonth("Electric", $dateFromClean . "-01", $dateToClean . "-01")) . "</td></tr>";
+		
+		
+	}
+	$output .= "</table>";
+	
+	echo $output;
+	*/
 	?>
 </div>
 
