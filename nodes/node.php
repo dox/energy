@@ -152,7 +152,7 @@ if ($_SESSION['logon'] == true) {
 	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo $node->uid; ?>">
 		  <div class="input-group">
 			<input type="text" class="form-control input-primary " name="reading_date" id="reading_date" placeholder="Select Date" readonly="readonly">
-			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading">
+			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading" min="<?php echo $node->currentReading(); ?>">
 			<button type="submit" class="btn btn-lg btn-primary" name="submit">Submit</button>
 		  </div>
 		</form>
