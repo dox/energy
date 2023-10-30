@@ -90,6 +90,7 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 						<div class="col-9">
 							<h3 class="mb-1">Electricity</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalElectric, 0) . " kWh"; ?></h4>
+							<p>&nbsp;</p>
 						</div>
 					</div>
 					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Electric/1000, 0) . " tonnes CO&#8322;e"; ?></span>
@@ -108,6 +109,7 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 						<div class="col-9">
 							<h3 class="mb-1">Gas</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalGas, 0) . " m³"; ?></h4>
+							<p><i>(~<?php echo convertm3TokWh($totalGas) . " kWh"; ?>)</i></p>
 						</div>
 					</div>
 					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas/1000, 0) . " tonnes CO&#8322;e"; ?></span>
@@ -126,6 +128,7 @@ $totalCO2 = $totalCO2Electric + $totalCO2Gas + $totalCO2Water;
 						<div class="col-9">
 							<h3 class="mb-1">Water</h3>
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($totalWater, 0) . " m³"; ?></h4>
+							<p>&nbsp;</p>
 						</div>
 					</div>
 					<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Water, 0) . " tonnes CO&#8322;e"; ?></span>
