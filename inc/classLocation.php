@@ -134,7 +134,7 @@ class location {
             $totalConsumption = 0;
           }
           
-          $this->cache($type, $date, $totalConsumption);
+          //$this->cache($type, $date, $totalConsumption);
       
           return $totalConsumption;
   }

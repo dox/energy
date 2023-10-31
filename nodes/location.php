@@ -13,13 +13,11 @@ $totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("electri
 $totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $settingsClass->value("unit_co2e_gas");
 $totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
 
-$monthlyCO2 = array_slice($location->co2ByMonth(),0,12);
-$monthlyPreviousCO2 = array_slice($location->co2ByMonth(),12,12);
-
-$monthlyCO2previous = $location->co2BetweenDatesByMonth($datePreviousFrom, $dateFrom);
+$monthlyCO2 = array_slice($location->co2ByMonth(),0,12, true);
+$monthlyPreviousCO2 = array_slice($location->co2ByMonth(),12,12, true);
 
 $totalCO2 = array_sum($monthlyCO2);
-$deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyCO2previous));
+$deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyPreviousCO2));
 ?>
 
 <div class="container px-4 py-5">
