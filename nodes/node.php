@@ -54,6 +54,7 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 	$title     = $node->cleanName();
 	$actions[] = array('name' => 'Edit Node', 'icon' => 'edit', 'href' => 'index.php?n=node_edit&nodeUID= ' . $node->uid);
 	$actions[] = array('name' => 'Delete Node', 'icon' => 'delete', 'href' => 'javascript:nodeDelete(' . $node->uid . ');', 'class' => 'text-danger');
+	$actions[] = array('name' => 'View Debug', 'icon' => 'settings', 'href' => 'index.php?n=node-debug&nodeUID= ' . $node->uid);
 	$actions[] = array('name' => 'separator');
 	$actions[] = array('name' => 'Export Data', 'icon' => 'download', 'href' => 'export.php?type=node&filter=' . $node->uid);
 	

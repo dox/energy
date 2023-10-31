@@ -107,32 +107,6 @@ class node {
       $returnArray[$reading['date']] = $reading['reading1'];
     }
     
-    $mostRecentDate = date('Y-m', strtotime(array_key_first($returnArray)));
-    
-    $i = 0;
-    
-    $averagePerMonth = averagePerDay($returnArray) * 30;
-    
-    foreach ($returnArray AS $readingDate => $readingValue) {
-      $previousDate = date('Y-m', strtotime("-" . $i . " month", strtotime($mostRecentDate)));
-      
-      // if a reading for the previous month doesn't exist
-      if (!array_key_exists($previousDate, $returnArray) && $readingDate != date('Y-m')) {
-        $previousPreviousDate = date('Y-m', strtotime("-" . $i + 1 . " month", strtotime($mostRecentDate)));
-        $previousPreviousValue = $returnArray[$previousPreviousDate];
-          
-          if ($debug == true) {
-            echo "<pre>value for " . $previousDate . " didn't exist for reading date " . $readingDate . " so using date " . $previousPreviousDate . " with a value of " . $previousPreviousValue . "</pre>";
-          }
-          
-           $predictedValue = ($previousPreviousValue + $readingValue) / 2;
-           
-        $returnArray[$previousDate] = $predictedValue;
-      }
-      
-      $i++;
-    }
-    
     krsort($returnArray);
     
     return $returnArray;
@@ -151,21 +125,26 @@ class node {
       
       if ($date != array_key_last($readings)) {
         $value = max($thisMonthReading - $previousMonthReading, 0);
-        $guess = "";
         
         // if reading data for this month is missing, try to calculate an average consumption
-        if (($value == 0 || !isset($previousMonthReading)) && !empty($consumption)) {
-          $value = array_sum($consumption) / count($consumption);
-          $guess = " (guessed)";
+        if ($value == 0 || !array_key_exists($previousMonth, $readings)) {
+          $averages = $this->averagesForReadings();
+                    
+          $value = $averages['differencePerDay'] * 30;
+          
+          $consumption[$previousMonth] = $value;
+          
+          //echo $previousMonth . " didn't have a reading, so using guess of " . $value . "<br />";
         }
         
         $consumption[$date] = $value;
+        
       }
-      //echo "This: " . $date . "= " . $value . " ---- Previous: " . $previousMonth . "= " . $previousMonthReading . $guess . "<br />";
+      
       $i++;
     }
     
-    //krsort($consumption);
+    krsort($consumption);
     
     return $consumption;
   }
@@ -670,6 +649,45 @@ class node {
     
     return true;
   }
+  
+  public function averagesForReadings() {
+    $readings = $this->readingsByMonth();
+    
+    if (count($readings) >= 2) {
+      // Convert the keys (dates) into an array
+      $dates = array_keys($readings);
+      
+      // Find the oldest and newest dates
+      $oldestDate = min($dates);
+      $newestDate = max($dates);
+      
+      // Convert the date strings to DateTime objects for easier date calculations
+      $oldestDateTime = new DateTime($oldestDate);
+      $newestDateTime = new DateTime($newestDate);
+      
+      // Calculate the difference in days
+      $dateDifference = $oldestDateTime->diff($newestDateTime)->days;
+      
+      // Retrieve the values associated with the oldest and newest dates
+      $oldestValue = $readings[$oldestDate];
+      $newestValue = $readings[$newestDate];
+      
+      // Calculate the difference in values
+      $valueDifference = $newestValue - $oldestValue;
+      $differencePerDay = number_format($valueDifference / $dateDifference, 4);
+      
+      // Return the results
+      return [
+          'oldestDate' => $oldestDate,
+          'oldestValue' => $oldestValue,
+          'newestDate' => $newestDate,
+          'newestValue' => $newestValue,
+          'dateDifference' => $dateDifference,
+          'valueDifference' => $valueDifference,
+          'differencePerDay' => $differencePerDay
+      ];
+    }
+  }
 
 
 
@@ -804,11 +822,8 @@ class node {
 
     return $readings;
   }
-
-
+  
 
 }
-
-
 
 ?>

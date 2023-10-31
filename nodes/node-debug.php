@@ -9,156 +9,6 @@ $node = new node($_GET['nodeUID']);
 $consumptionLast12Months = array_slice($node->consumptionByMonth(), 0, 12, true);
 $consumptionPrevious12Months = array_slice($node->consumptionByMonth(), 12, 12, true);
 ?>
-<div class="container px-4 py-5">
-	<div class="row">
-		<div class="col-lg-6 col-12 mb-3">
-			<div class="card shadow">
-				<div class="card-body">
-					<?php
-					printArray($node);
-					?>
-				</div>
-			</div>
-			
-		</div>
-		<div class="col-lg-6 col-12 mb-3">
-			<?php
-			echo $node->displayImage();
-			
-			echo $node->photograph;
-			?>
-		</div>
-	</div>
-	
-	<div class="col-12 mb-3">
-		<div class="card bg-yellow-100 border-0 shadow">
-			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
-				<div class="d-block mb-3 mb-sm-0">
-					<div class="fs-5 fw-normal mb-2"><?php echo $node->type; ?> Consumption (last 12 months)</div>
-					<div class="small mt-2">
-						<span class="fw-normal me-2"> </span>
-						<span class="fas fa-angle-up text-success"></span>
-						<span class="text-success fw-bold"></span>
-					</div>
-				</div>
-				<div class="d-flex ms-auto">
-					<!--<a href="javascript:DownloadAsImage();" class="btn btn-sm text-muted me-3">
-						<svg class="bi" width="24" height="24" role="img"><use xlink:href="inc/icons.svg#download"></use></svg>
-					</a>-->
-				</div>
-			</div>
-			<div class="card-body p-2">
-				<div id="chart-monthly"></div>
-			</div>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-lg-6 col-12 mb-3">
-			<div class="card shadow">
-				<div class="card-body">
-					<h3>Readings</h3>
-					<table class="table">
-						<thead>
-							<th>uid</th>
-							<th>Date</th>
-							<th>Username</th>
-							<th>Reading</th>
-						</thead>
-					<?php
-					foreach ($node->readings_all() AS $reading) {
-						$output  = "<tr>";
-					
-						$output .= "<td>" . $reading['uid'] . "</td>";
-						$output .= "<td>" . $reading['date'] . "</td>";
-						$output .= "<td>" . $reading['username'] . "</td>";
-						$output .= "<td>" . $reading['reading1'] . "</td>";
-						$output .= "</tr>";
-						
-						echo $output;
-					}
-					?>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-6 col-12 mb-3">
-			<div class="card shadow">
-				<div class="card-body">
-					<h3>Consumption</h3>
-					<table class="table">
-						<thead>
-							<th>Date</th>
-							<th>Consumption</th>
-						</thead>
-					<?php
-					foreach ($node->consumptionByMonth($debug = true) AS $date => $value) {
-						$output  = "<tr>";
-						$output .= "<td>" . $date . "</td>";
-						$output .= "<td>" . $value . "</td>";
-						$output .= "</tr>";
-						
-						echo $output;
-					}
-					?>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="b-example-divider"></div>
-
-<?php
-
-
-
-
-
-
-$consumptionLast12MonthsTotal = array_sum($consumptionLast12Months);
-$consumptionPrevious12MonthsTotal = array_sum($consumptionPrevious12Months);
-
-$location = new location($node->location);
-
-if (isset($_FILES['photograph']) && $_SESSION['logon'] == true) {
-	$node->uploadImage($_FILES);
-	$node = new node($_GET['nodeUID']);
-}
-
-if (isset($_POST['deletePhoto']) && $_SESSION['logon'] == true) {
-	$node->deleteImage();
-	$node = new node($_GET['nodeUID']);
-}
-
-$costUnit = $settingsClass->value("unit_cost_" . $node->type);
-$co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
-
-if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
-	$readingsClass = new readings();
-	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
-}
-
-if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
-	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
-	
-	$deltaConsumption = number_format(100-$deltaConsumption, 1);
-	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . $deltaConsumption . "%</span> less than previous year";
-} elseif ($consumptionLast12MonthsTotal >= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
-	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
-	
-	$deltaConsumption = number_format($deltaConsumption-100, 1);
-	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . $deltaConsumption . "%</span> more than previous year";
-	
-} else {
-	
-	$deltaConsumptionText = "";
-}
-
-
-
-?>
 
 <div class="container px-4 py-5">
 	<?php
@@ -232,137 +82,187 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 
 </div>
 
-<div class="b-example-divider"></div>
-
-<?php
-if ($_SESSION['logon'] == true) {
-?>
-
-<div class="container px-4 py-5">
-	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo $node->uid; ?>">
-		  <div class="input-group">
-			<input type="text" class="form-control input-primary " name="reading_date" id="reading_date" placeholder="Select Date" readonly="readonly">
-			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading">
-			<button type="submit" class="btn btn-lg btn-primary" name="submit">Submit</button>
-		  </div>
-		</form>
-		<div id="reading1Help" class="form-text">Previous reading: <?php echo number_format($node->currentReading()) . " " . $node->unit; ?></div>
-</div>
-<div class="b-example-divider"></div>
-<?php } ?>
-
 <div class="container px-4 py-5">
 	<div class="row">
 		<div class="col-lg-6 col-12 mb-3">
-			<div class="card border-0 shadow mb-3">
-				<div class="card-header">
-					<div class="row align-items-center">
-						<div class="col">
-							<h2 class="fs-5 fw-bold mb-0">Recent Readings</h2>
-						</div>
-						<div class="col text-end">
-							<a href="index.php?n=readings&nodeUID=<?php echo $node->uid; ?>" class="btn btn-sm btn-primary">See all</a>
-						</div>
-					</div>
-				</div>
-				<div class="table-responsive">
-					<table class="table align-items-center table-flush">
-						<thead class="thead-light">
-							<tr>
-								<th class="border-bottom" scope="col">Date</th>
-								<th class="border-bottom" scope="col">Reading</th>
-								<th class="border-bottom" scope="col">Username</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php
-							foreach (array_splice($node->readings_all(), 0, 5) AS $reading) {
-								$output  = "<tr>";
-								$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
-								$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
-								$output .= "<td class=\"fw-bolder text-gray-500\">" . showHide($reading['username']) . "</td>";
-								$output .= "";
-								$output .= "</tr>";
-								
-								echo $output;
-							}
-							?>
-						</tbody>
-					</table>
-				</div>
-				<div id="chart-readings"></div>
-			</div>
-			
-			<div class="card border-0 shadow">
+			<div class="card shadow">
 				<div class="card-body">
-					<?php echo $node->displayImage();
-					
-					if ($_SESSION['logon'] == true) {
-						if (empty($node->photograph)) {
-							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
-							$output .= "<div class=\"btn-group\" role=\"group\" aria-label=\"Photograph Upload\">";
-							$output .= "<input class=\"form-control\" type=\"file\" id=\"photograph\" name=\"photograph\">";
-							$output .= "<button type=\"submit\" class=\"btn btn-primary\">Upload</button>";
-							$output .= "</div>";
-							$output .= "</form>";
-						} else {
-							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
-							$output .= "<button type=\"submit\" class=\"btn btn-warning\">Delete Photograph</button>";
-							$output .= "<input type=\"hidden\" id=\"deletePhoto\" name=\"deletePhoto\" value=\"true\"/>";
-							$output .= "</form>";
-						}
-						
-						echo $output;
-					}
+					<?php
+					printArray($node);
 					?>
-					
-					
 				</div>
 			</div>
 			
 		</div>
-		<div class="col-lg-6 col-12">
-			<div class="card border-0 mb-3 shadow">
-				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
-					<h2 class="fs-5 fw-bold mb-0">Annual Consumption</h2>
+		<div class="col-lg-6 col-12 mb-3">
+			<?php
+			echo $node->displayImage();
+			
+			echo $node->photograph;
+			?>
+		</div>
+	</div>
+	
+</div>
+
+<div class="b-example-divider"></div>
+
+<div class="container px-4 py-5">
+	<div class="row">
+		<div class="col-8 mb-3">
+			<div class="card bg-yellow-100 border-0 shadow">
+				<div class="card-header d-sm-flex flex-row align-items-center flex-0">
+					<div class="d-block mb-3 mb-sm-0">
+						<div class="fs-5 fw-normal mb-2"><?php echo $node->type; ?> Consumption (last 12 months)</div>
+					</div>
 				</div>
-				<div class="card-body">
-					<div id="chart-annual"></div>
+				<div class="card-body p-2">
+					<div id="chart-monthly"></div>
 				</div>
 			</div>
-			
-			<div class="card border-0 shadow">
-				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
-					<h2 class="fs-5 fw-bold mb-0">Node Details</h2>
-					<a href="index.php?n=node_edit&nodeUID=<?php echo $node->uid; ?>" class="btn btn-sm btn-primary">Edit</a>
+		</div>
+		<div class="col-4 mb-3">
+			<div class="card bg-yellow-100 border-0 shadow">
+				<div class="card-header d-sm-flex flex-row align-items-center flex-0">
+					<div class="d-block mb-3 mb-sm-0">
+						<div class="fs-5 fw-normal mb-2">Annual Consumption</div>
+					</div>
 				</div>
-				<div class="card-body">
-					<ul class="list-group list-group-flush list my--3">
-						<?php
-						if ($node->enabled == 1) {
-							$enabled = "<span class=\"btn btn-sm btn-outline-success float-end\">Enabled</span>";
-						} else {
-							$enabled = "<span class=\"btn btn-sm btn-outline-dark float-end\">Disabled</span>";
-						}
-						?>
-						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo $node->name . $enabled ?></li>
-						<li class="list-group-item px-0"><strong>Location:</strong> <?php echo $location->cleanName();?></li>
-						<li class="list-group-item px-0"><strong>Type / Units:</strong> <?php echo $node->type . " / " . $node->unit;?></li>
-						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->cleanRetention(true);?></li>
-						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo $node->geo;?></li>
-						
-						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo showHide($node->serial);?></li>
-						<li class="list-group-item px-0"><strong>MPRN:</strong> <?php echo showHide($node->mprn);?></li>
-						<li class="list-group-item px-0"><strong>Billed to Tennant:</strong> <?php echo showHide($node->billed);?></li>
-						<li class="list-group-item px-0"><strong>Supplier:</strong> <?php echo showHide($node->supplier);?></li>
-						<li class="list-group-item px-0"><strong>Account No:</strong> <?php echo showHide($node->account_no);?></li>
-						<li class="list-group-item px-0"><strong>Address:</strong> <?php echo showHide($node->address);?></li>
-					</ul>
+				<div class="card-body p-2">
+					<div id="chart-annual"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div class="container px-4 py-5">
+	<div class="col-12 mb-3">
+		<div class="card border-0 shadow">
+			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
+				<div class="d-block mb-3 mb-sm-0">
+					<div class="fs-5 fw-normal mb-2">All Readings</div>
+				</div>
+			</div>
+			<div class="card-body p-2">
+				<div id="chart-readings"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-lg-6 col-12 mb-3">
+			<div class="card shadow">
+				<div class="card-body">
+					<h3>Readings</h3>
+					<table class="table">
+						<thead>
+							<th>uid</th>
+							<th>Date</th>
+							<th>Username</th>
+							<th>Reading</th>
+						</thead>
+					<?php
+					foreach ($node->readings_all() AS $reading) {
+						$output  = "<tr>";
+					
+						$output .= "<td>" . $reading['uid'] . "</td>";
+						$output .= "<td>" . $reading['date'] . "</td>";
+						$output .= "<td>" . $reading['username'] . "</td>";
+						$output .= "<td>" . $reading['reading1'] . "</td>";
+						$output .= "</tr>";
+						
+						echo $output;
+					}
+					?>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-12 mb-3">
+			<div class="card shadow">
+				<div class="card-body">
+					<h3>Consumption</h3>
+					<table class="table">
+						<thead>
+							<th>Date</th>
+							<th>Consumption</th>
+						</thead>
+					<?php
+					$averages = $node->averagesForReadings();
+					printArray($averages);
+					foreach ($node->consumptionByMonth($debug = true) AS $date => $value) {
+						$output  = "<tr>";
+						$output .= "<td>" . $date . "</td>";
+						$output .= "<td>" . $value;
+						
+						if ($value == ($averages['differencePerDay'] * 30)) {
+							$output .= " <span class=\"badge rounded-pill text-bg-info\">ESTIMATE</span>";
+						}
+						$output .= "</td>";
+						$output .= "</tr>";
+						
+						echo $output;
+					}
+					?>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="b-example-divider"></div>
+
+<?php
+
+
+
+
+
+
+$consumptionLast12MonthsTotal = array_sum($consumptionLast12Months);
+$consumptionPrevious12MonthsTotal = array_sum($consumptionPrevious12Months);
+
+$location = new location($node->location);
+
+if (isset($_FILES['photograph']) && $_SESSION['logon'] == true) {
+	$node->uploadImage($_FILES);
+	$node = new node($_GET['nodeUID']);
+}
+
+if (isset($_POST['deletePhoto']) && $_SESSION['logon'] == true) {
+	$node->deleteImage();
+	$node = new node($_GET['nodeUID']);
+}
+
+$costUnit = $settingsClass->value("unit_cost_" . $node->type);
+$co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
+
+if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
+	$readingsClass = new readings();
+	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
+}
+
+if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
+	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
+	
+	$deltaConsumption = number_format(100-$deltaConsumption, 1);
+	$deltaConsumptionText = "<span class=\"text-success fw-bolder me-1\">&#8595; " . $deltaConsumption . "%</span> less than previous year";
+} elseif ($consumptionLast12MonthsTotal >= $consumptionPrevious12MonthsTotal && $consumptionLast12MonthsTotal > 0 && $consumptionPrevious12MonthsTotal > 0) {
+	$deltaConsumption = ($consumptionLast12MonthsTotal / $consumptionPrevious12MonthsTotal)*100;
+	
+	$deltaConsumption = number_format($deltaConsumption-100, 1);
+	$deltaConsumptionText = "<span class=\"text-danger fw-bolder me-1\">&#8593; " . $deltaConsumption . "%</span> more than previous year";
+	
+} else {
+	
+	$deltaConsumptionText = "";
+}
+
+
+
+?>
 
 <div class="container px-4 py-5">
 	<div id="map" style="width: 100%; height: 500px"></div>
@@ -386,14 +286,6 @@ if ($_SESSION['logon'] == true) {
 	}
 	?>
 	var popup = L.popup();
-</script>
-
-<script>
-var fp2 = flatpickr("#reading_date", {
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: '<?php echo date('Y-m-d H:i');?>'
-})
 </script>
 
 
@@ -458,6 +350,7 @@ var options = {
 	chart: {
 		id: 'chart-readings',
 		type: 'line',
+		height: 300,
 		toolbar: {
 			tools: {
 				zoomout: false,
