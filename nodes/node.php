@@ -3,8 +3,12 @@
 
 <?php
 $node = new node($_GET['nodeUID']);
-$consumptionLast12Months = array_slice($node->consumptionByMonth(), 0, 12, true);
-$consumptionPrevious12Months = array_slice($node->consumptionByMonth(), 12, 12, true);
+
+$consumption = array_merge(generateMonthsArray(24), $node->consumptionByMonth());
+krsort($consumption);
+
+$consumptionLast12Months = array_slice($consumption, 0, 12, true);
+$consumptionPrevious12Months = array_slice($consumption, 12, 12, true);
 
 $consumptionLast12MonthsTotal = array_sum($consumptionLast12Months);
 $consumptionPrevious12MonthsTotal = array_sum($consumptionPrevious12Months);

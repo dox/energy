@@ -199,4 +199,18 @@ function convertm3TokWh($m3 = 0) {
 	
 	return $kWh;
 }
+
+function generateMonthsArray($monthsToInclude = 24) {
+	$dates = [];
+	$currentMonth = date('Y-m', strtotime('-01 -1 month'));
+
+	for ($i = 0; $i < $monthsToInclude; $i++) {
+		$dates[$currentMonth] = 0;
+
+		// Decrement the month by 1
+		$currentMonth = date('Y-m', strtotime($currentMonth . '-01 -1 month'));
+	}
+
+	return $dates;
+}
 ?>

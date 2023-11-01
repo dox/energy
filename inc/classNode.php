@@ -117,6 +117,7 @@ class node {
     $consumption = array();
     
     $i = 0;
+    
     foreach ($readings AS $date => $value) {
       $previousMonth = date('Y-m', strtotime("-1 month", strtotime($date)));
       $thisMonthReading = $value;
