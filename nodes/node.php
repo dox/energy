@@ -65,7 +65,7 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 		<div class="card bg-yellow-100 border-0 shadow">
 			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
 				<div class="d-block mb-3 mb-sm-0">
-					<div class="fs-5 fw-normal mb-2"><?php echo $node->type; ?> Consumption (last 12 months)</div>
+					<div class="fs-5 fw-normal mb-2"><?php echo $node->type; ?> Consumption (<?php echo $node->unit; ?>)</div>
 					<div class="small mt-2">
 						<span class="fw-normal me-2"> </span>
 						<span class="fas fa-angle-up text-success"></span>
@@ -242,7 +242,7 @@ if ($_SESSION['logon'] == true) {
 		<div class="col-lg-6 col-12">
 			<div class="card border-0 mb-3 shadow">
 				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
-					<h2 class="fs-5 fw-bold mb-0">Annual Consumption</h2>
+					<h2 class="fs-5 fw-bold mb-0">Annual Consumption (<?php echo $node->unit; ?>)</h2>
 				</div>
 				<div class="card-body">
 					<div id="chart-annual"></div>
@@ -356,11 +356,7 @@ var options = {
 		categories: ['<?php echo implode("','", array_reverse(array_keys($consumptionLast12Months))); ?>']
 	},
 	yaxis: {
-	  labels: {
-		formatter: function (value) {
-		  return value + "<?php echo $node->unit; ?>";
-		}
-	  },
+	  decimalsInFloat: 0
 	},
 };
 
@@ -386,6 +382,9 @@ var options = {
 	},
 	xaxis: {
 		type: 'datetime',
+	},
+	yaxis: {
+	  decimalsInFloat: 0
 	},
 	tooltip: {
 		x: {
@@ -419,11 +418,7 @@ var options = {
 		categories: ['<?php echo implode ("','", array_keys($yearlyConsumption)); ?>']
 	},
 	yaxis: {
-	  labels: {
-		formatter: function (value) {
-		  return value + "<?php echo $node->unit; ?>";
-		}
-	  },
+	  decimalsInFloat: 0
 	},
 };
 
