@@ -191,7 +191,7 @@ var options = {
 	yaxis: {
 	  labels: {
 		formatter: function (value) {
-		  return (value/1000) + "t";
+		  return (Math.round(value)/1000) + "t";
 		}
 	  },
 	},
