@@ -6,9 +6,9 @@ $locationsClass = new locations();
 $nodesClass = new nodes();
 
 if ($_POST['nodes_includeHidden'] == 1) {
-  $enabled = " AND enabled = '1'";
-} else {
   $enabled = "";
+} else {
+  $enabled = " AND enabled = '1'";
 }
 
 $nodes = null;
@@ -16,6 +16,7 @@ $nodes = null;
 foreach ($_POST['locations'] AS $locationUID) {
   //get each node in this site that matches types
   $sql = "SELECT * FROM nodes WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' " . $enabled . " AND type IN ('" . implode("','", filter_var_array($_POST['nodes'], FILTER_SANITIZE_ENCODED)) . "');";
+  
   $nodesByLocation = $db->query($sql)->fetchAll();
   
   if (!empty($nodesByLocation)) {
