@@ -47,7 +47,8 @@ foreach ($nodes AS $node) {
 		}
 	}
 }
-$totalConsumption = array_reverse($totalConsumption);
+
+ksort($totalConsumption);
 
 foreach ($nodeConsumptionByMonth AS $date => $values) {
 	if (array_sum($values) == 0) {
