@@ -69,10 +69,11 @@ if ($_GET['type'] == "node") {
 	
 	$output = $nodeArray;
 } elseif ($_GET['type'] == "readings") {
+	$readingsClass = new readings();
 	if ($_GET['filter'] == "all") {
-		$readings = readings::all();
+		$readings = $readingsClass->all();
 	} else {
-		$readings = readings::node_all_readings(filter_var($_GET['filter'], FILTER_SANITIZE_NUMBER_INT));
+		$readings = $readingsClass->node_all_readings(filter_var($_GET['filter'], FILTER_SANITIZE_NUMBER_INT));
 	}
 	
 	foreach ($readings AS $reading) {
