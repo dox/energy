@@ -138,6 +138,10 @@ class node {
           //echo $previousMonth . " didn't have a reading, so using guess of " . $value . "<br />";
         }
         
+        if ($value < 0) {
+          $value = 0;
+        }
+        
         $consumption[$date] = $value;
         
       }
@@ -159,6 +163,10 @@ class node {
     
     $co2ByMonth = array();
     foreach ($consumption AS $date => $value) {
+      if ($value < 0) {
+        $value = 0;
+      }
+      
       $co2ByMonth[$date] = ($value * $unitCO2);
     }
     
@@ -173,6 +181,10 @@ class node {
     $date = date('Y-m', strtotime($date));
     
     $consumptionForMonth = $this->consumptionByMonth()[$date];
+    
+    if ($consumptionForMonth < 0) {
+      $consumptionForMonth = 0;
+    }
     
     return $consumptionForMonth;
   }

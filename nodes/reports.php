@@ -37,6 +37,10 @@ foreach ($nodes AS $node) {
 	$node = new node($node['uid']);
 	
 	foreach ($node->consumptionByMonth() AS $date => $value) {
+		if ($value < 0) {
+		  $value = 0;
+		}
+		
 		if (date('Y-m', strtotime($date)) >= $dateFromClean && date('Y-m', strtotime($date)) <= $dateToClean) {
 			$location = new location($node->location);
 			
@@ -397,6 +401,11 @@ foreach ($nodeConsumptionByMonth AS $nodeName => $monthConsumptions) {
 	
 	$outputMonth = array();
 	foreach ($monthConsumptions AS $month => $value) {
+		// don't allow negative consumption values
+		if ($value < 0) {
+		  $value = 0;
+		}
+		
 		$outputMonth[] .= "{x: '" . $month . "', y: " . $value . "}";
 	}
 	
@@ -413,7 +422,7 @@ foreach ($nodeConsumptionByMonth AS $nodeName => $monthConsumptions) {
   series: [<?php echo implode(",", $outputArray); ?>],
   chart: {
   height: 500,
-  type: 'heatmap',
+  type: 'line',
 },
 dataLabels: {
   enabled: false
