@@ -25,6 +25,7 @@ class nodes extends node {
 
   public function recentlyUpdated() {
     global $db;
+    $nodesArray = array();
 
     $readingsSQL  = "SELECT node FROM readings ";
     $readingsSQL .= " WHERE date BETWEEN NOW() - INTERVAL 30 DAY AND NOW()";
@@ -133,10 +134,11 @@ class nodes extends node {
 
   public function geoMarkers() {
     $nodes = $this->allEnabled();
+    $array = array();
 
     foreach ($nodes AS $node) {
       $node = new node($node['uid']);
-      $array[] = "['" . $node->cleanName() . "', " . $node->geoMarker() . "]";
+      $array[] = "['" . $node->cleanName() . "', " . $node->geoLocation() . "]";
 
     }
 

@@ -13,12 +13,12 @@ class locations extends location {
 
   public function geoMarkers() {
     $locations = $this->all();
+    $array = array();
 
     foreach ($locations AS $location) {
-      $url = "index.php?n=location&locationUID=" . $this->uid;
-      $name = "<a href=\"" . $url . "\">" . $location->cleanName() . "</a>";
-      
       $location = new location($location['uid']);
+      $url = "index.php?n=location&locationUID=" . $location->uid;
+      $name = "<a href=\"" . $url . "\">" . $location->cleanName() . "</a>";
       $array[] = "['" . $name . "', " . $location->geoLocation() . "]";
 
     }

@@ -4,35 +4,46 @@
 <?php
 $locationsClass = new locations();
 $nodesClass = new nodes();
+$selectedLocations = filter_var_array($_POST['locations'] ?? array(), FILTER_SANITIZE_NUMBER_INT) ?: array();
+$selectedNodes = filter_var_array($_POST['nodes'] ?? array(), FILTER_SANITIZE_ENCODED) ?: array();
+$dateFromInput = $_POST['date_from'] ?? date('Y-m-d', strtotime('1 year ago'));
+$dateToInput = $_POST['date_to'] ?? date('Y-m-d');
 
-if ($_POST['nodes_includeHidden'] == 1) {
+if (isset($_POST['nodes_includeHidden']) && $_POST['nodes_includeHidden'] == 1) {
   $enabled = "";
 } else {
   $enabled = " AND enabled = '1'";
 }
 
-$nodes = null;
+$nodes = array();
+$nodeConsumptionByMonth = array();
+$totalConsumption = array();
+$totalConsumptionByLocation = array();
+$nodeUnit = '';
+$nodeType = $selectedNodes[0] ?? '';
 //get each site
-foreach ($_POST['locations'] AS $locationUID) {
+foreach ($selectedLocations AS $locationUID) {
   //get each node in this site that matches types
-  $sql = "SELECT * FROM nodes WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' " . $enabled . " AND type IN ('" . implode("','", filter_var_array($_POST['nodes'], FILTER_SANITIZE_ENCODED)) . "');";
+  $sql = "SELECT * FROM nodes WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' " . $enabled;
+  if (!empty($selectedNodes)) {
+    $sql .= " AND type IN ('" . implode("','", $selectedNodes) . "')";
+  }
+  $sql .= ";";
   
   $nodesByLocation = $db->query($sql)->fetchAll();
   
   if (!empty($nodesByLocation)) {
-	  foreach ($nodesByLocation AS $node) {
-		  $nodes[] = $node;
+	  foreach ($nodesByLocation AS $nodeData) {
+		  $nodes[] = $nodeData;
 		}
 		
-		$nodeUnit = $node['unit'];
+		$nodeUnit = $nodeData['unit'];
   }
   
 }
 
-$dateFromClean = date('Y-m', strtotime(filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT)));
-$dateToClean   = date('Y-m', strtotime(filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT)));
-
-$totalConsumption = array();
+$dateFromClean = date('Y-m', strtotime(filter_var($dateFromInput, FILTER_SANITIZE_NUMBER_INT)));
+$dateToClean   = date('Y-m', strtotime(filter_var($dateToInput, FILTER_SANITIZE_NUMBER_INT)));
 foreach ($nodes AS $node) {
 	$node = new node($node['uid']);
 	
@@ -46,8 +57,8 @@ foreach ($nodes AS $node) {
 			
 			$nodeConsumptionByMonth[$node->cleanName()][date('Y-m', strtotime($date))] = $value;
 			
-			$totalConsumption[$date] = $totalConsumption[$date] + $value;
-			$totalConsumptionByLocation[$location->cleanName()] = $totalConsumptionByLocation[$location->cleanName()] + $value;
+			$totalConsumption[$date] = ($totalConsumption[$date] ?? 0) + $value;
+			$totalConsumptionByLocation[$location->cleanName()] = ($totalConsumptionByLocation[$location->cleanName()] ?? 0) + $value;
 		}
 	}
 }
@@ -61,6 +72,8 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 		$nodeConsumptionByMonth[$date] = array_reverse($nodeConsumptionByMonth[$date]);
 	}
 }
+
+$hasReportResults = !empty($nodes);
 ?>
 
 <div class="container px-4 py-5">
@@ -95,8 +108,8 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 							<?php
 							foreach ($locationsClass->all() AS $location) {
 								$checked = "";
-								if (isset($_POST['locations'])) {
-									if (in_array($location['uid'], filter_var_array($_POST['locations'], FILTER_SANITIZE_NUMBER_INT))) {
+								if (!empty($selectedLocations)) {
+									if (in_array($location['uid'], $selectedLocations)) {
 										$checked = " checked ";
 									}
 								}
@@ -131,8 +144,8 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 							
 							foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
 									$checked = "";
-									if (isset($_POST['locations'])) {
-										if (in_array($nodeType, $_POST['nodes'])) {
+									if (!empty($selectedNodes)) {
+										if (in_array($nodeType, $selectedNodes)) {
 											$checked = " checked ";
 										}
 									}
@@ -151,8 +164,8 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 						</ul>
 					</li>
 				<div class="d-flex">
-								<input type="text" class="form-control me-2" name="date_from" id="date_from" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_from-addon" required>
-							<input type="text" class="form-control me-2" name="date_to" id="date_to" placeholder="" value="<?php echo $date_meal; ?>" aria-describedby="date_to-addon" required>
+								<input type="text" class="form-control me-2" name="date_from" id="date_from" placeholder="" value="<?php echo $dateFromInput; ?>" aria-describedby="date_from-addon" required>
+							<input type="text" class="form-control me-2" name="date_to" id="date_to" placeholder="" value="<?php echo $dateToInput; ?>" aria-describedby="date_to-addon" required>
 					</div>
 			  </ul>
 			  <form class="d-flex">
@@ -163,6 +176,7 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 		</nav>
 	</form>
 	
+	<?php if ($hasReportResults) { ?>
 	<hr />
 	
 	<div class="row">
@@ -176,14 +190,14 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 	
 	<hr />
 	
-	<div class="row">
+		<div class="row">
 			<div class="col-lg-4 col-12 mb-3">
 				<div class="card shadow">
 					<div class="card-body">
 						<div class="row">
 							<div class="col-3">
 								<div class="feature-icon bg-danger bg-gradient">
-									<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo strtolower(filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED)); ?>"/></svg>
+									<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo strtolower($nodeType); ?>"/></svg>
 								</div>
 							</div>
 							<div class="col-9">
@@ -210,7 +224,7 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 							</div>
 							<div class="col-9">
 								<?php
-								  $settingName = "unit_cost_" . filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED);
+								  $settingName = "unit_cost_" . $nodeType;
 								
 								  $unitCost = $settingsClass->value($settingName);
 								  $totalCost = array_sum($totalConsumption) * $unitCost;
@@ -234,7 +248,7 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 							</div>
 							<div class="col-9">
 								<?php
-								  $settingName = "unit_co2e_" . filter_var($_POST['nodes'][0], FILTER_SANITIZE_ENCODED);
+								  $settingName = "unit_co2e_" . $nodeType;
 								
 								  $co2eUnit = $settingsClass->value($settingName);
 								  ?>
@@ -292,23 +306,18 @@ foreach ($nodeConsumptionByMonth AS $date => $values) {
 	*/
 	?>
 </div>
+	<?php } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') { ?>
+	<hr />
+	<div class="alert alert-warning">No matching nodes were found for the selected filters.</div>
+	<?php } ?>
 
 
 
 
 <script>
 <?php
-if (isset($_POST['date_from'])) {
-  $dateFrom = filter_var($_POST['date_from'], FILTER_SANITIZE_NUMBER_INT);
-} else {
-  $dateFrom = date('Y-m-d', strtotime('1 year ago'));
-}
-
-if (isset($_POST['date_to'])) {
-  $dateTo = filter_var($_POST['date_to'], FILTER_SANITIZE_NUMBER_INT);
-} else {
-  $dateTo = date('Y-m-d');
-}
+$dateFrom = filter_var($dateFromInput, FILTER_SANITIZE_NUMBER_INT);
+$dateTo = filter_var($dateToInput, FILTER_SANITIZE_NUMBER_INT);
 ?>
 var date_from = flatpickr("#date_from", {
   dateFormat: "Y-m-d",
@@ -336,6 +345,7 @@ function toggleCheckboxes(source) {
 
 <script>
 // Chart-Monthly
+<?php if ($hasReportResults) { ?>
 var options = {
 	series: [{
 		name: "Monthly Consumption",
@@ -390,11 +400,13 @@ var options = {
 
 var chartLocation = new ApexCharts(document.querySelector("#chart-location"), options);
 chartLocation.render();
+<?php } ?>
 </script>
 
 
 
 <?php
+$outputArray = array();
 foreach ($nodeConsumptionByMonth AS $nodeName => $monthConsumptions) {
 	$output  = "{name: '" . $nodeName . "',";
 	$output .= "data: [";
@@ -417,7 +429,7 @@ foreach ($nodeConsumptionByMonth AS $nodeName => $monthConsumptions) {
 ?>
 
 <script>
-
+<?php if ($hasReportResults) { ?>
  var options = {
   series: [<?php echo implode(",", $outputArray); ?>],
   chart: {
@@ -433,4 +445,5 @@ dataLabels: {
 
 var chartHeat = new ApexCharts(document.querySelector("#chart-heat"), options);
 chartHeat.render();
+<?php } ?>
 </script>

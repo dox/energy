@@ -9,9 +9,9 @@ $readingsClass = new readings();
 $nodesClass = new nodes();
 $nodes = $location->allnodes("all");
 
-$totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("electric")) * $settingsClass->value("unit_co2e_electric");
-$totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("gas")) * $settingsClass->value("unit_co2e_gas");
-$totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("water")) * $settingsClass->value("unit_co2e_water");
+$totalCO2Electric = array_sum($location->consumptionBetweenDatesByMonth("Electric")) * $settingsClass->value("unit_co2e_electric");
+$totalCO2Gas = array_sum($location->consumptionBetweenDatesByMonth("Gas")) * $settingsClass->value("unit_co2e_gas");
+$totalCO2Water = array_sum($location->consumptionBetweenDatesByMonth("Water")) * $settingsClass->value("unit_co2e_water");
 
 $monthlyCO2 = array_slice($location->co2ByMonth(),0,12, true);
 $monthlyPreviousCO2 = array_slice($location->co2ByMonth(),12,12, true);
@@ -77,7 +77,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyPrevi
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Electricity</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("electric")), 0) . " kWh"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("Electric")), 0) . " kWh"; ?></h4>
 							<p>&nbsp;</p>
 						</div>
 					</div>
@@ -96,8 +96,8 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyPrevi
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Gas</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("gas")), 0) . " m&#179;"; ?></h4>
-							<p><i>(~<?php echo convertm3TokWh(array_sum($location->consumptionBetweenDatesByMonth("gas"))) . " kWh"; ?>)</i></p>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("Gas")), 0) . " m&#179;"; ?></h4>
+							<p><i>(~<?php echo convertm3TokWh(array_sum($location->consumptionBetweenDatesByMonth("Gas"))) . " kWh"; ?>)</i></p>
 						</div>
 					</div>
 					<!--<span class="text-success fw-bolder me-1"><?php echo number_format($totalCO2Gas, 0) . " kg"; ?></span> CO2-->
@@ -115,7 +115,7 @@ $deltaCO2 = percentageDifference(array_sum($monthlyCO2), array_sum($monthlyPrevi
 						</div>
 						<div class="col-9">
 							<h3 class="mb-1">Water</h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("water")), 0) . " m&#179;"; ?></h4>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format(array_sum($location->consumptionBetweenDatesByMonth("Water")), 0) . " m&#179;"; ?></h4>
 							<p>&nbsp;</p>
 						</div>
 					</div>

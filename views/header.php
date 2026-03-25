@@ -36,13 +36,15 @@ $navbarArray['settings'] = array(
     <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <?php
+        $currentNode = $_GET['n'] ?? '';
+
         foreach ($navbarArray AS $key => $navBarLink) {
           $icon = "<svg class=\"m-1\" width=\"20\" height=\"20\"><use xlink:href=\"inc/icons.svg#" . $navBarLink['icon'] . "\"></use></svg>";
           
-          if ($key == $_GET['n']) {
+          if ($key == $currentNode) {
             $active = " text-white";
           } else {
-            if (in_array($_GET['n'], $navBarLink['pages'])) {
+            if (in_array($currentNode, $navBarLink['pages'])) {
               $active = " text-white";
             } else {
               $active = "text-secondary";

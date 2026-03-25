@@ -29,6 +29,18 @@ class node {
 			$this->$key = $value;
 		}
   }
+
+  private function firstResult($sql) {
+    global $db;
+
+    $results = $db->query($sql)->fetchAll();
+
+    if (isset($results[0])) {
+      return $results[0];
+    }
+
+    return array();
+  }
   
   public function readings_all() {
     global $db;
@@ -70,15 +82,13 @@ class node {
   }
 
   public function currentReading() {
-    global $db;
-
     $sql  = "SELECT reading1 FROM readings";
     $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
-    $lastReading = $db->query($sql)->fetchAll()[0];
-    $lastReading = $lastReading['reading1'];
+    $lastReading = $this->firstResult($sql);
+    $lastReading = $lastReading['reading1'] ?? null;
 
     // check for no value at all (in which case, default to 0)
     if (isset($lastReading)) {
@@ -217,8 +227,6 @@ class node {
   }
 
   public function readingForMonth($date = null) {
-    global $db;
-
     if ($date == null) {
       $date = date('Y-m-d');
     }
@@ -230,8 +238,8 @@ class node {
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
-    $lastReading = $db->query($sql)->fetchAll()[0];
-    $lastReading = $lastReading['reading1'];
+    $lastReading = $this->firstResult($sql);
+    $lastReading = $lastReading['reading1'] ?? null;
 
     // check for no value at all (in which case, default to 0)
     if (isset($lastReading)) {
@@ -244,8 +252,6 @@ class node {
   }
 
   public function readingForYear($year = null) {
-    global $db;
-
     if ($year == null) {
       $year = date('Y');
     }
@@ -256,8 +262,8 @@ class node {
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
-    $lastReading = $db->query($sql)->fetchAll()[0];
-    $lastReading = $lastReading['reading1'];
+    $lastReading = $this->firstResult($sql);
+    $lastReading = $lastReading['reading1'] ?? null;
 
     // check for no value at all (in which case, default to 0)
     if (isset($lastReading)) {
@@ -270,13 +276,11 @@ class node {
   }
 
   public function consumptionBetweenTwoDates($dateFrom = null, $dateTo = null) {
-    global $db;
-
     $dateFromSQL = "SELECT reading1 FROM readings WHERE node = '" . $this->uid . "' AND DATE(date) >= '" . $dateFrom . "' AND DATE(date) <= '" . $dateTo . "' ORDER BY date ASC LIMIT 1";
-    $dateFromReading = $db->query($dateFromSQL)->fetchAll()[0]['reading1'];
+    $dateFromReading = $this->firstResult($dateFromSQL)['reading1'] ?? 0;
 
     $dateToSQL = "SELECT reading1 FROM readings WHERE node = '" . $this->uid . "' AND DATE(date) <= '" . $dateTo . "' AND DATE(date) >= '" . $dateFrom . "' ORDER BY date DESC LIMIT 1";
-    $dateToReading = $db->query($dateToSQL)->fetchAll()[0]['reading1'];
+    $dateToReading = $this->firstResult($dateToSQL)['reading1'] ?? 0;
 
     $difference = $dateToReading - $dateFromReading;
 
@@ -377,6 +381,7 @@ class node {
       $iconSymbol = "temperature";
     } else {
   		$class = "bg-light";
+      $iconSymbol = "nodes";
   	}
     $icon = "<svg width=\"1em\" height=\"1em\"><use xlink:href=\"inc/icons.svg#" . $iconSymbol . "\"/></svg>";
   	$output = "<span class=\"badge rounded-pill w-100 " . $class . "\">" . $icon . " " . $this->type . "</span>";
@@ -566,16 +571,12 @@ class node {
   }
 
   public function getMostRecentReading() {
-    global $db;
-
     $sql  = "SELECT * FROM readings ";
     $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1";
 
-    $recentReading = $db->query($sql)->fetchAll()[0];
-
-    return $recentReading;
+    return $this->firstResult($sql);
   }
 
   public function mostRecentReadingDate() {
@@ -592,16 +593,12 @@ class node {
   }
   
   public function getPreviousReading() {
-    global $db;
-
     $sql  = "SELECT * FROM readings ";
     $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " ORDER BY date DESC";
     $sql .= " LIMIT 1, 1";
 
-    $recentReading = $db->query($sql)->fetchAll()[0];
-
-    return $recentReading;
+    return $this->firstResult($sql);
   }
 
   public function previousReadingDate() {
@@ -717,8 +714,6 @@ class node {
 
 
   public function highestReadingForMonth($date = null) {
-    global $db;
-
     if ($date == null) {
   		$date = date('Y-m');
   	} else {
@@ -732,9 +727,7 @@ class node {
     $sql .= " ORDER BY reading1 DESC";
     $sql .= " LIMIT 1";
 
-    $maxReading = $db->query($sql)->fetchAll()[0];
-
-    return $maxReading;
+    return $this->firstResult($sql);
   }
 
   public function highestReadingsByMonth() {
@@ -755,17 +748,13 @@ class node {
 
 
   public function highestReadingForYear($date = null) {
-    global $db;
-
     $sql  = "SELECT * FROM readings ";
     $sql .= " WHERE node = '" . $this->uid . "' ";
     $sql .= " AND YEAR(date) = '" . $date . "' ";
     $sql .= " ORDER BY reading1 DESC";
     $sql .= " LIMIT 1";
 
-    $maxReading = $db->query($sql)->fetchAll()[0];
-
-    return $maxReading;
+    return $this->firstResult($sql);
   }
 
   public function highestReadingsByYear() {
@@ -808,17 +797,13 @@ class node {
 
 
   public function getFirstReading() {
-    global $db;
-
     $sql  = "SELECT * FROM readings ";
     $sql .= " WHERE node = '" . $this->uid . "' ";
     //$sql .= " AND date > '" . date('Y-m-d', strtotime('3 years ago')) . "' ";
     $sql .= " ORDER BY date ASC";
     $sql .= " LIMIT 1";
 
-    $recentReading = $db->query($sql)->fetchAll()[0];
-
-    return $recentReading;
+    return $this->firstResult($sql);
   }
 
 

@@ -18,7 +18,7 @@ class site {
 		$node = new node($node['uid']);
 		
 		foreach ($node->consumptionByMonth() AS $date => $value) {
-			$totalConsumption[$date] = $totalConsumption[$date] + $value;
+			$totalConsumption[$date] = ($totalConsumption[$date] ?? 0) + $value;
 		}
 	  }
 	  
@@ -65,6 +65,7 @@ class site {
   public function geoMarkersOfNodes() {
 	  $nodesClass = new nodes();
 	  $nodes = $nodesClass->all();
+	  $array = array();
 	  
 	  foreach ($nodes AS $node) {
 		  $node = new node($node['uid']);

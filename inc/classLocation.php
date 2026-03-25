@@ -53,6 +53,7 @@ class location {
 
   public function geoMarkersOfNodes() {
     $nodes = $this->allNodes();
+    $array = array();
 
     foreach ($nodes AS $node) {
       $node = new node($node['uid']);
@@ -71,6 +72,7 @@ class location {
     global $db;
 
     $nodes = $this->allNodesByType($type);
+    $maxReading = array();
 
     foreach ($nodes AS $node) {
       $node = new node($node['uid']);

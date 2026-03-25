@@ -14,16 +14,16 @@ $monthlyCO2previous = array();
 
 foreach (array_slice($monthlyConsumptionElectric, 0, 12) AS $date => $value) {
 	$electricCO2 = $monthlyConsumptionElectric[$date] * $settingsClass->value("unit_co2e_electric");
-	$gasCO2 = $monthlyConsumptionGas[$date] * $settingsClass->value("unit_co2e_gas");
-	$waterCO2 = $monthlyConsumptionWater[$date] * $settingsClass->value("unit_co2e_water");
+	$gasCO2 = ($monthlyConsumptionGas[$date] ?? 0) * $settingsClass->value("unit_co2e_gas");
+	$waterCO2 = ($monthlyConsumptionWater[$date] ?? 0) * $settingsClass->value("unit_co2e_water");
 	
 	$monthlyCO2[$date] = $electricCO2 + $gasCO2 + $waterCO2;
 }
 
 foreach (array_slice($monthlyConsumptionElectric, 12, 12) AS $date => $value) {
 	$electricCO2 = $monthlyConsumptionElectric[$date] * $settingsClass->value("unit_co2e_electric");
-	$gasCO2 = $monthlyConsumptionGas[$date] * $settingsClass->value("unit_co2e_gas");
-	$waterCO2 = $monthlyConsumptionWater[$date] * $settingsClass->value("unit_co2e_water");
+	$gasCO2 = ($monthlyConsumptionGas[$date] ?? 0) * $settingsClass->value("unit_co2e_gas");
+	$waterCO2 = ($monthlyConsumptionWater[$date] ?? 0) * $settingsClass->value("unit_co2e_water");
 	
 	$monthlyCO2previous[$date] = $electricCO2 + $gasCO2 + $waterCO2;
 }

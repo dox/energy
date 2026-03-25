@@ -43,10 +43,12 @@
 	include_once("views/header.php");
 	
 	if (isset($_SESSION['last_node_access'])) {
-		$node = "nodes/" . $_SESSION['last_node_access'] . ".php";
+		$requestedNode = basename((string) $_SESSION['last_node_access']);
+		$node = "nodes/" . $requestedNode . ".php";
 		unset($_SESSION['last_node_access']);
 	} elseif (isset($_GET['n'])) {
-	  $node = "nodes/" . $_GET['n'] . ".php";
+	  $requestedNode = basename((string) $_GET['n']);
+	  $node = "nodes/" . $requestedNode . ".php";
 	
 	  if (!file_exists($node)) {
 		  $node = "nodes/404.php";
