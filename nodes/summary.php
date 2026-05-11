@@ -3,7 +3,7 @@ $thisYear = date('Y');
 $lastYear = (date('Y')-1);
 $lastLastYear = (date('Y')-2);
 
-$metersClass = new meters;
+$nodesClass = new nodes;
 $locations = new locations;
 $locations = $locations->all();
 
@@ -35,10 +35,9 @@ foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
   $output .= "</thead>";
 
   foreach ($locations AS $location) {
-    $metersClass = new meters;
     $location = new location($location['uid']);
 
-    $meters = $location->allNodesByType($type);
+    $nodes = $location->allNodesByType($type);
     $output .= "<tr>";
 
     $output .= "<th scope=\"row\">" . $location->name . "</th>";
@@ -50,9 +49,9 @@ foreach (explode(",", $settingsClass->value('node_types')) AS $type) {
       $meterMAXArrayPrevious = array();
       $meterMAXArray = array();
 
-      foreach ($meters AS $meter) {
-        $meterMAXPrevious = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $previousYear . "'")->fetchAll();
-        $meterMAX = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE meter = '" . $meter['uid'] . "' AND YEAR(date) = '" . $year . "'")->fetchAll();
+      foreach ($nodes AS $node) {
+        $meterMAXPrevious = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE node = ? AND YEAR(date) = ?", cleanInt($node['uid']), cleanInt($previousYear))->fetchAll();
+        $meterMAX = $db->query("SELECT MAX(reading1) AS reading1 from readings WHERE node = ? AND YEAR(date) = ?", cleanInt($node['uid']), cleanInt($year))->fetchAll();
 
         if ($meterMAX[0]['reading1'] > 0 && $meterMAXPrevious[0]['reading1'] > 0) {
           $meterMAXArray[] = ($meterMAX[0]['reading1'] - $meterMAXPrevious[0]['reading1']);

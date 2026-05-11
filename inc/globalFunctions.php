@@ -25,6 +25,10 @@ function averagePerDay($array) {
 }
 
 function displayReading($reading = null) {
+	if ($reading === null || $reading === '') {
+		return 0;
+	}
+
 	if (is_numeric( $reading ) && floor( $reading ) != $reading) {
 		$returnReading = $reading;
 	} else {
@@ -34,12 +38,62 @@ function displayReading($reading = null) {
 }
 
 function escape($var) {
-	$var=stripslashes($var);
-	$var=htmlentities($var);
-	$var=strip_tags($var);
-	$var=str_replace("'", "\'", $var);
+	return htmlspecialchars((string) $var, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 
-	return $var;
+function cleanInt($value, $default = 0) {
+	$value = filter_var($value, FILTER_VALIDATE_INT);
+
+	return ($value === false) ? $default : $value;
+}
+
+function cleanIntArray($values) {
+	if (!is_array($values)) {
+		return array();
+	}
+
+	$cleanValues = array();
+	foreach ($values AS $value) {
+		$value = filter_var($value, FILTER_VALIDATE_INT);
+		if ($value !== false) {
+			$cleanValues[] = $value;
+		}
+	}
+
+	return array_values(array_unique($cleanValues));
+}
+
+function cleanTextArray($values, $allowedValues = null) {
+	if (!is_array($values)) {
+		return array();
+	}
+
+	$cleanValues = array();
+	foreach ($values AS $value) {
+		$value = trim((string) $value);
+		if ($value === '') {
+			continue;
+		}
+
+		if ($allowedValues !== null && !in_array($value, $allowedValues, true)) {
+			continue;
+		}
+
+		$cleanValues[] = $value;
+	}
+
+	return array_values(array_unique($cleanValues));
+}
+
+function cleanDate($value, $default = null) {
+	$value = (string) $value;
+	$timestamp = strtotime($value);
+
+	if ($timestamp === false) {
+		$timestamp = strtotime($default ?? 'now');
+	}
+
+	return date('Y-m-d', $timestamp);
 }
 
 function percentageDifference($num1, $num2) {
@@ -66,7 +120,7 @@ function autoPluralise ($singular, $plural, $count = 1) {
 } // END function autoPluralise
 
 function admin_gatekeeper() {
-	if ($_SESSION['logon'] != true) {
+	if (!isset($_SESSION['logon']) || $_SESSION['logon'] !== true) {
 		//$_SESSION['last_node_access'] = $_GET['n'];
 		//global $logsClass;
 		//$logsClass->create("view_fail", "Page view for " . $_SERVER['REQUEST_URI'] . " failed");
@@ -119,7 +173,7 @@ function howLongAgo($time = false) {
 }
 
 function showHide($string = null) {
-	if ($_SESSION['logon'] == true) {
+	if (isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
 		$returnString = $string;
 	} else {
 		$returnString = "***";

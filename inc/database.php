@@ -14,7 +14,7 @@ class db {
 		$this->connection->set_charset($charset);
 	}
 
-    public function query($query) {
+  public function query($query) {
         if (!$this->query_closed) {
             $this->query->close();
         }
@@ -48,7 +48,83 @@ class db {
             $this->error('Unable to prepare MySQL statement (check your syntax) - ' . $this->connection->error);
         }
 		return $this;
+  }
+
+  public function insert($table, $data, $allowedColumns = null) {
+    $data = $this->filterData($data, $allowedColumns);
+
+    if (empty($data)) {
+      $this->error('Unable to build INSERT query with no allowed columns');
     }
+
+    $columns = array_keys($data);
+    $placeholders = array_fill(0, count($columns), '?');
+    $sql  = "INSERT INTO " . $this->identifier($table);
+    $sql .= " (" . implode(", ", array_map(array($this, 'identifier'), $columns)) . ")";
+    $sql .= " VALUES (" . implode(", ", $placeholders) . ")";
+
+    return $this->query($sql, array_values($data));
+  }
+
+  public function update($table, $data, $whereColumn, $whereValue, $allowedColumns = null, $limit = 1) {
+    $data = $this->filterData($data, $allowedColumns);
+
+    if (empty($data)) {
+      $this->error('Unable to build UPDATE query with no allowed columns');
+    }
+
+    $assignments = array();
+    foreach (array_keys($data) as $column) {
+      $assignments[] = $this->identifier($column) . " = ?";
+    }
+
+    $sql  = "UPDATE " . $this->identifier($table);
+    $sql .= " SET " . implode(", ", $assignments);
+    $sql .= " WHERE " . $this->identifier($whereColumn) . " = ?";
+
+    $params = array_values($data);
+    $params[] = $whereValue;
+
+    if ($limit !== null) {
+      $sql .= " LIMIT " . max(1, (int) $limit);
+    }
+
+    return $this->query($sql, $params);
+  }
+
+  public function delete($table, $whereColumn, $whereValue, $limit = 1) {
+    $sql  = "DELETE FROM " . $this->identifier($table);
+    $sql .= " WHERE " . $this->identifier($whereColumn) . " = ?";
+
+    if ($limit !== null) {
+      $sql .= " LIMIT " . max(1, (int) $limit);
+    }
+
+    return $this->query($sql, $whereValue);
+  }
+
+  public function multiQuery($query) {
+    if (!$this->query_closed && $this->query) {
+      $this->query->close();
+      $this->query_closed = TRUE;
+    }
+
+    if (!$this->connection->multi_query($query)) {
+      $this->error('Unable to process MySQL multi query - ' . $this->connection->error);
+    }
+
+    do {
+      if ($result = $this->connection->store_result()) {
+        $result->free();
+      }
+    } while ($this->connection->more_results() && $this->connection->next_result());
+
+    if ($this->connection->error) {
+      $this->error('Unable to process MySQL multi query - ' . $this->connection->error);
+    }
+
+    return $this;
+  }
 
 
 	public function fetchAll($callback = null) {
@@ -109,7 +185,7 @@ class db {
 		return $this->query->affected_rows;
 	}
 
-    public function lastInsertID() {
+	public function lastInsertID() {
     	return $this->connection->insert_id;
     }
 
@@ -120,11 +196,32 @@ class db {
     }
 
 	private function _gettype($var) {
+	    if (is_null($var)) return 's';
 	    if (is_string($var)) return 's';
 	    if (is_float($var)) return 'd';
 	    if (is_int($var)) return 'i';
 	    return 'b';
 	}
+
+  private function filterData($data, $allowedColumns = null) {
+    if (!is_array($data)) {
+      return array();
+    }
+
+    if ($allowedColumns === null) {
+      return $data;
+    }
+
+    return array_intersect_key($data, array_flip($allowedColumns));
+  }
+
+  private function identifier($identifier) {
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $identifier)) {
+      $this->error('Unsafe SQL identifier');
+    }
+
+    return "`" . $identifier . "`";
+  }
 
 }
 ?>

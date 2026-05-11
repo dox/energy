@@ -4,8 +4,8 @@
 <?php
 $locationsClass = new locations();
 $nodesClass = new nodes();
-$selectedLocations = filter_var_array($_POST['locations'] ?? array(), FILTER_SANITIZE_NUMBER_INT) ?: array();
-$selectedNodes = filter_var_array($_POST['nodes'] ?? array(), FILTER_SANITIZE_ENCODED) ?: array();
+$selectedLocations = cleanIntArray($_POST['locations'] ?? array());
+$selectedNodes = cleanTextArray($_POST['nodes'] ?? array(), explode(",", $settingsClass->value('node_types')));
 $dateFromInput = $_POST['date_from'] ?? date('Y-m-d', strtotime('1 year ago'));
 $dateToInput = $_POST['date_to'] ?? date('Y-m-d');
 
@@ -24,13 +24,15 @@ $nodeType = $selectedNodes[0] ?? '';
 //get each site
 foreach ($selectedLocations AS $locationUID) {
   //get each node in this site that matches types
-  $sql = "SELECT * FROM nodes WHERE location = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "' " . $enabled;
+  $sql = "SELECT * FROM nodes WHERE location = ? " . $enabled;
+  $params = array(cleanInt($locationUID));
   if (!empty($selectedNodes)) {
-    $sql .= " AND type IN ('" . implode("','", $selectedNodes) . "')";
+    $sql .= " AND type IN (" . implode(",", array_fill(0, count($selectedNodes), "?")) . ")";
+    $params = array_merge($params, $selectedNodes);
   }
   $sql .= ";";
   
-  $nodesByLocation = $db->query($sql)->fetchAll();
+  $nodesByLocation = $db->query($sql, $params)->fetchAll();
   
   if (!empty($nodesByLocation)) {
 	  foreach ($nodesByLocation AS $nodeData) {
@@ -42,8 +44,8 @@ foreach ($selectedLocations AS $locationUID) {
   
 }
 
-$dateFromClean = date('Y-m', strtotime(filter_var($dateFromInput, FILTER_SANITIZE_NUMBER_INT)));
-$dateToClean   = date('Y-m', strtotime(filter_var($dateToInput, FILTER_SANITIZE_NUMBER_INT)));
+$dateFromClean = date('Y-m', strtotime(cleanDate($dateFromInput, date('Y-m-d', strtotime('1 year ago')))));
+$dateToClean   = date('Y-m', strtotime(cleanDate($dateToInput, date('Y-m-d'))));
 foreach ($nodes AS $node) {
 	$node = new node($node['uid']);
 	

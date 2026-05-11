@@ -1,8 +1,13 @@
 <?php
 include_once("inc/include.php");
 
-if ($_GET['type'] == "node") {
-	$node = new node(filter_var($_GET['filter'], FILTER_SANITIZE_NUMBER_INT));
+$type = $_GET['type'] ?? '';
+$filter = $_GET['filter'] ?? '';
+$output = array();
+
+if ($type == "node") {
+	$node = new node(cleanInt($filter));
+	$location = new location($node->location);
 	
 	$thisYearDateFrom = date('Y-m-d', strtotime('100 months ago'));
 	$thisYearDateTo = date('Y-m-d');
@@ -35,7 +40,7 @@ if ($_GET['type'] == "node") {
 	$output[1] = array_keys($nodeRow);
 	$output[2] = $nodeRow;
 	
-} elseif ($_GET['type'] == "nodes") {
+} elseif ($type == "nodes") {
 	$nodesClass = new nodes();
 	$nodes = $nodesClass->allEnabled();
 	
@@ -68,12 +73,12 @@ if ($_GET['type'] == "node") {
 	}
 	
 	$output = $nodeArray;
-} elseif ($_GET['type'] == "readings") {
+} elseif ($type == "readings") {
 	$readingsClass = new readings();
-	if ($_GET['filter'] == "all") {
+	if ($filter == "all") {
 		$readings = $readingsClass->all();
 	} else {
-		$readings = $readingsClass->node_all_readings(filter_var($_GET['filter'], FILTER_SANITIZE_NUMBER_INT));
+		$readings = $readingsClass->node_all_readings(cleanInt($filter));
 	}
 	
 	foreach ($readings AS $reading) {
@@ -97,8 +102,7 @@ if ($_GET['type'] == "node") {
 	$output = $nodeArray;
 	
 } else {
-	$output[0]  = array($_GET['type'] => "This export hasn't been created yet.  It's on the roadmap to be developed though");
-	$output[1] .= $_GET;
+	$output[] = array('error' => "This export hasn't been created yet.  It's on the roadmap to be developed though");
 }
 
 header('Content-Type: text/csv; charset=utf-8');
@@ -107,7 +111,7 @@ header('Content-Disposition: attachment; filename=readings_export.csv');
 $outputFile = fopen('php://output', 'w');
 
 // build headers
-fputcsv($outputFile, array_keys($output[0]));
+fputcsv($outputFile, array_keys($output[0] ?? array('error' => 'No data')));
 // build rows
 foreach ($output as $outputRow) {
 	fputcsv($outputFile, $outputRow);

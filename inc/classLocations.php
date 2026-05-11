@@ -29,17 +29,11 @@ class locations extends location {
   public function create($array = null) {
        global $db, $logsClass;
     
-      $sql  = "INSERT INTO " . self::$table_name;
-    
-      foreach ($array AS $updateItem => $value) {
-        $sqlColumns[] = $updateItem;
-        $sqlValues[] = "'" . $value . "' ";
-      }
-    
-      $sql .= " (" . implode(",", $sqlColumns) . ") ";
-      $sql .= " VALUES (" . implode(",", $sqlValues) . ")";
-    
-      $create = $db->query($sql);
+      $create = $db->insert(
+        self::$table_name,
+        $array,
+        array('name', 'description', 'geo')
+      );
     
       $logArray['category'] = "location";
       $logArray['type'] = "success";

@@ -15,7 +15,7 @@ class readings {
     $sql .= " ORDER BY date DESC";
     
     if ($limit > 0) {
-      $sql .= " LIMIT " . $limit;
+      $sql .= " LIMIT " . cleanInt($limit);
     }
 
     $nodes = $db->query($sql)->fetchAll();
@@ -27,14 +27,14 @@ class readings {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
-    $sql .= " WHERE node = '" . $nodeUID . "' ";
+    $sql .= " WHERE node = ? ";
     $sql .= " ORDER BY date DESC";
     
     if ($limit > 0) {
-      $sql .= " LIMIT " . $limit;
+      $sql .= " LIMIT " . cleanInt($limit);
     }
 
-    $readings = $db->query($sql)->fetchAll();
+    $readings = $db->query($sql, cleanInt($nodeUID))->fetchAll();
 
     return $readings;
   }
@@ -43,11 +43,11 @@ class readings {
     global $db;
 
     $sql  = "SELECT * FROM " . self::$table_name;
-    $sql .= " WHERE node = '" . $nodeUID . "' ";
-    $sql .= " AND DATE(date) < '" . date('Y-m-d', strtotime('-' . $age . ' days')) . "'";
+    $sql .= " WHERE node = ? ";
+    $sql .= " AND DATE(date) < ?";
     $sql .= " ORDER BY date DESC";
 
-    $readings = $db->query($sql)->fetchAll();
+    $readings = $db->query($sql, cleanInt($nodeUID), date('Y-m-d', strtotime('-' . cleanInt($age) . ' days')))->fetchAll();
 
     return $readings;
   }
@@ -59,6 +59,8 @@ class readings {
     
     if ($readingDate == null) {
       $readingDate = date('Y-m-d H:i:s');
+    } else {
+      $readingDate = date('Y-m-d H:i:s', strtotime(cleanDate($readingDate)));
     }
     
     $node = new node($nodeUID);
@@ -70,11 +72,12 @@ class readings {
       $username = "SYSTEM";
     }
 
-    $sql  = "INSERT INTO " . self::$table_name;
-    $sql .= " (node, date, reading1, username) ";
-    $sql .= " VALUES('" . $nodeUID . "', '" . $readingDate . "', '" . $reading1 . "', '" . $username . "')";
-    
-    $insert = $db->query($sql);
+    $insert = $db->insert(self::$table_name, array(
+      'node' => cleanInt($nodeUID),
+      'date' => $readingDate,
+      'reading1' => is_numeric($reading1) ? $reading1 : 0,
+      'username' => $username
+    ), array('node', 'date', 'reading1', 'username'));
 
     $logArray['category'] = "reading";
     $logArray['type'] = "success";
@@ -87,11 +90,7 @@ class readings {
   public function delete($readingUID = null) {
     global $db, $logsClass;
 
-    $sql  = "DELETE FROM " . self::$table_name;
-    $sql .= " WHERE uid = '" . $readingUID . "'";
-    $sql .= " LIMIT 1";
-
-    $delete = $db->query($sql);
+    $delete = $db->delete(self::$table_name, 'uid', cleanInt($readingUID));
 
     $logArray['category'] = "reading";
     $logArray['type'] = "warning";

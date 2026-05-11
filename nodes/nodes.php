@@ -2,6 +2,8 @@
 $locations = new locations();
 
 if (isset($_POST['name'])) {
+  $_POST['billed'] = isset($_POST['billed']) ? 1 : 0;
+  $_POST['enabled'] = isset($_POST['enabled']) ? 1 : 0;
   $nodes = new nodes();
   $nodes->create($_POST);
 }
@@ -27,7 +29,7 @@ if (isset($_POST['name'])) {
     
     $output  = "<div class=\"card mb-4 shadow\">";
     $output .= "<div class=\"card-header\">";
-    $output .= "<h2 class=\"mb-0\"><a href=\"index.php?n=location&locationUID=" . $location->uid . "\">" . $location->cleanName() . "</a></h2>";
+    $output .= "<h2 class=\"mb-0\"><a href=\"index.php?n=location&locationUID=" . cleanInt($location->uid) . "\">" . $location->cleanName() . "</a></h2>";
     $output .= "</div>"; //card-header
     $output .= "<div class=\"table-responsive\">";
     $output .= "<table class=\"table table-hover table-flush table-nowrap mb-0\">";
@@ -53,8 +55,8 @@ if (isset($_POST['name'])) {
       
       $output .= "<tr class=\"" . $enabledClass . "\">";
       $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
-      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->cleanName() . "</a></td>";
-      $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . cleanInt($node->uid) . "\">" . $node->cleanName() . "</a></td>";
+      $output .= "<td>" . displayReading($node->currentReading()) . " " . escape($node->unit) . "</td>";
       $output .= "<td>" . dateDisplay($node->mostRecentReadingDate()) . " <i>(" . howLongAgo($node->mostRecentReadingDate()) . ")</i></td>";
       $output .= "</tr>";
     }
@@ -67,8 +69,6 @@ if (isset($_POST['name'])) {
     
     $output .= "</div>"; //card
     
-    //$output .= $metersClass->meterTable($meters);
-  
     foreach ($nodes AS $node) {
     if ($node['enabled'] == 1) {
     //  $output .= $metersClass->displayMeterCard($meter['uid']);

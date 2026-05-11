@@ -10,11 +10,7 @@ echo "<ul>";
 foreach ($commands AS $command) {
 	echo "<li>Performing command: " . $command . "</li>";
 	
-	$command = "mysql --user='" . db_username . "' --password='" . db_password . "' -h '" . db_host . "' -D '" . db_name . "' -e '" . $command . "'";
-	
-	//echo $command;
-	
-	$output = shell_exec($command);
+	$db->query($command);
 }
 echo "</ul>";
 

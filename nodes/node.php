@@ -2,7 +2,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <?php
-$node = new node($_GET['nodeUID']);
+$node = new node(cleanInt($_GET['nodeUID'] ?? 0));
+$isLoggedIn = isset($_SESSION['logon']) && $_SESSION['logon'] === true;
 
 $consumption = array_merge(generateMonthsArray(24), $node->consumptionByMonth());
 krsort($consumption);
@@ -15,20 +16,20 @@ $consumptionPrevious12MonthsTotal = array_sum($consumptionPrevious12Months);
 
 $location = new location($node->location);
 
-if (isset($_FILES['photograph']) && $_SESSION['logon'] == true) {
+if (isset($_FILES['photograph']) && $isLoggedIn) {
 	$node->uploadImage($_FILES);
-	$node = new node($_GET['nodeUID']);
+	$node = new node(cleanInt($_GET['nodeUID'] ?? 0));
 }
 
-if (isset($_POST['deletePhoto']) && $_SESSION['logon'] == true) {
+if (isset($_POST['deletePhoto']) && $isLoggedIn) {
 	$node->deleteImage();
-	$node = new node($_GET['nodeUID']);
+	$node = new node(cleanInt($_GET['nodeUID'] ?? 0));
 }
 
 $costUnit = $settingsClass->value("unit_cost_" . $node->type);
 $co2eUnit = $settingsClass->value("unit_co2e_" . $node->type);
 
-if (isset($_POST['reading1']) && $_SESSION['logon'] == true) {
+if (isset($_POST['reading1']) && $isLoggedIn) {
 	$readingsClass = new readings();
 	$readingsClass->create($node->uid, $_POST['reading_date'], $_POST['reading1']);
 }
@@ -69,7 +70,7 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 		<div class="card bg-yellow-100 border-0 shadow">
 			<div class="card-header d-sm-flex flex-row align-items-center flex-0">
 				<div class="d-block mb-3 mb-sm-0">
-					<div class="fs-5 fw-normal mb-2"><?php echo $node->type; ?> Consumption (<?php echo $node->unit; ?>)</div>
+					<div class="fs-5 fw-normal mb-2"><?php echo escape($node->type); ?> Consumption (<?php echo escape($node->unit); ?>)</div>
 					<div class="small mt-2">
 						<span class="fw-normal me-2"> </span>
 						<span class="fas fa-angle-up text-success"></span>
@@ -95,12 +96,12 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 					<div class="row">
 						<div class="col-3">
 							<div class="feature-icon bg-danger bg-gradient">
-								<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo strtolower($node->type); ?>"/></svg>
+								<svg class="bi" width="1em" height="1em"><use xlink:href="inc/icons.svg#<?php echo escape(strtolower($node->type)); ?>"/></svg>
 							</div>
 						</div>
 						<div class="col-9">
-							<h3 class="mb-1"><?php echo $node->type; ?></h3>
-							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal, 0) . " " .$node->unit; ?></h4>
+							<h3 class="mb-1"><?php echo escape($node->type); ?></h3>
+							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal, 0) . " " . escape($node->unit); ?></h4>
 							<?php
 							if ($node->type == "Gas") {
 								echo "<p><i>(~" . convertm3TokWh($consumptionLast12MonthsTotal) . " kWh" . ")</i></p>";
@@ -128,7 +129,7 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 							<h4 class="fw-extrabold mb-1"><?php echo "£" . number_format($consumptionLast12MonthsTotal * $costUnit); ?></h4>
 						</div>
 					</div>
-					<?php echo "Calculated at £" . number_format($costUnit, 2) . " per " . $node->unit; ?>
+					<?php echo "Calculated at £" . number_format($costUnit, 2) . " per " . escape($node->unit); ?>
 				</div>
 			</div>
 		</div>
@@ -146,7 +147,7 @@ if ($consumptionLast12MonthsTotal <= $consumptionPrevious12MonthsTotal && $consu
 							<h4 class="fw-extrabold mb-1"><?php echo number_format($consumptionLast12MonthsTotal * $co2eUnit, 0) . " kg"; ?></h4>
 						</div>
 					</div>
-					<?php echo "Calculated at " . number_format($co2eUnit, 2) . " kg per " . $node->unit; ?>
+					<?php echo "Calculated at " . number_format($co2eUnit, 2) . " kg per " . escape($node->unit); ?>
 				</div>
 			</div>
 		</div>
@@ -161,14 +162,14 @@ if ($_SESSION['logon'] == true) {
 ?>
 
 <div class="container px-4 py-5">
-	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo $node->uid; ?>">
+	<form class="" method="post" id="readingSubmit" action="index.php?n=node&nodeUID=<?php echo cleanInt($node->uid); ?>">
 		  <div class="input-group">
 			<input type="text" class="form-control input-primary " name="reading_date" id="reading_date" placeholder="Select Date" readonly="readonly">
 			<input type="number" class="form-control input-primary" name="reading1" placeholder="New Reading" min="<?php echo $node->currentReading(); ?>">
 			<button type="submit" class="btn btn-lg btn-primary" name="submit">Submit</button>
 		  </div>
 		</form>
-		<div id="reading1Help" class="form-text">Previous reading: <?php echo number_format($node->currentReading()) . " " . $node->unit; ?></div>
+		<div id="reading1Help" class="form-text">Previous reading: <?php echo number_format($node->currentReading()) . " " . escape($node->unit); ?></div>
 </div>
 <div class="b-example-divider"></div>
 <?php } ?>
@@ -183,7 +184,7 @@ if ($_SESSION['logon'] == true) {
 							<h2 class="fs-5 fw-bold mb-0">Recent Readings</h2>
 						</div>
 						<div class="col text-end">
-							<a href="index.php?n=readings&nodeUID=<?php echo $node->uid; ?>" class="btn btn-sm btn-primary">See all</a>
+							<a href="index.php?n=readings&nodeUID=<?php echo cleanInt($node->uid); ?>" class="btn btn-sm btn-primary">See all</a>
 						</div>
 					</div>
 				</div>
@@ -246,7 +247,7 @@ if ($_SESSION['logon'] == true) {
 		<div class="col-lg-6 col-12">
 			<div class="card border-0 mb-3 shadow">
 				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
-					<h2 class="fs-5 fw-bold mb-0">Annual Consumption (<?php echo $node->unit; ?>)</h2>
+					<h2 class="fs-5 fw-bold mb-0">Annual Consumption (<?php echo escape($node->unit); ?>)</h2>
 				</div>
 				<div class="card-body">
 					<div id="chart-annual"></div>
@@ -256,7 +257,7 @@ if ($_SESSION['logon'] == true) {
 			<div class="card border-0 shadow">
 				<div class="card-header border-bottom d-flex align-items-center justify-content-between">
 					<h2 class="fs-5 fw-bold mb-0">Node Details</h2>
-					<a href="index.php?n=node_edit&nodeUID=<?php echo $node->uid; ?>" class="btn btn-sm btn-primary">Edit</a>
+					<a href="index.php?n=node_edit&nodeUID=<?php echo cleanInt($node->uid); ?>" class="btn btn-sm btn-primary">Edit</a>
 				</div>
 				<div class="card-body">
 					<ul class="list-group list-group-flush list my--3">
@@ -267,18 +268,18 @@ if ($_SESSION['logon'] == true) {
 							$enabled = "<span class=\"btn btn-sm btn-outline-dark float-end\">Disabled</span>";
 						}
 						?>
-						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo $node->name . $enabled ?></li>
+						<li class="list-group-item px-0"><strong>Name:</strong> <?php echo escape($node->name) . $enabled ?></li>
 						<li class="list-group-item px-0"><strong>Location:</strong> <?php echo $location->cleanName();?></li>
-						<li class="list-group-item px-0"><strong>Type / Units:</strong> <?php echo $node->type . " / " . $node->unit;?></li>
+						<li class="list-group-item px-0"><strong>Type / Units:</strong> <?php echo escape($node->type) . " / " . escape($node->unit);?></li>
 						<li class="list-group-item px-0"><strong>Retention:</strong> <?php echo $node->cleanRetention(true);?></li>
-						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo $node->geo;?></li>
+						<li class="list-group-item px-0"><strong>Geo:</strong> <?php echo escape($node->geo);?></li>
 						
-						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo showHide($node->serial);?></li>
-						<li class="list-group-item px-0"><strong>MPRN:</strong> <?php echo showHide($node->mprn);?></li>
-						<li class="list-group-item px-0"><strong>Billed to Tennant:</strong> <?php echo showHide($node->billed);?></li>
-						<li class="list-group-item px-0"><strong>Supplier:</strong> <?php echo showHide($node->supplier);?></li>
-						<li class="list-group-item px-0"><strong>Account No:</strong> <?php echo showHide($node->account_no);?></li>
-						<li class="list-group-item px-0"><strong>Address:</strong> <?php echo showHide($node->address);?></li>
+						<li class="list-group-item px-0"><strong>Serial:</strong> <?php echo escape(showHide($node->serial));?></li>
+						<li class="list-group-item px-0"><strong>MPRN:</strong> <?php echo escape(showHide($node->mprn));?></li>
+						<li class="list-group-item px-0"><strong>Billed to Tennant:</strong> <?php echo escape(showHide($node->billed));?></li>
+						<li class="list-group-item px-0"><strong>Supplier:</strong> <?php echo escape(showHide($node->supplier));?></li>
+						<li class="list-group-item px-0"><strong>Account No:</strong> <?php echo escape(showHide($node->account_no));?></li>
+						<li class="list-group-item px-0"><strong>Address:</strong> <?php echo nl2br(escape(showHide($node->address)));?></li>
 					</ul>
 				</div>
 			</div>

@@ -11,22 +11,22 @@ class location {
   function __construct($locationUID = null) {
 
     global $db;
-		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = '" . filter_var($locationUID, FILTER_SANITIZE_NUMBER_INT) . "'";
-		$node = $db->query($sql)->fetchArray();
+		$sql = "SELECT * FROM " . self::$table_name . " WHERE uid = ?";
+		$node = $db->query($sql, cleanInt($locationUID))->fetchArray();
 
 		foreach ($node AS $key => $value) {
 			$this->$key = $value;
 		}
   }
-  
+
   public function cleanName() {
-    $cleanName = str_replace("'", "\'", $this->name);
-    
+    $cleanName = escape($this->name);
+
     // catch empty names
     if ($cleanName == "") {
       $cleanName = "[no-name]";
     }
-  
+
     return $cleanName;
   }
 
@@ -45,7 +45,7 @@ class location {
   public function geoMarker() {
     $url = "index.php?n=node&nodeUID=" . $this->uid;
     $name = "<a href=\"" . $url . "\">" . $this->cleanName() . "</a>";
-    
+
     $array[] = "['" . $name . "', " . $this->geoLocation() . "]";
 
     return $array;
@@ -60,7 +60,7 @@ class location {
 
       $url = "index.php?n=node&nodeUID=" . $node->uid;
       $name = "<a href=\"" . $url . "\">" . $node->cleanName() . "</a>";
-      
+
       $array[] = "['" . $name . "', " . $node->geoLocation() . "]";
 
     }
@@ -118,92 +118,78 @@ class location {
     if ($date == null) {
       $date = date('Y-m-d');
     }
-    
-    
+
+
       $previousMonthDate = date('Y-m-d', strtotime($date . " -1 month"));
-      
+
           // get this month's and previous months readings
           $nodes = $this->allNodesByType($type, "all");
-      
+
           $totalConsumption = 0;
           foreach ($nodes AS $node) {
             $node = new node($node['uid']);
             $totalConsumption = $totalConsumption + $node->consumptionForMonth($date);
           }
-      
+
           // check in case the difference is a negative value (it shouldn't be!)
           if ($totalConsumption < 0) {
             $totalConsumption = 0;
           }
-          
+
           //$this->cache($type, $date, $totalConsumption);
-      
+
           return $totalConsumption;
   }
-  
+
   public function cache($type, $date, $value) {
     global $db;
-    
-    $sql  = "SELECT cache FROM " . self::$table_name;
-    $sql .= " WHERE uid = '" . $this->uid . "' ";
-    $sql .= " LIMIT 1";
-    
-    $currentCache = $db->query($sql)->fetchArray(); 
 
-    $currentCache = json_decode($currentCache['cache'], TRUE);
-    $currentCache[$type][$date] = $value;
-    
-    $sql  = "UPDATE " . self::$table_name;
-    $sql .= " SET cache = '" . json_encode($currentCache) . "' ";
-    $sql .= " WHERE uid = '" . $this->uid . "' ";
+    $sql  = "SELECT cache FROM " . self::$table_name;
+    $sql .= " WHERE uid = ? ";
     $sql .= " LIMIT 1";
-    
-    $db->query($sql);
-    
+
+    $currentCache = $db->query($sql, cleanInt($this->uid))->fetchArray();
+
+    $currentCache = json_decode($currentCache['cache'] ?? '', TRUE);
+    if (!is_array($currentCache)) {
+      $currentCache = array();
+    }
+    $currentCache[$type][$date] = $value;
+
+    $db->update(self::$table_name, array('cache' => json_encode($currentCache)), 'uid', cleanInt($this->uid), array('cache'));
+
     return true;
   }
-  
+
   public function getFromCache($type, $date) {
     $cache = json_decode($this->cache);
     //printArray($cache);
-    
+
     if (isset($cache->$type->$date)) {
       return $cache->$type->$date;
     } else {
       return false;
     }
   }
-  
+
   public function expireCache() {
     global $db;
-    
-    $sql  = "UPDATE " . self::$table_name;
-    $sql .= " SET cache = NULL ";
-    $sql .= " WHERE uid = '" . $this->uid . "' ";
-    $sql .= " LIMIT 1";
-    
-    $db->query($sql);
-    
+
+    $db->update(self::$table_name, array('cache' => null), 'uid', cleanInt($this->uid), array('cache'));
+
     return true;
   }
 
   public function update($array = null) {
     global $db, $logsClass;
 
-    $sql  = "UPDATE " . self::$table_name;
-
-    foreach ($array AS $updateItem => $value) {
-      if ($updateItem != 'uid') {
-        $value = str_replace("'", "\'", $value);
-        $sqlUpdate[] = $updateItem ." = '" . $value . "' ";
-      }
-    }
-
-    $sql .= " SET " . implode(", ", $sqlUpdate);
-    $sql .= " WHERE uid = '" . $this->uid . "' ";
-    $sql .= " LIMIT 1";
-
-    $update = $db->query($sql);
+    $update = $db->update(
+      self::$table_name,
+      $array,
+      'uid',
+      cleanInt($this->uid),
+      array('name', 'description', 'geo')
+    );
 
     $logArray['category'] = "location";
     $logArray['type'] = "success";
@@ -223,11 +209,11 @@ class location {
     }
 
     $sql  = "SELECT * FROM nodes";
-    $sql .= " WHERE location = '" . $this->uid . "' ";
+    $sql .= " WHERE location = ? ";
     $sql .= $sqlEnabled;
     $sql .= " ORDER BY type ASC, name ASC";
 
-    $nodes = $db->query($sql)->fetchAll();
+    $nodes = $db->query($sql, cleanInt($this->uid))->fetchAll();
 
     return $nodes;
   }
@@ -242,81 +228,77 @@ class location {
     }
 
     $sql  = "SELECT * FROM nodes";
-    $sql .= " WHERE location = '" . $this->uid . "' ";
-    $sql .= " AND type = '" . $type . "' ";
+    $sql .= " WHERE location = ? ";
+    $sql .= " AND type = ? ";
     $sql .= $sqlEnabled;
     $sql .= " ORDER BY name ASC";
 
-    $nodes = $db->query($sql)->fetchAll();
+    $nodes = $db->query($sql, cleanInt($this->uid), $type)->fetchAll();
 
     return $nodes;
   }
-  
+
   public function co2BetweenDatesByMonth($dateFrom = null, $dateTo = null) {
     global $db, $settingsClass;
-    
+
     if ($dateFrom == null || $dateTo == null) {
       $dateFrom = date('Y-m-d', strtotime('1 year ago'));
       $dateTo = date('Y-m-d');
     }
-    
+
     $totalCO2 = array();
-    
+
     foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
       $co2PerUnit = $settingsClass->value("unit_co2e_" . $nodeType);
-      
+
       $consumptionForType = $this->consumptionBetweenDatesByMonth($nodeType, $dateFrom, $dateTo);
-      
+
       foreach ($consumptionForType AS $month => $value) {
         $consumptionForType[$month] = $value * $co2PerUnit;
       }
-      
+
       foreach ($consumptionForType AS $month => $value) {
         $totalCO2[$month] = $totalCO2[$month] + $value;
       }
-      
+
     }
-    
+
     return $totalCO2;
   }
-  
+
   public function co2ByMonth() {
     $nodes = $this->allNodes();
-    
+
     $co2Array = array();
     foreach ($nodes AS $node) {
       $node = new node($node['uid']);
-      
+
       foreach ($node->co2ByMonth() AS $date => $value) {
         $co2Array[$date] = $co2Array[$date] + $value;
       }
-      
+
     }
-    
+
     return $co2Array;
   }
-  
+
   public function delete() {
     global $db, $logsClass;
-    
+
     $locationUID = $this->uid;
-    
+
     foreach ($this->allnodes("all") AS $node) {
       $node = new node($node['uid']);
       $node->delete();
     }
-  
-    $sql  = "DELETE FROM " . self::$table_name;
-    $sql .= " WHERE uid = '" . $this->uid . "' ";
-    $sql .= " LIMIT 1";
-  
-    $deleteLocation = $db->query($sql);
-  
+
+    $deleteLocation = $db->delete(self::$table_name, 'uid', cleanInt($this->uid));
+
     $logArray['category'] = "location";
     $logArray['type'] = "warning";
     $logArray['value'] = "[locationUID:" . $locationUID . "] deleted successfully";
     $logsClass->create($logArray);
-  
+
     return $deleteLocation;
   }
 }

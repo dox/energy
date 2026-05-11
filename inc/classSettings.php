@@ -21,11 +21,11 @@ class settings {
     global $db;
 
     $sql  = "SELECT *  FROM " . self::$table_name;
-    $sql .= " WHERE name = '" . $name . "'";
-    $sql .= " OR uid = '" . $name . "'";
+    $sql .= " WHERE name = ?";
+    $sql .= " OR uid = ?";
 
-    $setting = $db->query($sql)->fetchAll();
-    $settingValue = $setting[0]['value'];
+    $setting = $db->query($sql, $name, $name)->fetchAll();
+    $settingValue = $setting[0]['value'] ?? null;
 
     return $settingValue;
   }
@@ -35,19 +35,13 @@ class settings {
 
     $existingSetting = $this->value($array['uid']);
 
-    $sql  = "UPDATE " . self::$table_name;
-
-    foreach ($array AS $updateItem => $value) {
-      if ($updateItem != 'uid') {
-        $sqlUpdate[] = $updateItem ." = '" . $value . "' ";
-      }
-    }
-
-    $sql .= " SET " . implode(", ", $sqlUpdate);
-    $sql .= " WHERE uid = '" . $array['uid'] . "' ";
-    $sql .= " LIMIT 1";
-
-    $update = $db->query($sql);
+    $update = $db->update(
+      self::$table_name,
+      $array,
+      'uid',
+      cleanInt($array['uid'] ?? 0),
+      array('name', 'description', 'value')
+    );
     echo $this->alert("success", "<strong>Success!</strong> Setting successfully updated");
 
     $logArray['category'] = "admin";
@@ -61,19 +55,11 @@ class settings {
   public function create($array = null) {
 	global $db, $logsClass;
 
-    $sql  = "INSERT INTO " . self::$table_name;
-
-    foreach ($array AS $updateItem => $value) {
-      if ($updateItem != 'memberUID') {
-        $sqlColumns[] = $updateItem;
-        $sqlValues[] = "'" . $value . "' ";
-      }
-    }
-
-    $sql .= " (" . implode(",", $sqlColumns) . ") ";
-    $sql .= " VALUES (" . implode(",", $sqlValues) . ")";
-
-    $create = $db->query($sql);
+    $create = $db->insert(
+      self::$table_name,
+      $array,
+      array('name', 'description', 'value')
+    );
     echo $this->alert("success", "<strong>Success!</strong> Setting successfully created");
 
     $logArray['category'] = "admin";

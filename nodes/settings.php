@@ -30,23 +30,23 @@ $settings = $settingsClass->all();
   <div class="accordion" id="accordionExample">
     <?php
     foreach ($settings AS $setting) {
-      $itemName = "collapse-" . $setting['uid'];
+      $itemName = "collapse-" . cleanInt($setting['uid']);
   
       $output  = "<div class=\"accordion-item\">";
-        $output .= "<h2 class=\"accordion-header\" id=\"" . $setting['uid'] . "\">";
+        $output .= "<h2 class=\"accordion-header\" id=\"" . cleanInt($setting['uid']) . "\">";
         $output .= "<button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#" . $itemName . "\" aria-expanded=\"true\" aria-controls=\"" . $itemName . "\">";
-        $output .= "<strong>" . $setting['name'] . "</strong>: " . $setting['description'];
+        $output .= "<strong>" . escape($setting['name']) . "</strong>: " . escape($setting['description']);
         $output .= "</button></h2>";
   
-        $output .= "<div id=\"" . $itemName . "\" class=\"accordion-collapse collapse\" aria-labelledby=\"" . $setting['uid'] . "\" data-bs-parent=\"#accordionExample\">";
+        $output .= "<div id=\"" . $itemName . "\" class=\"accordion-collapse collapse\" aria-labelledby=\"" . cleanInt($setting['uid']) . "\" data-bs-parent=\"#accordionExample\">";
           $output .= "<div class=\"accordion-body\">";
   
-          $output .= "<form method=\"post\" id=\"form-" .  $setting['uid'] . "\" action=\"" . $_SERVER['REQUEST_URI'] . "\" class=\"needs-validation\" novalidate>";
+          $output .= "<form method=\"post\" id=\"form-" .  cleanInt($setting['uid']) . "\" action=\"" . escape($_SERVER['REQUEST_URI']) . "\" class=\"needs-validation\" novalidate>";
           $output .= "<div class=\"input-group\">";
             $output .= "<input type=\"text\" class=\"form-control\" id=\"value\" name=\"value\" value=\"" . escape($setting['value']). "\">";
             $output .= "<button class=\"btn btn-primary\" type=\"submit\" id=\"button-addon2\">Update</button>";
           $output .= "</div>";
-          $output .= "<input type=\"hidden\" id=\"uid\" name=\"uid\" value=\"" . $setting['uid']. "\">";
+          $output .= "<input type=\"hidden\" id=\"uid\" name=\"uid\" value=\"" . cleanInt($setting['uid']). "\">";
           $output .= "</form>";
   
   

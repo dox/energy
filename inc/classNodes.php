@@ -36,10 +36,10 @@ class nodes extends node {
 
     foreach ($nodeUIDS AS $nodeUID) {
       $sql  = "SELECT * FROM nodes ";
-      $sql .= " WHERE uid = '" . $nodeUID['node'] . "'";
+      $sql .= " WHERE uid = ?";
       $sql .= " LIMIT 1";
 
-      $node = $db->query($sql)->fetchArray();
+      $node = $db->query($sql, cleanInt($nodeUID['node']))->fetchArray();
 
       $nodesArray[] = $node;
     }
@@ -48,7 +48,7 @@ class nodes extends node {
   }
 
   public function nodeTable($nodes = null) {
-    $tableID = "table_" . rand(0, 1000);
+    $tableID = "table_" . random_int(0, 1000);
 
     $output .= "<table class=\"table\" id=\"" . $tableID . "\">";
     $output .= "<thead>";
@@ -81,12 +81,12 @@ class nodes extends node {
         $rowClass = "table-secondary d-none";
       }
       $output .= "<tr class=\"" . $rowClass . "\">";
-      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . $node->uid . "\">" . $node->name . "</a></td>";
+      $output .= "<td><a href=\"index.php?n=node&nodeUID=" . cleanInt($node->uid) . "\">" . escape($node->name) . "</a></td>";
       $output .= "<td>" . $node->nodeTypeBadge() . "</td>";
       $output .= "<td>" . displayReading($node->currentReading()) . " " . $node->unit . "</td>";
       $output .= "<td>" . howLongAgo($node->mostRecentReadingDate()) . "</td>";
-      $output .= "<td>" . showHide($node->serial) . "</td>";
-      $output .= "<td>" . showHide($node->mprn) . "</td>";
+      $output .= "<td>" . escape(showHide($node->serial)) . "</td>";
+      $output .= "<td>" . escape(showHide($node->mprn)) . "</td>";
       $output .= "</tr>";
     }
 
@@ -96,17 +96,11 @@ class nodes extends node {
   public function create($array = null) {
 	   global $db, $logsClass;
 
-    $sql  = "INSERT INTO " . self::$table_name;
-
-    foreach ($array AS $updateItem => $value) {
-      $sqlColumns[] = $updateItem;
-      $sqlValues[] = "'" . $value . "' ";
-    }
-
-    $sql .= " (" . implode(",", $sqlColumns) . ") ";
-    $sql .= " VALUES (" . implode(",", $sqlValues) . ")";
-
-    $create = $db->query($sql);
+    $create = $db->insert(
+      self::$table_name,
+      $array,
+      array('name', 'location', 'type', 'unit', 'photograph', 'serial', 'mprn', 'billed', 'enabled', 'geo', 'address', 'supplier', 'account_no', 'retention_days')
+    );
 
     $logArray['category'] = "node";
     $logArray['type'] = "success";

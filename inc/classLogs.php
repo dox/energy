@@ -30,19 +30,13 @@ class logs {
       $username = "SYSTEM";
     }
 
-    $array['value'] = escape($array['value']);
-
-    $sql  = "INSERT INTO " . self::$table_name;
-    $sql .= " (ip, username, category, type, value) ";
-    $sql .= " VALUES (";
-    $sql .= "'" . ip2long($_SERVER['REMOTE_ADDR']) . "', ";
-    $sql .= "'" . $username . "', ";
-    $sql .= "'" . $array['category'] . "', ";
-    $sql .= "'" . $array['type'] . "', ";
-    $sql .= "'" . $array['value'] . "'";
-    $sql .= ")";
-
-    $logs = $db->query($sql);
+    $logs = $db->insert(self::$table_name, array(
+      'ip' => ip2long($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'),
+      'username' => $username,
+      'category' => $array['category'] ?? 'system',
+      'type' => $array['type'] ?? 'info',
+      'value' => $array['value'] ?? ''
+    ), array('ip', 'username', 'category', 'type', 'value'));
   }
 
   public function purge() {global $db;
@@ -50,9 +44,9 @@ class logs {
     
     $logs_retention = "365";
     
-	$sql = "DELETE FROM " . self::$table_name . " WHERE DATE(date) < '" . date('Y-m-d', strtotime('-' . $logs_retention . ' days')) . "'";
+	$sql = "DELETE FROM " . self::$table_name . " WHERE DATE(date) < ?";
     
-    $db->query($sql);
+    $db->query($sql, date('Y-m-d', strtotime('-' . $logs_retention . ' days')));
   }
 
   private function displayCategoryBadge($category = null) {

@@ -8,9 +8,7 @@ if (isset($_POST['install_attempt'])) {
 	  die('mySQL import file does not exist!');
   }
   
-  $command = "mysql --user='" . db_username . "' --password='" . db_password . "' -h '" . db_host . "' -D '" . db_name . "' < " . $filename;
-  
-  $output = shell_exec($command);
+  $db->multiQuery(file_get_contents($filename));
 
   echo "Install complete.  Please visit your site.";
   exit;
@@ -68,7 +66,7 @@ if (isset($_POST['install_attempt'])) {
 	  $buttonStatus = "disabled";
 	}
 	?>
-	<form method="post" id="install_attempt_form" action="<?php echo $_SERVER['REQUEST_URI']; ?>" novalidate>
+	<form method="post" id="install_attempt_form" action="<?php echo escape($_SERVER['REQUEST_URI']); ?>" novalidate>
 	  <input type="hidden" name="install_attempt" value="true" />
 	  <button <?php echo $buttonStatus; ?> type="submit" class="btn btn-primary" id="install_attempt_button">CLICK HERE TO SETUP TABLES IN YOUR DATABASE</button>
 	</form>

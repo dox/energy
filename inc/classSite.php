@@ -53,11 +53,11 @@ class site {
 	}
 
 	$sql  = "SELECT * FROM nodes";
-	$sql .= " WHERE type = '" . $type . "' ";
+	$sql .= " WHERE type = ? ";
 	$sql .= $sqlEnabled;
 	$sql .= " ORDER BY uid DESC";
 
-	$nodes = $db->query($sql)->fetchAll();
+	$nodes = $db->query($sql, $type)->fetchAll();
 
 	return $nodes;
   }

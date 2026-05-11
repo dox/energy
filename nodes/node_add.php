@@ -5,7 +5,7 @@ $locationsClass = new locations();
 $nodesClass = new nodes();
 $readingsClass = new readings();
 
-$locationUID = $_GET['locationUID'];
+$locationUID = cleanInt($_GET['locationUID'] ?? 0);
 ?>
 
 <div class="container px-4 py-5">
@@ -30,7 +30,7 @@ $locationUID = $_GET['locationUID'];
           } else {
             $selected = "";
           }
-          echo "<option value = \"" . $location['uid'] . "\" " . $selected . ">" . $location['name'] . "</option>";
+          echo "<option value = \"" . cleanInt($location['uid']) . "\" " . $selected . ">" . escape($location['name']) . "</option>";
         }
         ?>
       </select>

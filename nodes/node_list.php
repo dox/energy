@@ -5,9 +5,9 @@ admin_gatekeeper();
 
 $locationsClass = new locations();
 $readingsClass = new readings();
-$metersClass = new meters();
+$nodesClass = new nodes();
 
-$nodes = $metersClass->allEnabled();
+$nodes = $nodesClass->allEnabled();
 
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=data.csv');
@@ -16,7 +16,7 @@ header('Content-Disposition: attachment; filename=data.csv');
 $output = fopen('php://output', 'w');
 
 foreach ($nodes AS $node) {
-	$node = new meter($node['uid']);
+	$node = new node($node['uid']);
 	$location = new location($node->location);
 	
 	//printArray($node);

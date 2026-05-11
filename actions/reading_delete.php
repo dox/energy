@@ -6,7 +6,7 @@ $readingsClass = new readings();
 
 //printArray($_POST);
 
-if (isset($_POST['readingUID']) && $_SESSION['logon'] == true) {
+if (isset($_POST['readingUID']) && isset($_SESSION['logon']) && $_SESSION['logon'] == true) {
   $readingsClass->delete($_POST['readingUID']);
 } else {
   //$logArray['category'] = "booking";

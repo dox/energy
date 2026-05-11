@@ -5,29 +5,31 @@ $locationsClass = new locations();
 $nodesClass = new nodes();
 $readingsClass = new readings();
 
-$node = new node($_GET['nodeUID']);
+$node = new node(cleanInt($_GET['nodeUID'] ?? 0));
 $locationUID = $node->location;
 
 $location = new location($node->location);
 
 if (isset($_POST['uid'])) {
+    $_POST['billed'] = isset($_POST['billed']) ? 1 : 0;
+    $_POST['enabled'] = isset($_POST['enabled']) ? 1 : 0;
     $node->update($_POST);
-    $node = new node($_GET['nodeUID']);
+    $node = new node(cleanInt($_GET['nodeUID'] ?? 0));
     $locationUID = $node->location;
 }
 ?>
 
 <div class="container px-4 py-5">
   <?php
-  $title     = "Node Edit: " . $node->name;
+  $title     = "Node Edit: " . escape($node->name);
   
   echo pageHeader($title);
   ?>
 
-  <form method="post" id="nodeUpdate" action="index.php?n=node_edit&nodeUID=<?php echo $node->uid; ?>">
+  <form method="post" id="nodeUpdate" action="index.php?n=node_edit&nodeUID=<?php echo cleanInt($node->uid); ?>">
     <div class="mb-3">
       <label for="name">Name</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Node Name" value="<?php echo $node->name; ?>">
+      <input type="text" class="form-control" id="name" name="name" placeholder="Node Name" value="<?php echo escape($node->name); ?>">
     </div>
     <div class="mb-3">
       <label for="location">Location</label>
@@ -39,7 +41,7 @@ if (isset($_POST['uid'])) {
           } else {
             $selected = "";
           }
-          echo "<option value = \"" . $location['uid'] . "\" " . $selected . ">" . $location['name'] . "</option>";
+          echo "<option value = \"" . cleanInt($location['uid']) . "\" " . $selected . ">" . escape($location['name']) . "</option>";
         }
         ?>
       </select>
@@ -82,13 +84,13 @@ if (isset($_POST['uid'])) {
       <div class="col-lg-3 col-6">
         <div class="mb-3">
           <label for="supplier">Supplier</label>
-          <input class="form-control" id="supplier" name="supplier" list="suppliers" value="<?php echo $node->supplier; ?>" />
+          <input class="form-control" id="supplier" name="supplier" list="suppliers" value="<?php echo escape($node->supplier); ?>" />
         </div>
       </div>
       <div class="col-lg-3 col-6">
         <div class="mb-3">
           <label for="account_no">Account #</label>
-          <input class="form-control" id="account_no" name="account_no" value="<?php echo $node->account_no; ?>" />
+          <input class="form-control" id="account_no" name="account_no" value="<?php echo escape($node->account_no); ?>" />
         </div>
       </div>
     </div>
@@ -97,13 +99,13 @@ if (isset($_POST['uid'])) {
       <div class="col-6">
         <div class="mb-3">
           <label for="serial">Serial</label>
-          <input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo $node->serial; ?>">
+          <input type="text" class="form-control" id="serial" name="serial" placeholder="Serial Number" value="<?php echo escape($node->serial); ?>">
         </div>
       </div>
       <div class="col-6">
         <div class="mb-3">
           <label for="mprn">MPRN</label>
-          <input type="text" class="form-control" id="mprn" name="mprn" placeholder="MPRN" value="<?php echo $node->mprn; ?>">
+          <input type="text" class="form-control" id="mprn" name="mprn" placeholder="MPRN" value="<?php echo escape($node->mprn); ?>">
         </div>
       </div>
     </div>
@@ -112,7 +114,7 @@ if (isset($_POST['uid'])) {
       <div class="col-6">
         <div class="mb-3">
           <label for="address">Address</label>
-          <textarea class="form-control" id="address" name="address" rows="4" placeholder="Address"><?php echo $node->address; ?></textarea>
+          <textarea class="form-control" id="address" name="address" rows="4" placeholder="Address"><?php echo escape($node->address); ?></textarea>
         </div>
       </div>
       <div class="col-6">
@@ -149,7 +151,7 @@ if (isset($_POST['uid'])) {
     </div>
     </div>
   
-    <input type="hidden" id="geo" name="geo" value="<?php echo $node->geoLocation(); ?>">
+    <input type="hidden" id="geo" name="geo" value="<?php echo escape($node->geoLocation()); ?>">
     <div id="map" class="mb-3" style="width: 100%; height: 500px"></div>
   
     <div class="mb-3">
@@ -157,7 +159,7 @@ if (isset($_POST['uid'])) {
   
       ?>
       <button type="submit" class="btn btn-primary w-100">Submit</button>
-      <input type="hidden" id="uid" name="uid" value="<?php echo $node->uid; ?>">
+      <input type="hidden" id="uid" name="uid" value="<?php echo cleanInt($node->uid); ?>">
     </div>
   </form>
 </div>

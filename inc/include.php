@@ -1,5 +1,16 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_set_cookie_params(array(
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    ));
+    session_start();
+}
+
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: same-origin');
+header('X-Frame-Options: SAMEORIGIN');
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 
@@ -45,14 +56,10 @@ if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
     try {
         $ldap_connection->connect();
     } catch (\LdapRecord\Auth\BindException $e) {
-        $error = $e->getDetailedError();
-    
-        echo $error->getErrorCode();
-        echo $error->getErrorMessage();
-        echo $error->getDiagnosticMessage();
+        error_log('LDAP bind failed: ' . $e->getMessage());
     }
     
-    $cleanUsername = addslashes($_POST['inputUsername']);
+    $cleanUsername = preg_replace('/[^A-Za-z0-9._-]/', '', (string) $_POST['inputUsername']);
 
     if ($ldap_connection->auth()->attempt($cleanUsername . LDAP_ACCOUNT_SUFFIX, $_POST['inputPassword'], $stayAuthenticated = true)) {
         // Successfully authenticated user.
@@ -61,6 +68,7 @@ if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
 
         if (in_array(strtolower(LDAP_ALLOWED_DN), array_map('strtolower',$userGroups))) {
             // User is in allowed group for logon
+            session_regenerate_id(true);
             $_SESSION['logon'] = true;
             $_SESSION['username'] = strtoupper($cleanUsername);
         
@@ -92,7 +100,7 @@ if (isset($_POST['inputUsername']) && isset($_POST['inputPassword'])) {
 if (isset($_GET['logout'])) {
     $logArray['category'] = "logon";
     $logArray['type'] = "success";
-    $logArray['value'] = $_SESSION['username'] . " logged off successfully";
+    $logArray['value'] = ($_SESSION['username'] ?? 'UNKNOWN') . " logged off successfully";
     $logsClass->create($logArray);
     
     unset($_SESSION);
