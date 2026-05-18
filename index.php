@@ -1,4 +1,4 @@
-<?php include_once("inc/include.php"); ?>
+<?php include_once "inc/include.php"; ?>
 
 <!doctype html>
 <html lang="en">

@@ -199,7 +199,7 @@ if ($_SESSION['logon'] == true) {
 						</thead>
 						<tbody>
 							<?php
-							foreach (array_splice($node->readings_all(), 0, 5) AS $reading) {
+							foreach (array_splice($node->readings_all(), 0, 5) as $reading) {
 								$output  = "<tr>";
 								$output .= "<th class=\"text-gray-900\" scope=\"row\">" . date('Y-m-d H:i', strtotime($reading['date'])) . "</th>";
 								$output .= "<td class=\"fw-bolder text-gray-500\">" . displayReading($reading['reading1']) . "</td>";
@@ -322,7 +322,7 @@ var fp2 = flatpickr("#reading_date", {
 
 <?php
 // build array for readings
-foreach ($node->readings_all() AS $reading) {
+foreach ($node->readings_all() as $reading) {
 	$chartReadingsArray[] = "[" . (strtotime($reading['date'])*1000) . "," . $reading['reading1'] . "]";
 }
 

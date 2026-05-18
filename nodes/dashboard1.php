@@ -136,15 +136,15 @@ include_once("../inc/include.php");
 
   $locations = array("1", "2", "3", "4");
 
-  foreach ($locations AS $location) {
-    $location = new location($location['uid']);
+  foreach ($locations AS $locationUID) {
+    $location = new location($locationUID);
 
     $output  = "<h3 class=\"display-6 fw-normal text-center\">" . $location->name . "</h3>";
     $output .= "<div class=\"d-md-flex flex-md-equal w-100 my-md-3 ps-md-3\">";
 
 		$jsGraphs = null;
     foreach ($utilities AS $utility) {
-			$chartID = "x_" . rand(0, 100000);
+			$chartID = "location_" . $locationUID . "_" . $utility . "_chart";
 
       $consumptionThisMonth = $location->consumptionForMonth($utility, date('Y-m-d'));
       $consumptionPreviousMonth = $location->consumptionForMonth($utility, date('Y-m-d', strtotime('1 month ago')));
@@ -180,14 +180,14 @@ include_once("../inc/include.php");
       $output .= "<p class=\"lead\">" . $subtitle . "</p>";
       $output .= "</div>";
       $output .= "<div class=\"" . $textClass . " shadow-sm mx-auto\" style=\"width: 100%; height: 300px; border-radius: 21px 21px 0 0;\">";
-			$output .= displayGraph($chartID);
+			//$output .= displayGraph($chartID);
       $output .= "</div>";
       $output .= "</div>";
 
 			$from = date('Y-m-d', strtotime('1 year ago'));
 			$to = date('Y-m-d');
 
-			$jsGraphs .= displayGraphJC($chartID, $location->consumptionBetweenDatesByMonth($utility, $from, $to));
+			//$jsGraphs .= displayGraphJC($chartID, $location->consumptionBetweenDatesByMonth($utility, $from, $to));
     }
     $output .= "</div>";
 

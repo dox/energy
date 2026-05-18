@@ -14,9 +14,9 @@ header('X-Frame-Options: SAMEORIGIN');
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 
-require_once($root . '/config.php');
+require_once $root . '/config.php';
 
-if (debug == true) {
+if (debug) {
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(1);
@@ -26,20 +26,20 @@ if (debug == true) {
 	error_reporting(0);
 }
 
-require $root . '/vendor/autoload.php';
+require_once $root . '/vendor/autoload.php';
 
 use LdapRecord\Connection;
 
-require_once($root . '/inc/globalFunctions.php');
-require_once($root . '/inc/database.php');
-require_once($root . '/inc/classSettings.php');
-require_once($root . '/inc/classSite.php');
-require_once($root . '/inc/classLogs.php');
-require_once($root . '/inc/classLocation.php');
-require_once($root . '/inc/classLocations.php');
-require_once($root . '/inc/classNode.php');
-require_once($root . '/inc/classNodes.php');
-require_once($root . '/inc/classReadings.php');
+require_once $root . '/inc/globalFunctions.php';
+require_once $root . '/inc/database.php';
+require_once $root . '/inc/classSettings.php';
+require_once $root . '/inc/classSite.php';
+require_once $root . '/inc/classLogs.php';
+require_once $root . '/inc/classLocation.php';
+require_once $root . '/inc/classLocations.php';
+require_once $root . '/inc/classNode.php';
+require_once $root . '/inc/classNodes.php';
+require_once $root . '/inc/classReadings.php';
 
 $db = new db(db_host, db_username, db_password, db_name);
 
@@ -107,4 +107,3 @@ if (isset($_GET['logout'])) {
     session_destroy();
     $_SESSION['logon'] = false;
 }
-?>

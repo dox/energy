@@ -22,7 +22,7 @@ $totalConsumptionByLocation = array();
 $nodeUnit = '';
 $nodeType = $selectedNodes[0] ?? '';
 //get each site
-foreach ($selectedLocations AS $locationUID) {
+foreach ($selectedLocations as $locationUID) {
   //get each node in this site that matches types
   $sql = "SELECT * FROM nodes WHERE location = ? " . $enabled;
   $params = array(cleanInt($locationUID));
@@ -35,7 +35,7 @@ foreach ($selectedLocations AS $locationUID) {
   $nodesByLocation = $db->query($sql, $params)->fetchAll();
   
   if (!empty($nodesByLocation)) {
-	  foreach ($nodesByLocation AS $nodeData) {
+	  foreach ($nodesByLocation as $nodeData) {
 		  $nodes[] = $nodeData;
 		}
 		
@@ -46,10 +46,10 @@ foreach ($selectedLocations AS $locationUID) {
 
 $dateFromClean = date('Y-m', strtotime(cleanDate($dateFromInput, date('Y-m-d', strtotime('1 year ago')))));
 $dateToClean   = date('Y-m', strtotime(cleanDate($dateToInput, date('Y-m-d'))));
-foreach ($nodes AS $node) {
+foreach ($nodes as $node) {
 	$node = new node($node['uid']);
 	
-	foreach ($node->consumptionByMonth() AS $date => $value) {
+	foreach ($node->consumptionByMonth() as $date => $value) {
 		if ($value < 0) {
 		  $value = 0;
 		}
@@ -67,7 +67,7 @@ foreach ($nodes AS $node) {
 
 ksort($totalConsumption);
 
-foreach ($nodeConsumptionByMonth AS $date => $values) {
+foreach ($nodeConsumptionByMonth as $date => $values) {
 	if (array_sum($values) == 0) {
 		unset($nodeConsumptionByMonth[$date]);
 	} else {
@@ -108,7 +108,7 @@ $hasReportResults = !empty($nodes);
 							
 							<li><hr class="dropdown-divider"></li>
 							<?php
-							foreach ($locationsClass->all() AS $location) {
+							foreach ($locationsClass->all() as $location) {
 								$checked = "";
 								if (!empty($selectedLocations)) {
 									if (in_array($location['uid'], $selectedLocations)) {
@@ -144,7 +144,7 @@ $hasReportResults = !empty($nodes);
 							<?php
 							
 							
-							foreach (explode(",", $settingsClass->value('node_types')) AS $nodeType) {
+							foreach (explode(",", $settingsClass->value('node_types')) as $nodeType) {
 									$checked = "";
 									if (!empty($selectedNodes)) {
 										if (in_array($nodeType, $selectedNodes)) {
@@ -409,7 +409,7 @@ chartLocation.render();
 
 <?php
 $outputArray = array();
-foreach ($nodeConsumptionByMonth AS $nodeName => $monthConsumptions) {
+foreach ($nodeConsumptionByMonth as $nodeName => $monthConsumptions) {
 	$output  = "{name: '" . $nodeName . "',";
 	$output .= "data: [";
 	
