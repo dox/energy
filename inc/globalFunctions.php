@@ -47,6 +47,12 @@ function cleanInt($value, $default = 0) {
 	return ($value === false) ? $default : $value;
 }
 
+function cleanBool($value, $default = 0) {
+	$value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+	return ($value === null) ? (int) (bool) $default : (int) $value;
+}
+
 function cleanIntArray($values) {
 	if (!is_array($values)) {
 		return array();

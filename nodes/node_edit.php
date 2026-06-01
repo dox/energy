@@ -11,8 +11,8 @@ $locationUID = $node->location;
 $location = new location($node->location);
 
 if (isset($_POST['uid'])) {
-    $_POST['billed'] = isset($_POST['billed']) ? 1 : 0;
-    $_POST['enabled'] = isset($_POST['enabled']) ? 1 : 0;
+    $_POST['billed'] = cleanBool($_POST['billed'] ?? 0);
+    $_POST['enabled'] = cleanBool($_POST['enabled'] ?? 0);
     $node->update($_POST);
     $node = new node(cleanInt($_GET['nodeUID'] ?? 0));
     $locationUID = $node->location;
@@ -141,13 +141,13 @@ if (isset($_POST['uid'])) {
   
     <div class="row">
   
-    <div class="form-check mb-3">
-      <label for="retention_days">Node Enabled</enabledlabel>
-      <select class="form-select" id="retention_days" name="enabled">
+    <div class="mb-3">
+      <label for="enabled">Node Enabled</label>
+      <select class="form-select" id="enabled" name="enabled">
         <option value="0" <?php if ($node->enabled == 0) { echo " selected"; } ?>>Disabled (hidden)</option>
         <option value="1" <?php if ($node->enabled == 1) { echo " selected"; } ?>>Enabled</option>
       </select>
-      <div id="retention_daysHelp" class="form-text">Disabled (hidden) nodes still contribute to historic energy usage calculations.</div>
+      <div id="enabledHelp" class="form-text">Disabled (hidden) nodes still contribute to historic energy usage calculations.</div>
     </div>
     </div>
   

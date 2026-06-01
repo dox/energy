@@ -2,8 +2,8 @@
 $locations = new locations();
 
 if (isset($_POST['name'])) {
-  $_POST['billed'] = isset($_POST['billed']) ? 1 : 0;
-  $_POST['enabled'] = isset($_POST['enabled']) ? 1 : 0;
+  $_POST['billed'] = cleanBool($_POST['billed'] ?? 0);
+  $_POST['enabled'] = cleanBool($_POST['enabled'] ?? 0);
   $nodes = new nodes();
   $nodes->create($_POST);
 }
