@@ -60,7 +60,7 @@ class readings {
     if ($readingDate == null) {
       $readingDate = date('Y-m-d H:i:s');
     } else {
-      $readingDate = date('Y-m-d H:i:s', strtotime(cleanDate($readingDate)));
+      $readingDate = cleanDateTime($readingDate);
     }
     
     $node = new node($nodeUID);

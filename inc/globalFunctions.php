@@ -102,6 +102,17 @@ function cleanDate($value, $default = null) {
 	return date('Y-m-d', $timestamp);
 }
 
+function cleanDateTime($value, $default = null) {
+	$value = (string) $value;
+	$timestamp = strtotime($value);
+
+	if ($timestamp === false) {
+		$timestamp = strtotime($default ?? 'now');
+	}
+
+	return date('Y-m-d H:i:s', $timestamp);
+}
+
 function percentageDifference($num1, $num2) {
 	if (isset($num1) && isset($num2) && $num1 > 0 && $num2 > 0 ) {
 		$percentage = ($num1 - $num2) / (($num1 + $num2)/2);

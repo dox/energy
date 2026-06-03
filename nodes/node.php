@@ -315,6 +315,7 @@ if ($_SESSION['logon'] == true) {
 var fp2 = flatpickr("#reading_date", {
   enableTime: true,
   time_24hr: true,
+  dateFormat: "Y-m-d H:i",
   defaultDate: '<?php echo date('Y-m-d H:i');?>'
 })
 </script>
