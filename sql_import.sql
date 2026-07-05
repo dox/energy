@@ -63,7 +63,7 @@ CREATE TABLE `nodes` (
   `location` int NOT NULL,
   `type` varchar(45) NOT NULL,
   `unit` varchar(12) NOT NULL,
-  `photograph` varchar(255) DEFAULT NULL,
+  `photograph` text,
   `serial` varchar(45) DEFAULT NULL,
   `mprn` varchar(45) DEFAULT NULL,
   `retention_days` int NOT NULL DEFAULT '0',

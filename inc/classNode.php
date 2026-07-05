@@ -406,12 +406,116 @@ class node {
     return $output;
   }
 
-  public function displayImage() {
-    if (isset($this->photograph)) {
-      $output = "<img src=\"uploads/" . rawurlencode(basename($this->photograph)) . "\" class=\"rounded img-fluid w-100 mb-4\" alt=\"Image of utlity node\">";
-    } else {
-      $output = "<div class=\"d-grid gap-2\"><span class=\"btn btn-sm btn-outline-secondary\">No photograph uploaded</span></div>";
+  public function photographFilenames() {
+    if ($this->photograph === null) {
+      return array();
     }
+
+    if (is_array($this->photograph)) {
+      $photographs = $this->photograph;
+    } else {
+      $photograph = trim((string) $this->photograph);
+
+      if ($photograph === '') {
+        return array();
+      }
+
+      $decodedPhotographs = json_decode($photograph, true);
+      if (json_last_error() === JSON_ERROR_NONE && is_array($decodedPhotographs)) {
+        $photographs = $decodedPhotographs;
+      } else {
+        $photographs = preg_split('/[\r\n,;]+/', $photograph);
+      }
+    }
+
+    $filenames = array();
+    foreach ($photographs AS $photograph) {
+      if (is_array($photograph)) {
+        $photograph = $photograph['filename'] ?? $photograph['photograph'] ?? $photograph['name'] ?? '';
+      }
+
+      $filename = basename(trim((string) $photograph));
+
+      if ($filename === '' || $filename === '.' || $filename === '..') {
+        continue;
+      }
+
+      $filenames[] = $filename;
+    }
+
+    return array_values(array_unique($filenames));
+  }
+
+  public function hasPhotographs() {
+    return count($this->photographFilenames()) > 0;
+  }
+
+  public function photographStorageValue($photographs = array()) {
+    $filenames = array();
+
+    foreach ($photographs AS $photograph) {
+      $filename = basename(trim((string) $photograph));
+
+      if ($filename === '' || $filename === '.' || $filename === '..') {
+        continue;
+      }
+
+      $filenames[] = $filename;
+    }
+
+    $filenames = array_values(array_unique($filenames));
+
+    if (count($filenames) === 0) {
+      return null;
+    }
+
+    if (count($filenames) === 1) {
+      return $filenames[0];
+    }
+
+    return json_encode($filenames);
+  }
+
+  public function displayImage() {
+    $photographs = $this->photographFilenames();
+    $photographCount = count($photographs);
+
+    if ($photographCount === 0) {
+      return "<div class=\"d-grid gap-2\"><span class=\"btn btn-sm btn-outline-secondary\">No photograph uploaded</span></div>";
+    }
+
+    if ($photographCount === 1) {
+      return "<img src=\"uploads/" . rawurlencode($photographs[0]) . "\" class=\"rounded img-fluid w-100 mb-4\" alt=\"Image of utility node\">";
+    }
+
+    $carouselId = "node-photo-carousel-" . cleanInt($this->uid);
+
+    $output  = "<div id=\"" . escape($carouselId) . "\" class=\"carousel slide mb-4\" data-bs-ride=\"carousel\">";
+    $output .= "<div class=\"carousel-indicators\">";
+    foreach ($photographs AS $index => $photograph) {
+      $activeClass = ($index === 0) ? " class=\"active\" aria-current=\"true\"" : "";
+      $output .= "<button type=\"button\" data-bs-target=\"#" . escape($carouselId) . "\" data-bs-slide-to=\"" . cleanInt($index) . "\"" . $activeClass . " aria-label=\"Photograph " . cleanInt($index + 1) . "\"></button>";
+    }
+    $output .= "</div>";
+
+    $output .= "<div class=\"carousel-inner rounded\">";
+    foreach ($photographs AS $index => $photograph) {
+      $activeClass = ($index === 0) ? " active" : "";
+      $output .= "<div class=\"carousel-item" . $activeClass . "\">";
+      $output .= "<img src=\"uploads/" . rawurlencode($photograph) . "\" class=\"d-block w-100 img-fluid\" alt=\"Image of utility node " . cleanInt($index + 1) . "\">";
+      $output .= "</div>";
+    }
+    $output .= "</div>";
+
+    $output .= "<button class=\"carousel-control-prev\" type=\"button\" data-bs-target=\"#" . escape($carouselId) . "\" data-bs-slide=\"prev\">";
+    $output .= "<span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>";
+    $output .= "<span class=\"visually-hidden\">Previous</span>";
+    $output .= "</button>";
+    $output .= "<button class=\"carousel-control-next\" type=\"button\" data-bs-target=\"#" . escape($carouselId) . "\" data-bs-slide=\"next\">";
+    $output .= "<span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>";
+    $output .= "<span class=\"visually-hidden\">Next</span>";
+    $output .= "</button>";
+    $output .= "</div>";
 
     return $output;
   }
@@ -483,12 +587,26 @@ class node {
   public function uploadImage($FILE) {
       global $db, $logsClass;
 
+      if (
+        !isset($FILE["photograph"]) ||
+        ($FILE["photograph"]["error"] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE ||
+        empty($FILE["photograph"]["name"]) ||
+        empty($FILE["photograph"]["tmp_name"])
+      ) {
+        return false;
+      }
+
       $uploadOk = 1;
 
       $target_dir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/";
       $imageFileType = strtolower(pathinfo($FILE["photograph"]["name"] ?? '', PATHINFO_EXTENSION));
       $safeFileName = "node-" . cleanInt($this->uid) . "-" . bin2hex(random_bytes(8)) . "." . $imageFileType;
       $target_file = $target_dir . $safeFileName;
+
+      if (($FILE["photograph"]["error"] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        echo "Sorry, there was an error uploading your file.";
+        $uploadOk = 0;
+      }
 
       // Check if image file is a actual image or fake image
       $check = getimagesize($FILE["photograph"]["tmp_name"] ?? '');
@@ -532,7 +650,12 @@ class node {
       // if everything is ok, try to upload file
       } else {
         if (move_uploaded_file($FILE["photograph"]["tmp_name"], $target_file)) {
-          $db->update('nodes', array('photograph' => $safeFileName), 'uid', cleanInt($this->uid), array('photograph'));
+          $photographs = $this->photographFilenames();
+          $photographs[] = $safeFileName;
+          $photographStorageValue = $this->photographStorageValue($photographs);
+
+          $db->update('nodes', array('photograph' => $photographStorageValue), 'uid', cleanInt($this->uid), array('photograph'));
+          $this->photograph = $photographStorageValue;
 
           $logArray['category'] = "file";
           $logArray['type'] = "success";
@@ -551,16 +674,30 @@ class node {
       return true;
     }
 
-  public function deleteImage() {
+  public function deleteImage($photographToDelete = null) {
     global $db, $logsClass;
 
-    if (isset($this->photograph)) {
-      $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . basename($this->photograph);
+    $photographs = $this->photographFilenames();
+    if (empty($photographs)) {
+      return false;
+    }
+
+    if ($photographToDelete === null || $photographToDelete === true || $photographToDelete === 'true') {
+      $photographsToDelete = $photographs;
+    } else {
+      $filenameToDelete = basename(trim((string) $photographToDelete));
+      $photographsToDelete = in_array($filenameToDelete, $photographs, true) ? array($filenameToDelete) : array();
+    }
+
+    if (empty($photographsToDelete)) {
+      return false;
+    }
+
+    foreach ($photographsToDelete AS $photograph) {
+      $file = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $photograph;
 
       if (file_exists($file)) {
         unlink($file);
-
-        $db->update('nodes', array('photograph' => null), 'uid', cleanInt($this->uid), array('photograph'));
 
         $logArray['category'] = "file";
     		$logArray['type'] = "success";
@@ -573,6 +710,14 @@ class node {
     		$logsClass->create($logArray);
       }
     }
+
+    $remainingPhotographs = array_values(array_diff($photographs, $photographsToDelete));
+    $photographStorageValue = $this->photographStorageValue($remainingPhotographs);
+
+    $db->update('nodes', array('photograph' => $photographStorageValue), 'uid', cleanInt($this->uid), array('photograph'));
+    $this->photograph = $photographStorageValue;
+
+    return true;
   }
 
   public function getMostRecentReading() {

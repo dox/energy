@@ -22,7 +22,7 @@ if (isset($_FILES['photograph']) && $isLoggedIn) {
 }
 
 if (isset($_POST['deletePhoto']) && $isLoggedIn) {
-	$node->deleteImage();
+	$node->deleteImage($_POST['deletePhoto']);
 	$node = new node(cleanInt($_GET['nodeUID'] ?? 0));
 }
 
@@ -220,21 +220,26 @@ if ($_SESSION['logon'] == true) {
 				<div class="card-body">
 					<?php echo $node->displayImage();
 					
-					if ($_SESSION['logon'] == true) {
-						if (empty($node->photograph)) {
-							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
-							$output .= "<div class=\"btn-group\" role=\"group\" aria-label=\"Photograph Upload\">";
-							$output .= "<input class=\"form-control\" type=\"file\" id=\"photograph\" name=\"photograph\">";
-							$output .= "<button type=\"submit\" class=\"btn btn-primary\">Upload</button>";
-							$output .= "</div>";
-							$output .= "</form>";
-						} else {
-							$output  = "<form method=\"POST\" enctype=\"multipart/form-data\">";
-							$output .= "<button type=\"submit\" class=\"btn btn-warning\">Delete Photograph</button>";
-							$output .= "<input type=\"hidden\" id=\"deletePhoto\" name=\"deletePhoto\" value=\"true\"/>";
+					if ($isLoggedIn) {
+						$photographs = $node->photographFilenames();
+						$uploadButtonText = empty($photographs) ? "Upload" : "Add Photograph";
+
+						$output  = "<form method=\"POST\" enctype=\"multipart/form-data\" class=\"mb-3\">";
+						$output .= "<div class=\"input-group\">";
+						$output .= "<input class=\"form-control\" type=\"file\" id=\"photograph\" name=\"photograph\" accept=\"image/*\" required>";
+						$output .= "<button type=\"submit\" class=\"btn btn-primary\">" . $uploadButtonText . "</button>";
+						$output .= "</div>";
+						$output .= "</form>";
+
+						foreach ($photographs AS $index => $photograph) {
+							$deleteButtonText = count($photographs) === 1 ? "Delete Photograph" : "Delete Photograph " . cleanInt($index + 1);
+
+							$output .= "<form method=\"POST\" class=\"d-grid mb-2\" onsubmit=\"return confirm('Are you sure you want to delete this photograph?');\">";
+							$output .= "<button type=\"submit\" class=\"btn btn-sm btn-outline-danger\">" . $deleteButtonText . "</button>";
+							$output .= "<input type=\"hidden\" name=\"deletePhoto\" value=\"" . escape($photograph) . "\"/>";
 							$output .= "</form>";
 						}
-						
+
 						echo $output;
 					}
 					?>

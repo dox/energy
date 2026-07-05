@@ -3,6 +3,7 @@ include_once("inc/include.php");
 
 //$commands[] = "ALTER TABLE nodes ADD `example_Col` int NOT NULL";
 //$commands[] = "SELECT * FROM nodes";
+$commands[] = "ALTER TABLE nodes MODIFY photograph text NULL";
 
 echo "<h1>Performing DB update</h1>";
 
